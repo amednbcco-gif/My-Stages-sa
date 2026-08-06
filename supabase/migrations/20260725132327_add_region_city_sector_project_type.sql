@@ -1,0 +1,5 @@
+ALTER TABLE projects
+  ADD COLUMN IF NOT EXISTS region       text NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS city         text NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS sector       text NOT NULL DEFAULT '',
+  ADD COLUMN IF NOT EXISTS project_type text NOT NULL DEFAULT '';
