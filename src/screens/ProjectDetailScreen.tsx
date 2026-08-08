@@ -626,12 +626,29 @@ export function ProjectDetailScreen() {
     else if (key === "closePermit") linked.permitsStatus = value;
     const updated = { ...stageData, ...linked };
     const updateObj: Record<string, unknown> = { [stage]: updated };
+
     if (key === "rfsDate" && value) {
       const pacDate = addDays(String(value), 90);
       const facDate = addDays(String(value), 360);
       updated.pacDate = pacDate;
       const stage6Data = (project as unknown as Record<string, Record<string, unknown>>)["stage6"] ?? {};
       updateObj.stage6 = { ...stage6Data, facDate };
+    }
+
+    if (key === "aboqAmount" && stage === "stage2") {
+      const aboqVal = Number(value) || 0;
+      const rfsAmt = Math.round(aboqVal * 0.8 * 100) / 100;
+      const pacAmt = Math.round(aboqVal * 0.1 * 100) / 100;
+      const facAmt = Math.round(aboqVal * 0.1 * 100) / 100;
+      const stage5Data = (project as unknown as Record<string, Record<string, unknown>>)["stage5"] ?? {};
+      updateObj.stage5 = { ...stage5Data, rfsAmount: rfsAmt, pacAmount: pacAmt };
+      const stage6Data = (project as unknown as Record<string, Record<string, unknown>>)["stage6"] ?? {};
+      updateObj.stage6 = { ...stage6Data, facAmount: facAmt };
+    }
+
+    if (key === "poAmount" && stage === "stage2") {
+      const stage1Data = (project as unknown as Record<string, Record<string, unknown>>)["stage1"] ?? {};
+      updateObj.stage1 = { ...stage1Data, dboqAmount: Number(value) || 0 };
     }
     const { error } = await supabase.from("projects").update(updateObj).eq("id", project.id);
     if (!error) {

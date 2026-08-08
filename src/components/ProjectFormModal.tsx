@@ -98,6 +98,9 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
         <Input label="PO Number" value={poNumber} onChange={setPoNumber} placeholder="PO Number" />
         <Input label="Plan No" value={planNo} onChange={setPlanNo} placeholder="Plan No" />
         <Input label="PO Value SAR" value={poValueSAR} onChange={setPoValueSAR} type="number" placeholder="0" />
+        <div className="text-xs text-gray-500 col-span-1 sm:col-span-2">
+          PO Value SAR auto-populates DBOQ Amount and PO Amount fields automatically.
+        </div>
         <Input label="Region" value={region} onChange={setRegion} placeholder="Region" />
         <Input label="City" value={city} onChange={setCity} placeholder="City" />
         <Input label="Sector" value={sector} onChange={setSector} placeholder="Sector" />

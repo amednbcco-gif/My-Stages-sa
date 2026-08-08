@@ -106,12 +106,13 @@ export function ProjectsScreen() {
       const { error } = await supabase.from("projects").update(data).eq("id", editTarget.id);
       if (!error) { setToast("Project Updated"); setEditTarget(null); loadProjects(); }
     } else {
+      const poVal = Number(data.po_value_sar) || 0;
       const { error } = await supabase.from("projects").insert({
         owner_id: user?.id,
         project_name: data.project_name,
         po_number: data.po_number,
         plan_no: data.plan_no,
-        po_value_sar: data.po_value_sar,
+        po_value_sar: poVal,
         site_id: data.site_id,
         region: data.region,
         city: data.city,
@@ -120,8 +121,8 @@ export function ProjectsScreen() {
         latitude: data.latitude,
         longitude: data.longitude,
         status: data.status,
-        stage1: data.stage1,
-        stage2: data.stage2,
+        stage1: { ...(data.stage1 as object ?? {}), dboqAmount: poVal },
+        stage2: { ...(data.stage2 as object ?? {}), poAmount: poVal },
         stage3: data.stage3,
         stage4: data.stage4,
         stage5: data.stage5,

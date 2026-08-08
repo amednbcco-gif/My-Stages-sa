@@ -26,6 +26,7 @@ export interface Stage2 {
   poReceiveStatus: StatusValue;
   aboqStatus: StatusValue;
   aboqAmount: number;
+  poAmount: number;
   aboqSubmittedDate: string;
   aboqApprovedDate: string;
   baselineStartDate: string;
@@ -81,9 +82,11 @@ export interface Stage5 {
   rfsStatus: StatusValue;
   rfsDate: string;
   rfsSubmittedFilesDate: string;
+  rfsAmount: number;
   pacStatus: StatusValue;
   pacDate: string;
   pacSubmitFilesDate: string;
+  pacAmount: number;
   pacCrqStatus: StatusValue;
   pacErqNo: string;
   pacCrqNo: string;
@@ -93,6 +96,7 @@ export interface Stage6 {
   facStatus: StatusValue;
   facDate: string;
   facSubmitFilesDate: string;
+  facAmount: number;
   clearancePermit: StatusValue;
   facCrqStatus: StatusValue;
   facCrqNo: string;
