@@ -35,6 +35,14 @@ function fmtDate(iso: string): string {
   return `${parts[2]}/${parts[1]}/${parts[0]}`;
 }
 
+function fmtNum(n: number): string {
+  return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
+function fmtDateTime(d: string | Date): string {
+  return new Date(d).toLocaleString("en-US");
+}
+
 function stageProgress(project: Project, stage: string): number {
   const fields = STAGE_FIELDS[stage].filter(
     (f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "close-permit" || f.type === "permit" || f.type === "clearance"
@@ -125,17 +133,17 @@ function FieldInput({ field, value, stage, onFieldChange }: FieldInputProps) {
     return (
       <input
         type="number"
-        defaultValue={String(value || 0)}
-        onBlur={(e) => onFieldChange(stage, field.key, Number(e.target.value) || 0)}
-        className="w-20 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-right text-xs text-white outline-none focus:border-gold/50"
+        value={String(value ?? 0)}
+        onChange={(e) => onFieldChange(stage, field.key, Number(e.target.value) || 0)}
+        className="w-24 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-right text-xs text-white outline-none focus:border-gold/50"
       />
     );
   }
   return (
     <input
       type="text"
-      defaultValue={String(value || "")}
-      onBlur={(e) => onFieldChange(stage, field.key, e.target.value)}
+      value={String(value ?? "")}
+      onChange={(e) => onFieldChange(stage, field.key, e.target.value)}
       placeholder="—"
       className="w-28 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600"
     />
@@ -643,17 +651,19 @@ export function ProjectDetailScreen() {
       const stage5Data = (project as unknown as Record<string, Record<string, unknown>>)["stage5"] ?? {};
       updateObj.stage5 = { ...stage5Data, rfsAmount: rfsAmt, pacAmount: pacAmt };
       const stage6Data = (project as unknown as Record<string, Record<string, unknown>>)["stage6"] ?? {};
-      updateObj.stage6 = { ...stage6Data, facAmount: facAmt };
+      updateObj.stage6 = { ...(updateObj.stage6 as Record<string, unknown> ?? stage6Data), facAmount: facAmt };
     }
 
     if (key === "poAmount" && stage === "stage2") {
       const stage1Data = (project as unknown as Record<string, Record<string, unknown>>)["stage1"] ?? {};
       updateObj.stage1 = { ...stage1Data, dboqAmount: Number(value) || 0 };
     }
+
+    // Optimistic local update so controlled inputs reflect changes immediately
+    setProject((prev) => prev ? { ...prev, ...updateObj } as Project : prev);
+
     const { error } = await supabase.from("projects").update(updateObj).eq("id", project.id);
-    if (!error) {
-      setProject((prev) => prev ? { ...prev, ...updateObj } as Project : prev);
-    } else {
+    if (error) {
       showToast("Save failed");
     }
   }
@@ -810,7 +820,7 @@ export function ProjectDetailScreen() {
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
               <span className="flex items-center gap-1.5"><MapPin size={11} /> {project.site_id || "No site"}</span>
-              <span className="flex items-center gap-1.5"><DollarSign size={11} /> SAR {Number(project.po_value_sar || 0).toLocaleString()}</span>
+              <span className="flex items-center gap-1.5"><DollarSign size={11} /> SAR {fmtNum(Number(project.po_value_sar || 0))}</span>
               {project.po_number && <span>PO: {project.po_number}</span>}
               {project.region && <span>{project.region}</span>}
               {project.city && <span>{project.city}</span>}
@@ -906,7 +916,7 @@ export function ProjectDetailScreen() {
                         note.category === "field" ? "bg-sky-500/15 text-sky-300" :
                         "bg-ink-700 text-gray-400"
                       }`}>{note.category ?? "general"}</span>
-                      <span className="text-[10px] text-gray-600">{new Date(note.created_at).toLocaleString()}</span>
+                      <span className="text-[10px] text-gray-600">{fmtDateTime(note.created_at)}</span>
                     </div>
                     <p className="text-sm text-gray-300 leading-relaxed break-words">{note.body}</p>
                   </div>

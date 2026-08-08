@@ -103,7 +103,12 @@ export function ProjectsScreen() {
 
   async function handleSave(data: Partial<Project>) {
     if (editTarget) {
-      const { error } = await supabase.from("projects").update(data).eq("id", editTarget.id);
+      const poVal = Number(data.po_value_sar) || 0;
+      const { data: cur } = await supabase.from("projects").select("stage1,stage2").eq("id", editTarget.id).maybeSingle();
+      const stage1 = { ...((cur as Record<string, unknown> | null)?.stage1 as object ?? {}), dboqAmount: poVal };
+      const stage2 = { ...((cur as Record<string, unknown> | null)?.stage2 as object ?? {}), poAmount: poVal };
+      const { error } = await supabase.from("projects")
+        .update({ ...data, stage1, stage2 }).eq("id", editTarget.id);
       if (!error) { setToast("Project Updated"); setEditTarget(null); loadProjects(); }
     } else {
       const poVal = Number(data.po_value_sar) || 0;

@@ -278,7 +278,7 @@ export const MILESTONES: Milestone[] = [
     fields: [
       { key: "rfsDate", label: "RFS Approved Date", type: "date" },
       { key: "rfsSubmittedFilesDate", label: "RFS Submitted Files Date", type: "date" },
-      { key: "rfsAmount", label: "RFS Amount (80%)", type: "number" },
+      { key: "rfsAmount", label: "RFS Amount", type: "number" },
     ],
   },
   {
@@ -290,7 +290,7 @@ export const MILESTONES: Milestone[] = [
     fields: [
       { key: "pacDate", label: "PAC Due Date", type: "date" },
       { key: "pacSubmitFilesDate", label: "PAC Submit Files Date", type: "date" },
-      { key: "pacAmount", label: "PAC Amount (10%)", type: "number" },
+      { key: "pacAmount", label: "PAC Amount", type: "number" },
       { key: "pacErqNo", label: "PAC REQ No.", type: "text" },
       { key: "pacCrqNo", label: "PAC CRQ No.", type: "text" },
     ],
@@ -304,7 +304,7 @@ export const MILESTONES: Milestone[] = [
     fields: [
       { key: "facDate", label: "FAC Due Date", type: "date" },
       { key: "facSubmitFilesDate", label: "FAC Submit Files Date", type: "date" },
-      { key: "facAmount", label: "FAC Amount (10%)", type: "number" },
+      { key: "facAmount", label: "FAC Amount", type: "number" },
       { key: "facCrqErqNo", label: "FAC CRQ/REQ No.", type: "text" },
       { key: "facReqNo", label: "FAC REQ No.", type: "text" },
       { key: "clearancePermit", label: "Clearanced Status", type: "clearance" },
