@@ -14,6 +14,7 @@ import {
   CLOSE_PERMIT_OPTIONS,
   CLEARANCE_OPTIONS,
   DONE_OPTIONS,
+  REPAT_OPTIONS,
 } from "../lib/stages";
 import type { Project } from "../lib/types";
 
@@ -42,6 +43,7 @@ function StatusPill({ type, value }: { type: string; value: string }) {
     "close-permit": CLOSE_PERMIT_OPTIONS,
     clearance: CLEARANCE_OPTIONS,
     done: DONE_OPTIONS,
+    "repat-status": REPAT_OPTIONS,
   };
   const label = (opts[type] ?? STATUS_OPTIONS).find((o) => o.value === value)?.label ?? value;
   return (
@@ -74,6 +76,7 @@ const COLS = [
   { label: "GIS Status" },
   { label: "PCR & SDN" },
   { label: "RFS Status" },
+  { label: "Re-PAT Status" },
   { label: "PAC Status" },
   { label: "FAC Status" },
   { label: "" }, // actions
@@ -172,12 +175,13 @@ export function ProjectsScreen() {
       "Baseline Start", "Baseline End", "ABOQ Status",
       "Permits Status",
       "Actual Start", "Actual End",
-      "CIVIL (m)", "HDD (m)", "Splicing Status", "Patching Status", "Close Permit",
+      "CIVIL (m)", "HDD (m)", "MH/HH", "ODB/ODF", "Closures", "Splicing Status", "Patching Status", "Close Permit",
       "OWS/PAT Request", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status",
       "GIS Docs Sent", "GIS Received", "GIS Status",
       "CRQ HO Submitted Files Date", "CRQ HO No.", "CRQ HO Status",
       "PCR Ref", "PCR Status", "SDN Status",
       "RFS Submitted Files Date", "RFS Approved Date", "RFS Status",
+      "Re-PAT Submitted Files Date", "Re-PAT REQ No", "Re-PAT Stages", "Re-PAT Date", "Re-PAT Status",
       "PAC Due Date", "PAC Submit Files Date", "PAC CRQ No", "PAC Status",
       "FAC Due Date", "FAC Submit Files Date", "FAC CRQ No.", "Clearance Permit", "FAC Status",
       "Notes",
@@ -204,6 +208,9 @@ export function ProjectsScreen() {
       getVal(p, "stage3", "actualEndDate"),
       getVal(p, "stage3", "civilActualMeters"),
       getVal(p, "stage3", "hddActualMeters"),
+      getVal(p, "stage3", "mhHh"),
+      getVal(p, "stage3", "odbOdf"),
+      getVal(p, "stage3", "closures"),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "fiberSplicingStatus")),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "patchingStatus")),
       labelOf(CLOSE_PERMIT_OPTIONS, getVal(p, "stage3", "closePermit")),
@@ -323,6 +330,7 @@ export function ProjectsScreen() {
                 const gisStatus    = getVal(p, "stage4", "gisStatus");
                 const pcrStatus    = getVal(p, "stage5", "pcrStatus");
                 const rfsStatus    = getVal(p, "stage5", "rfsStatus");
+                const repatStatus   = getVal(p, "stage4", "repatStatus");
                 const pacStatus    = getVal(p, "stage5", "pacStatus");
                 const facStatus    = getVal(p, "stage6", "facCrqStatus");
 
@@ -367,6 +375,9 @@ export function ProjectsScreen() {
 
                     {/* RFS Status */}
                     <td className="px-3 py-3"><StatusPill type="status" value={rfsStatus} /></td>
+
+                    {/* Re-PAT Status */}
+                    <td className="px-3 py-3"><StatusPill type="repat-status" value={repatStatus} /></td>
 
                     {/* PAC Status */}
                     <td className="px-3 py-3"><StatusPill type="patsub" value={pacStatus} /></td>

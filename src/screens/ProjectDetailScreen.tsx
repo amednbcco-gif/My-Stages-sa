@@ -21,6 +21,7 @@ import {
   CLOSE_PERMIT_OPTIONS,
   PERMIT_OPTIONS,
   CLEARANCE_OPTIONS,
+  REPAT_OPTIONS,
   MILESTONES,
   computeProgress,
   addDays,
@@ -74,6 +75,7 @@ function optionsFor(type: string) {
   if (type === "permit") return PERMIT_OPTIONS;
   if (type === "clearance") return CLEARANCE_OPTIONS;
   if (type === "done") return DONE_OPTIONS;
+  if (type === "repat-status") return REPAT_OPTIONS;
   return STATUS_OPTIONS;
 }
 
@@ -163,9 +165,8 @@ interface StageCardProps {
   onSaveStage: (stage: string) => void;
 }
 
-const TOP_STATUS_FIELD: Record<string, { key: string; label: string }> = {
-  stage6: { key: "facStatus", label: "FAC" },
-};
+// Stage 6 FAC Status now shown as first field inside the card body (before FAC Due Date)
+const TOP_STATUS_FIELD: Record<string, { key: string; label: string }> = {};
 
 function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage }: StageCardProps) {
   const fields = STAGE_FIELDS[stage];

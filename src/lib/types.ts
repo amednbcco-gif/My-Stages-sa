@@ -40,6 +40,9 @@ export interface Stage3 {
   permitsStatus: StatusValue;
   civilActualMeters: number;
   hddActualMeters: number;
+  mhHh: number;
+  odbOdf: number;
+  closures: number;
   fiberCableMeters: number;
   fiberSplicingStatus: StatusValue;
   patchingStatus: StatusValue;
@@ -70,6 +73,11 @@ export interface Stage4 {
   crqHoErqNo: string;
   crqHoReqNo: string;
   crqHoSubmittedFilesDate: string;
+  repatStatus: string;
+  repatSubmittedFilesDate: string;
+  repatReqNo: string;
+  repatStage: string;
+  repatDate: string;
 }
 
 export interface Stage5 {

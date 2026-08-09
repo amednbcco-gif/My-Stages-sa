@@ -3,7 +3,7 @@ import type { StatusValue } from "./types";
 export interface StageField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status";
 }
 
 export const STAGE_LABELS: Record<string, string> = {
@@ -27,7 +27,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "receiveDocsDate", label: "Docs Received", type: "date" },
   ],
   stage2: [
-    { key: "poReceiveStatus", label: "PO Received", type: "status" },
+    { key: "poReceiveStatus", label: "PO Status", type: "status" },
     { key: "aboqStatus", label: "ABOQ", type: "status" },
     { key: "aboqAmount", label: "ABOQ Amount", type: "number" },
     { key: "baselineStartDate", label: "Baseline Start", type: "date" },
@@ -37,6 +37,9 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "permitsStatus", label: "Permits", type: "permit" },
     { key: "civilActualMeters", label: "Civil (m)", type: "number" },
     { key: "hddActualMeters", label: "HDD (m)", type: "number" },
+    { key: "mhHh", label: "MH/HH", type: "number" },
+    { key: "odbOdf", label: "ODB/ODF", type: "number" },
+    { key: "closures", label: "Closures", type: "number" },
     { key: "fiberSplicingStatus", label: "Fiber Splicing", type: "status" },
     { key: "patchingStatus", label: "Patching", type: "status" },
     { key: "actualStartDate", label: "Actual Start", type: "date" },
@@ -55,6 +58,11 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "crqHoStatus", label: "CRQ HO Status", type: "crq-ho" },
     { key: "crqHoNo", label: "CRQ HO No.", type: "text" },
     { key: "crqHoSubmittedFilesDate", label: "CRQ HO Submitted Files Date", type: "date" },
+    { key: "repatStatus", label: "Re-PAT Status", type: "repat-status" },
+    { key: "repatSubmittedFilesDate", label: "Re-PAT Submitted Files Date", type: "date" },
+    { key: "repatReqNo", label: "Re-PAT REQ No", type: "text" },
+    { key: "repatStage", label: "Re-PAT Stages", type: "team" },
+    { key: "repatDate", label: "Re-PAT Date", type: "date" },
   ],
   stage5: [
     { key: "pcrStatus", label: "PCR", type: "status" },
@@ -69,6 +77,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "pacCrqNo", label: "PAC CRQ No.", type: "text" },
   ],
   stage6: [
+    { key: "facStatus", label: "FAC Status", type: "patsub" },
     { key: "facDate", label: "FAC Due Date", type: "date" },
     { key: "facSubmitFilesDate", label: "FAC Submit Files Date", type: "date" },
     { key: "clearancePermit", label: "Clearance Permit", type: "clearance" },
@@ -125,6 +134,12 @@ export const CRQ_HO_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "approved", label: "Handed Over" },
 ];
 
+export const REPAT_OPTIONS: { value: string; label: string }[] = [
+  { value: "", label: "Pending" },
+  { value: "inprogress", label: "In Progress" },
+  { value: "rectified", label: "Rectified" },
+];
+
 export const TEAM_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "Select team" },
   { value: "Projects Team", label: "Projects Team" },
@@ -142,7 +157,7 @@ export const DONE_OPTIONS: { value: StatusValue; label: string }[] = [
 export interface MilestoneField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status";
 }
 
 export interface Milestone {
@@ -151,7 +166,7 @@ export interface Milestone {
   stage: string;
   fields: MilestoneField[];
   statusField: MilestoneField;
-  statusType: "status" | "patsub" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho";
+  statusType: "status" | "patsub" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status";
 }
 
 export const MILESTONES: Milestone[] = [
@@ -212,6 +227,9 @@ export const MILESTONES: Milestone[] = [
       { key: "actualEndDate", label: "Actual End Date", type: "date" },
       { key: "civilActualMeters", label: "Civil Length (m)", type: "number" },
       { key: "hddActualMeters", label: "HDD (m)", type: "number" },
+      { key: "mhHh", label: "MH/HH", type: "number" },
+      { key: "odbOdf", label: "ODB/ODF", type: "number" },
+      { key: "closures", label: "Closures", type: "number" },
       { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
       { key: "fiberSplicingStatus", label: "Fiber Status", type: "done" },
       { key: "patchingStatus", label: "Splicing Status", type: "done" },
@@ -229,6 +247,19 @@ export const MILESTONES: Milestone[] = [
       { key: "patReqNo", label: "PAT Req No.", type: "text" },
       { key: "patStartDate", label: "PAT Start Date", type: "date" },
       { key: "patStage", label: "PAT Stages", type: "team" },
+    ],
+  },
+  {
+    id: "repat",
+    title: "Re-PAT",
+    stage: "stage4",
+    statusType: "repat-status",
+    statusField: { key: "repatStatus", label: "Re-PAT Status", type: "repat-status" },
+    fields: [
+      { key: "repatSubmittedFilesDate", label: "Re-PAT Submitted Files Date", type: "date" },
+      { key: "repatReqNo", label: "Re-PAT REQ No", type: "text" },
+      { key: "repatStage", label: "Re-PAT Stages", type: "team" },
+      { key: "repatDate", label: "Re-PAT Date", type: "date" },
     ],
   },
   {
