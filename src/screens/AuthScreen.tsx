@@ -32,7 +32,7 @@ function StagesLogoIcon({ size = 52 }: { size?: number }) {
 }
 
 export function AuthScreen() {
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInGuest } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,7 +59,7 @@ export function AuthScreen() {
   }
 
   function handleGuest() {
-    setInfo("Guest access is not available in this version. Please sign in or create an account.");
+    signInGuest();
   }
 
   return (

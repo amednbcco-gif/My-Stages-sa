@@ -4,6 +4,7 @@ import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, File
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 import { computeProgress, currentStage, stageShortLabel } from "../lib/stages";
+import { DEMO_PROJECT } from "../lib/demoProject";
 import type { Project } from "../lib/types";
 
 interface AppShellProps {
@@ -44,7 +45,7 @@ const centerNav = [
 ];
 
 export function AppShell({ children }: AppShellProps) {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, isGuest, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -67,6 +68,28 @@ export function AppShell({ children }: AppShellProps) {
   }
 
   async function exportCSV() {
+    if (isGuest) {
+      const projects = [DEMO_PROJECT];
+      const headers = ["SN", "Project Name", "Site ID", "PO Number", "Plan No", "PO Value SAR", "Status", "Progress %", "Current Stage"];
+      const rows = projects.map((p) => [
+        p.sn, p.project_name, p.site_id, p.po_number, p.plan_no,
+        p.po_value_sar, p.status,
+        computeProgress(p), stageShortLabel(currentStage(p)),
+      ]);
+      const csv = [headers, ...rows]
+        .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `STAGES_Tracksheet_${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      return;
+    }
     const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
     const projects = (data as Project[]) ?? [];
     const headers = ["SN", "Project Name", "Site ID", "PO Number", "Plan No", "PO Value SAR", "Status", "Progress %", "Current Stage"];
@@ -89,7 +112,9 @@ export function AppShell({ children }: AppShellProps) {
     URL.revokeObjectURL(url);
   }
 
-  const initials = (profile?.full_name || "U")
+  const displayName = isGuest ? "Guest" : (profile?.full_name || "User");
+  const displayRole = isGuest ? "guest" : (profile?.role || "engineer");
+  const initials = isGuest ? "G" : (profile?.full_name || "U")
     .split(" ")
     .map((w) => w[0])
     .slice(0, 2)
@@ -155,8 +180,8 @@ export function AppShell({ children }: AppShellProps) {
                 {initials}
               </span>
               <span className="hidden sm:block text-right">
-                <p className="text-xs font-semibold leading-none text-white">{profile?.full_name || "User"}</p>
-                <p className="text-[10px] capitalize text-gold leading-tight">{profile?.role || "engineer"}</p>
+                <p className="text-xs font-semibold leading-none text-white">{displayName}</p>
+                <p className="text-[10px] capitalize text-gold leading-tight">{displayRole}</p>
               </span>
               <svg width="10" height="10" viewBox="0 0 10 10" className="text-gray-500 hidden sm:block">
                 <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" fill="none" />
@@ -166,8 +191,8 @@ export function AppShell({ children }: AppShellProps) {
             {userMenuOpen && (
               <div className="absolute right-0 top-full mt-1.5 w-60 rounded-xl border border-ink-700 bg-ink-800 shadow-xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-ink-700">
-                  <p className="text-sm font-semibold text-white truncate">{profile?.full_name || "User"}</p>
-                  <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                  <p className="text-sm font-semibold text-white truncate">{displayName}</p>
+                  <p className="text-xs text-gray-500 truncate">{isGuest ? "Guest mode — read-only demo" : user?.email}</p>
                 </div>
                 <div className="p-1.5">
                   <button

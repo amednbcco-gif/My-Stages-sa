@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
 import { computeProgress, currentStage, stageShortLabel, STAGE_LABELS, MILESTONES } from "../lib/stages";
+import { DEMO_PROJECT } from "../lib/demoProject";
 import type { Project, TeamMember, ProjectPermission } from "../lib/types";
 
 function fmtSAR(n: number) {
@@ -24,7 +25,7 @@ interface TeamEval {
 }
 
 export function DashboardScreen() {
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [permissions, setPermissions] = useState<ProjectPermission[]>([]);
@@ -32,6 +33,13 @@ export function DashboardScreen() {
 
   useEffect(() => {
     async function load() {
+      if (isGuest) {
+        setProjects([DEMO_PROJECT]);
+        setMembers([]);
+        setPermissions([]);
+        setLoading(false);
+        return;
+      }
       const [projRes, memRes, permRes] = await Promise.all([
         supabase.from("projects").select("*").order("created_at", { ascending: false }),
         supabase.from("team_members").select("*").order("created_at", { ascending: false }),
@@ -42,8 +50,8 @@ export function DashboardScreen() {
       setPermissions((permRes.data as ProjectPermission[]) ?? []);
       setLoading(false);
     }
-    if (user) load();
-  }, [user]);
+    if (user || isGuest) load();
+  }, [user, isGuest]);
 
   if (loading) {
     return (

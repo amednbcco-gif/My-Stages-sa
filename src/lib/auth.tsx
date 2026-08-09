@@ -8,8 +8,10 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
+  isGuest: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName: string, role: string) => Promise<{ error: string | null }>;
+  signInGuest: () => void;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
 }
@@ -21,6 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
 
   async function loadProfile(uid: string) {
     const { data } = await supabase
@@ -50,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(s);
         setUser(s?.user ?? null);
         if (s?.user) {
+          setIsGuest(false);
           await loadProfile(s.user.id);
         } else {
           setProfile(null);
@@ -65,6 +69,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function refreshProfile() {
     if (user) await loadProfile(user.id);
+  }
+
+  function signInGuest() {
+    setIsGuest(true);
+    setLoading(false);
   }
 
   async function signIn(email: string, password: string) {
@@ -89,11 +98,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     await supabase.auth.signOut();
     setProfile(null);
+    setIsGuest(false);
   }
 
   return (
     <AuthContext.Provider
-      value={{ session, user, profile, loading, signIn, signUp, signOut, refreshProfile }}
+      value={{ session, user, profile, loading, isGuest, signIn, signUp, signInGuest, signOut, refreshProfile }}
     >
       {children}
     </AuthContext.Provider>

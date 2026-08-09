@@ -26,6 +26,7 @@ import {
   computeProgress,
   addDays,
 } from "../lib/stages";
+import { getAbbreviation } from "../lib/demoProject";
 import type { Project, ProjectNote, StageAttachment, PermitRow } from "../lib/types";
 
 /* ─── Helpers ────────────────────────────────────────────── */
@@ -404,7 +405,10 @@ function MilestoneCard({
             <span className="h-2 w-2 rounded-full bg-gold/60" />
           </span>
         )}
-        <h3 className={`flex-1 min-w-0 text-base font-bold ${done ? "text-emerald-300" : "text-white"}`}>{milestone.title}</h3>
+        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+          <h3 className={`text-base font-bold leading-tight ${done ? "text-emerald-300" : "text-white"}`}>{milestone.title}</h3>
+          {(() => { const full = getAbbreviation(milestone.title); return full ? <span className="text-[10px] text-gray-500 leading-tight">{full}</span> : null; })()}
+        </div>
 
         {/* Status dropdown */}
         <div className="shrink-0">

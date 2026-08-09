@@ -10,7 +10,7 @@ import { ProfileScreen } from "./screens/ProfileScreen";
 import { Spinner } from "./components/ui";
 
 function ProtectedRoutes() {
-  const { user, loading } = useAuth();
+  const { user, loading, isGuest } = useAuth();
 
   if (loading) {
     return (
@@ -20,7 +20,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (!user) {
+  if (!user && !isGuest) {
     return <AuthScreen />;
   }
 

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Plus, Search, Pencil, Trash2, FileSpreadsheet } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
+import { DEMO_PROJECT } from "../lib/demoProject";
 import { Button, Spinner } from "../components/ui";
 import { ProjectFormModal } from "../components/ProjectFormModal";
 import {
@@ -83,7 +84,7 @@ const COLS = [
 ];
 
 export function ProjectsScreen() {
-  const { user, profile } = useAuth();
+  const { user, isGuest } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -93,6 +94,11 @@ export function ProjectsScreen() {
   const [toast, setToast] = useState<string | null>(null);
 
   async function loadProjects() {
+    if (isGuest) {
+      setProjects([DEMO_PROJECT]);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data } = await supabase
       .from("projects")
@@ -102,7 +108,7 @@ export function ProjectsScreen() {
     setLoading(false);
   }
 
-  useEffect(() => { loadProjects(); }, [user]);
+  useEffect(() => { loadProjects(); }, [user, isGuest]);
 
   async function handleSave(data: Partial<Project>) {
     if (editTarget) {
@@ -276,18 +282,22 @@ export function ProjectsScreen() {
         <div>
           <h1 className="text-2xl font-bold text-white">Projects</h1>
           <p className="text-sm text-gray-400">
-            {profile?.role === "manager"
-              ? "Managers can view all projects, edit any stage, and add notes."
+            {isGuest
+              ? "Guest mode — exploring a demo project. Sign up to create and manage your own projects."
               : "Engineers manage their own projects and task progress."}
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={exportCSV}>
-            <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
-          </Button>
-          <Button variant="primary" onClick={() => setShowAdd(true)}>
-            <Plus size={16} className="mr-1.5" /> Add Project
-          </Button>
+          {!isGuest && (
+            <>
+              <Button variant="secondary" onClick={exportCSV}>
+                <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
+              </Button>
+              <Button variant="primary" onClick={() => setShowAdd(true)}>
+                <Plus size={16} className="mr-1.5" /> Add Project
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -387,6 +397,7 @@ export function ProjectsScreen() {
 
                     {/* Actions */}
                     <td className="px-3 py-3 text-right">
+                      {!isGuest && (
                       <div className="flex justify-end gap-1" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => setEditTarget(p)}
@@ -401,6 +412,7 @@ export function ProjectsScreen() {
                           <Trash2 size={14} />
                         </button>
                       </div>
+                      )}
                     </td>
                   </tr>
                 );
