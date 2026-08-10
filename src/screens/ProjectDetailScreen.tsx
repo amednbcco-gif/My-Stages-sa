@@ -24,7 +24,6 @@ import {
   REPAT_OPTIONS,
   MILESTONES,
   computeProgress,
-  milestonePercentage,
   addDays,
 } from "../lib/stages";
 import { getAbbreviation } from "../lib/demoProject";
@@ -89,17 +88,15 @@ interface FieldInputProps {
   value: unknown;
   stage: string;
   onFieldChange: (stage: string, key: string, value: string | number) => void;
-  readOnly?: boolean;
 }
-function FieldInput({ field, value, stage, onFieldChange, readOnly = false }: FieldInputProps) {
+function FieldInput({ field, value, stage, onFieldChange }: FieldInputProps) {
   const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done"].includes(field.type);
   if (isStatus) {
     return (
       <select
         value={String(value || "pending")}
         onChange={(e) => onFieldChange(stage, field.key, e.target.value)}
-        disabled={readOnly}
-        className={`rounded-lg border px-2 py-1 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-5 ${statusColor(String(value || "pending"))} disabled:cursor-not-allowed disabled:opacity-70`}
+        className={`rounded-lg border px-2 py-1 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-5 ${statusColor(String(value || "pending"))}`}
         style={{ backgroundImage: chevronBg, backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center" }}
       >
         {optionsFor(field.type).map((o) => (
@@ -113,8 +110,7 @@ function FieldInput({ field, value, stage, onFieldChange, readOnly = false }: Fi
       <select
         value={String(value || "")}
         onChange={(e) => onFieldChange(stage, field.key, e.target.value)}
-        disabled={readOnly}
-        className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none cursor-pointer appearance-none pr-5 focus:border-gold/50 disabled:cursor-not-allowed disabled:opacity-70"
+        className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none cursor-pointer appearance-none pr-5 focus:border-gold/50"
         style={{ backgroundImage: chevronBg, backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center" }}
       >
         {TEAM_OPTIONS.map((o) => (
@@ -130,8 +126,7 @@ function FieldInput({ field, value, stage, onFieldChange, readOnly = false }: Fi
           type="date"
           value={String(value || "")}
           onChange={(e) => onFieldChange(stage, field.key, e.target.value)}
-          disabled={readOnly}
-          className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none focus:border-gold/50 [color-scheme:dark] disabled:cursor-not-allowed disabled:opacity-70"
+          className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none focus:border-gold/50 [color-scheme:dark]"
         />
         {value ? <span className="text-[10px] text-gray-500 text-center">{fmtDate(String(value))}</span> : null}
       </div>
@@ -143,8 +138,7 @@ function FieldInput({ field, value, stage, onFieldChange, readOnly = false }: Fi
         type="number"
         value={String(value ?? 0)}
         onChange={(e) => onFieldChange(stage, field.key, Number(e.target.value) || 0)}
-        disabled={readOnly}
-        className="w-24 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-right text-xs text-white outline-none focus:border-gold/50 disabled:cursor-not-allowed disabled:opacity-70"
+        className="w-24 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-right text-xs text-white outline-none focus:border-gold/50"
       />
     );
   }
@@ -153,9 +147,8 @@ function FieldInput({ field, value, stage, onFieldChange, readOnly = false }: Fi
       type="text"
       value={String(value ?? "")}
       onChange={(e) => onFieldChange(stage, field.key, e.target.value)}
-      disabled={readOnly}
       placeholder="—"
-      className="w-28 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 disabled:cursor-not-allowed disabled:opacity-70"
+      className="w-28 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600"
     />
   );
 }
@@ -171,13 +164,12 @@ interface StageCardProps {
   onDeleteAttachment: (att: StageAttachment) => void;
   onDownloadAttachment: (att: StageAttachment) => void;
   onSaveStage: (stage: string) => void;
-  readOnly?: boolean;
 }
 
 // Stage 6 FAC Status now shown as first field inside the card body (before FAC Due Date)
 const TOP_STATUS_FIELD: Record<string, { key: string; label: string }> = {};
 
-function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage, readOnly = false }: StageCardProps) {
+function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage }: StageCardProps) {
   const fields = STAGE_FIELDS[stage];
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
   const pct = stageProgress(project, stage);
@@ -230,7 +222,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
               <span className="shrink-0 text-sm text-gray-300">{field.label}</span>
-              <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} readOnly={readOnly} />
+              <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} />
             </div>
           );
         })}
@@ -247,15 +239,14 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           <div className="flex items-center gap-2">
             <button
               onClick={() => onSaveStage(stage)}
-              disabled={readOnly}
-              className="flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:opacity-80 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:opacity-80 transition-opacity"
             >
               <Save size={11} /> Save
             </button>
-            {!readOnly && <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
+            <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
               <Paperclip size={11} /> Add file
               <input type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(stage, f); e.target.value = ""; }} />
-            </label>}
+            </label>
           </div>
         </div>
         {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
@@ -268,7 +259,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
                 <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                   <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
                 </button>
-                <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors disabled:hidden" disabled={readOnly}>
+                <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
                   <Trash2 size={11} />
                 </button>
               </div>
@@ -294,19 +285,17 @@ interface MilestoneListProps {
   onPermitAdd: () => void;
   onPermitUpdate: (id: string, patch: Partial<PermitRow>) => void;
   onPermitDelete: (id: string) => void;
-  readOnly?: boolean;
 }
 
 function milestoneDone(statusVal: unknown): boolean {
   return statusVal === "approved" || statusVal === "closed";
 }
 
-function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, readOnly = false }: {
+function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
   permits: PermitRow[];
   onPermitAdd: () => void;
   onPermitUpdate: (id: string, patch: Partial<PermitRow>) => void;
   onPermitDelete: (id: string) => void;
-  readOnly?: boolean;
 }) {
   const inputCls = "w-full rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 transition-colors";
   return (
@@ -332,30 +321,30 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, rea
               permits.map((p) => (
                 <tr key={p.id} className="border-b border-ink-700/40 hover:bg-ink-800/40 transition-colors">
                   <td className="py-1.5 px-2">
-                    <input type="number" disabled={readOnly} className={inputCls + " w-12 disabled:cursor-not-allowed disabled:opacity-70"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} />
+                    <input type="number" className={inputCls + " w-12"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} />
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="text" disabled={readOnly} className={inputCls + " disabled:cursor-not-allowed disabled:opacity-70"} value={p.permit_no} onChange={(e) => onPermitUpdate(p.id, { permit_no: e.target.value })} />
+                    <input type="text" className={inputCls} value={p.permit_no} onChange={(e) => onPermitUpdate(p.id, { permit_no: e.target.value })} />
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="date" disabled={readOnly} className={inputCls + " disabled:cursor-not-allowed disabled:opacity-70"} value={p.issued_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { issued_date: e.target.value || null })} />
+                    <input type="date" className={inputCls} value={p.issued_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { issued_date: e.target.value || null })} />
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="date" disabled={readOnly} className={inputCls + " disabled:cursor-not-allowed disabled:opacity-70"} value={p.start_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { start_date: e.target.value || null })} />
+                    <input type="date" className={inputCls} value={p.start_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { start_date: e.target.value || null })} />
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="date" disabled={readOnly} className={inputCls + " disabled:cursor-not-allowed disabled:opacity-70"} value={p.end_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { end_date: e.target.value || null })} />
+                    <input type="date" className={inputCls} value={p.end_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { end_date: e.target.value || null })} />
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="number" disabled={readOnly} className={inputCls + " w-16 disabled:cursor-not-allowed disabled:opacity-70"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} />
+                    <input type="number" className={inputCls + " w-16"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} />
                   </td>
                   <td className="py-1.5 px-2">
-                    <select disabled={readOnly} value={p.permit_status} onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })} className={inputCls + " cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"}>
+                    <select value={p.permit_status} onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })} className={inputCls + " cursor-pointer"}>
                       {PERMIT_OPTIONS.map((o) => (<option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>))}
                     </select>
                   </td>
                   <td className="py-1.5 px-2 text-center">
-                    {!readOnly && <button onClick={() => onPermitDelete(p.id)} className="text-gray-600 hover:text-rose-300 transition-colors"><Trash2 size={12} /></button>}
+                    <button onClick={() => onPermitDelete(p.id)} className="text-gray-600 hover:text-rose-300 transition-colors"><Trash2 size={12} /></button>
                   </td>
                 </tr>
               ))
@@ -363,16 +352,16 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, rea
           </tbody>
         </table>
       </div>
-      {!readOnly && <button onClick={onPermitAdd} className="mt-3 flex items-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 px-3 py-1.5 text-xs font-semibold text-gray-300 hover:border-gold/50 hover:text-gold transition-colors">
+      <button onClick={onPermitAdd} className="mt-3 flex items-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 px-3 py-1.5 text-xs font-semibold text-gray-300 hover:border-gold/50 hover:text-gold transition-colors">
         <Plus size={12} /> Add Permit
-      </button>}
+      </button>
     </div>
   );
 }
 
 function MilestoneCard({
   milestone, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage,
-  permits, onPermitAdd, onPermitUpdate, onPermitDelete, readOnly = false,
+  permits, onPermitAdd, onPermitUpdate, onPermitDelete,
 }: {
   milestone: typeof MILESTONES[number];
   project: Project;
@@ -387,7 +376,6 @@ function MilestoneCard({
   onPermitAdd: () => void;
   onPermitUpdate: (id: string, patch: Partial<PermitRow>) => void;
   onPermitDelete: (id: string) => void;
-  readOnly?: boolean;
 }) {
   const [showFiles, setShowFiles] = useState(false);
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[milestone.stage] ?? {};
@@ -397,7 +385,12 @@ function MilestoneCard({
   const isUploading = uploading === `${milestone.stage}.${milestone.id}`;
 
   // count filled data fields
-  const pct = milestonePercentage(project, milestone);
+  const filledFields = milestone.fields.filter((f) => {
+    const v = stageData[f.key];
+    if (f.type === "number") return Number(v) > 0;
+    return Boolean(v);
+  }).length;
+  const pct = milestone.fields.length > 0 ? Math.round((filledFields / milestone.fields.length) * 100) : 0;
 
   return (
     <div className={`rounded-2xl border bg-ink-800 overflow-hidden transition-all ${done ? "border-emerald-500/30" : "border-ink-700"}`}>
@@ -422,8 +415,7 @@ function MilestoneCard({
           <select
             value={statusVal}
             onChange={(e) => onFieldChange(milestone.stage, milestone.statusField.key, e.target.value)}
-            disabled={readOnly}
-            className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-7 ${statusColor(statusVal)} disabled:cursor-not-allowed disabled:opacity-70`}
+            className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-7 ${statusColor(statusVal)}`}
             style={{ backgroundImage: chevronBg, backgroundRepeat: "no-repeat", backgroundPosition: "right 6px center" }}
           >
             {optionsFor(milestone.statusType).map((o) => (
@@ -435,15 +427,15 @@ function MilestoneCard({
 
       {/* Fields grid OR permit table */}
       {milestone.id === "permit" ? (
-        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} readOnly={readOnly} />
+        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} />
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
           {milestone.fields.map((field) => {
             const value = stageData[field.key] ?? "";
             return (
               <div key={field.key} className="flex flex-col gap-1">
-                <label className="text-[11px] font-semibold text-white">{field.label}</label>
-                <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} readOnly={readOnly} />
+                <label className="text-[11px] font-medium text-gray-500">{field.label}</label>
+                <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} />
               </div>
             );
           })}
@@ -456,14 +448,13 @@ function MilestoneCard({
           <div className="flex-1 max-w-[120px] h-1 rounded-full bg-ink-700 overflow-hidden">
             <div className={`h-full rounded-full transition-all duration-500 ${done ? "bg-emerald-500" : "bg-gold"}`} style={{ width: `${pct}%` }} />
           </div>
-          <span className="text-xs font-bold text-sky-300 shrink-0">{pct}%</span>
+          <span className="text-[10px] text-gray-500 shrink-0">{filledFields}/{milestone.fields.length} filled</span>
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={() => onSaveStage(milestone.stage)}
-            disabled={readOnly}
-            className="flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-500/70 hover:text-emerald-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-500/70 hover:text-emerald-200 transition-colors"
           >
             <Save size={12} /> Save
           </button>
@@ -488,12 +479,11 @@ function MilestoneCard({
                 <span className="ml-0.5 rounded-full bg-ink-700 px-1.5 py-0.5 text-[10px] text-gray-300">{msAtts.length}</span>
               )}
             </span>
-            <label className={`flex ${readOnly ? "cursor-default" : "cursor-pointer"} items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity`}>
+            <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
               <Paperclip size={11} /> Add file
               <input
                 type="file"
                 className="hidden"
-                disabled={readOnly}
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) onUpload(milestone.stage, f, milestone.id);
@@ -512,7 +502,7 @@ function MilestoneCard({
                   <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                     <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
                   </button>
-                  <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors disabled:hidden" disabled={readOnly}>
+                  <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
                     <Trash2 size={11} />
                   </button>
                 </div>
@@ -529,7 +519,7 @@ function MilestoneList(props: MilestoneListProps) {
   return (
     <div className="space-y-3">
       {MILESTONES.map((m) => (
-        <MilestoneCard key={m.id} milestone={m} {...props} readOnly={props.readOnly} />
+        <MilestoneCard key={m.id} milestone={m} {...props} permits={props.permits} onPermitAdd={props.onPermitAdd} onPermitUpdate={props.onPermitUpdate} onPermitDelete={props.onPermitDelete} />
       ))}
     </div>
   );
@@ -556,7 +546,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">Card Layout</p>
-            <p className="text-xs text-gray-500 leading-relaxed">It works as a dashboard for important information</p>
+            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row</p>
           </div>
         </button>
 
@@ -570,7 +560,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">List Form</p>
-            <p className="text-xs text-gray-500 leading-relaxed">It&apos;s filled with more information</p>
+            <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields</p>
           </div>
         </button>
       </div>
@@ -582,7 +572,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
 export function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, isGuest } = useAuth();
+  const { user } = useAuth();
 
   const [project, setProject] = useState<Project | null>(null);
   const [notes, setNotes] = useState<ProjectNote[]>([]);
@@ -619,7 +609,7 @@ export function ProjectDetailScreen() {
   }, [id]);
 
   async function handleSaveProject(data: Partial<Project>) {
-    if (isGuest || !project) return;
+    if (!project) return;
     const { error } = await supabase.from("projects").update(data).eq("id", project.id);
     if (!error) {
       setEditOpen(false);
@@ -629,7 +619,7 @@ export function ProjectDetailScreen() {
   }
 
   async function handleDeleteProject() {
-    if (isGuest || !project) return;
+    if (!project) return;
     if (!confirm(`Delete project "${project.project_name || project.sn}"? This cannot be undone.`)) return;
     await supabase.from("project_notes").delete().eq("project_id", project.id);
     await supabase.from("stage_attachments").delete().eq("project_id", project.id);
@@ -638,7 +628,7 @@ export function ProjectDetailScreen() {
   }
 
   async function updateStageField(stage: string, key: string, value: string | number) {
-    if (isGuest || !project) return;
+    if (!project) return;
     const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
     const linked: Record<string, string | number> = { [key]: value };
     if (key === "pacCrqStatus") linked.pacStatus = value;
@@ -684,7 +674,7 @@ export function ProjectDetailScreen() {
   }
 
   async function saveStage(stage: string) {
-    if (isGuest || !project) return;
+    if (!project) return;
     const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
     const { error } = await supabase.from("projects").update({ [stage]: stageData }).eq("id", project.id);
     if (!error) showToast("Saved");
@@ -692,7 +682,7 @@ export function ProjectDetailScreen() {
   }
 
   async function addNote() {
-    if (isGuest || !project || !noteBody.trim()) return;
+    if (!project || !noteBody.trim()) return;
     const { data, error } = await supabase
       .from("project_notes")
       .insert({ project_id: project.id, author_id: user?.id, body: noteBody, category: noteCategory })
@@ -706,13 +696,12 @@ export function ProjectDetailScreen() {
   }
 
   async function deleteNote(noteId: string) {
-    if (isGuest) return;
     const { error } = await supabase.from("project_notes").delete().eq("id", noteId);
     if (!error) setNotes((prev) => prev.filter((n) => n.id !== noteId));
   }
 
   async function handleUpload(stage: string, file: File, fieldKey = "_stage") {
-    if (isGuest || !project) return;
+    if (!project) return;
     setUploading(`${stage}.${fieldKey}`);
     const filePath = `${project.id}/${stage}/${fieldKey}/${Date.now()}_${file.name}`;
     const { error: upErr } = await supabase.storage.from("stage-attachments").upload(filePath, file);
@@ -730,7 +719,6 @@ export function ProjectDetailScreen() {
   }
 
   async function deleteAttachment(att: StageAttachment) {
-    if (isGuest) return;
     await supabase.storage.from("stage-attachments").remove([att.file_path]);
     const { error } = await supabase.from("stage_attachments").delete().eq("id", att.id);
     if (!error) setAttachments((prev) => prev.filter((a) => a.id !== att.id));
@@ -742,7 +730,7 @@ export function ProjectDetailScreen() {
   }
 
   async function addPermit() {
-    if (isGuest || !project) return;
+    if (!project) return;
     const nextSn = permits.length > 0 ? Math.max(...permits.map((p) => p.sn)) + 1 : 1;
     const { data, error } = await supabase
       .from("project_permits")
@@ -753,13 +741,11 @@ export function ProjectDetailScreen() {
   }
 
   async function updatePermit(permitId: string, patch: Partial<PermitRow>) {
-    if (isGuest) return;
     setPermits((prev) => prev.map((p) => (p.id === permitId ? { ...p, ...patch } : p)));
     await supabase.from("project_permits").update(patch).eq("id", permitId);
   }
 
   async function deletePermit(permitId: string) {
-    if (isGuest) return;
     const { error } = await supabase.from("project_permits").delete().eq("id", permitId);
     if (!error) setPermits((prev) => prev.filter((p) => p.id !== permitId));
   }
@@ -790,7 +776,6 @@ export function ProjectDetailScreen() {
     onPermitAdd: addPermit,
     onPermitUpdate: updatePermit,
     onPermitDelete: deletePermit,
-    readOnly: isGuest,
   };
 
   return (
@@ -804,7 +789,7 @@ export function ProjectDetailScreen() {
           <ArrowLeft size={16} /> {viewMode ? "Change View" : "Back"}
         </button>
         <div className="flex items-center gap-2">
-          {viewMode && !isGuest && (
+          {viewMode && (
             <div className="flex items-center rounded-lg border border-ink-700 bg-ink-800 p-0.5 gap-0.5">
               <button
                 onClick={() => setViewMode("card")}
@@ -820,14 +805,12 @@ export function ProjectDetailScreen() {
               </button>
             </div>
           )}
-          {!isGuest && <>
-            <Button variant="secondary" onClick={() => setEditOpen(true)}>
-              <Pencil size={14} className="mr-1.5" /> Edit
-            </Button>
-            <Button variant="danger" onClick={handleDeleteProject}>
-              <Trash2 size={14} className="mr-1.5" /> Delete
-            </Button>
-          </>}
+          <Button variant="secondary" onClick={() => setEditOpen(true)}>
+            <Pencil size={14} className="mr-1.5" /> Edit
+          </Button>
+          <Button variant="danger" onClick={handleDeleteProject}>
+            <Trash2 size={14} className="mr-1.5" /> Delete
+          </Button>
         </div>
       </div>
 
@@ -884,7 +867,7 @@ export function ProjectDetailScreen() {
       )}
 
       {/* Notes */}
-      {viewMode && !isGuest && (
+      {viewMode && (
         <div className="mt-6 rounded-2xl border border-ink-700 bg-ink-800 px-5 py-5">
           <div className="flex items-center gap-2 mb-4">
             <MessageSquare size={16} className="text-gold" />
