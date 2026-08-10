@@ -338,7 +338,6 @@ export const MILESTONES: Milestone[] = [
       { key: "facAmount", label: "FAC Amount", type: "number" },
       { key: "facCrqErqNo", label: "FAC CRQ/REQ No.", type: "text" },
       { key: "facReqNo", label: "FAC REQ No.", type: "text" },
-      { key: "clearancePermit", label: "Clearanced Status", type: "clearance" },
       { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
     ],
   },
