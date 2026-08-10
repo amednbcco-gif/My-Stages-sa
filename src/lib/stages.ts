@@ -181,8 +181,24 @@ export const MILESTONES: Milestone[] = [
       { key: "sendDocsDate", label: "Docs Submitted Date", type: "date" },
       { key: "dboqAmount", label: "DBOQ Amount", type: "number" },
       { key: "planNo", label: "Plan No.", type: "text" },
-      { key: "designStatus", label: "Design Status", type: "status" },
-      { key: "dboqStatus", label: "DBOQ Status", type: "status" },
+    ],
+  },
+  {
+    id: "design",
+    title: "Design",
+    stage: "stage1",
+    statusType: "status",
+    statusField: { key: "designStatus", label: "Design Status", type: "status" },
+    fields: [],
+  },
+  {
+    id: "dboq",
+    title: "DBOQ",
+    stage: "stage1",
+    statusType: "status",
+    statusField: { key: "dboqStatus", label: "DBOQ Status", type: "status" },
+    fields: [
+      { key: "dboqAmount", label: "DBOQ Amount", type: "number" },
     ],
   },
   {
@@ -190,21 +206,29 @@ export const MILESTONES: Milestone[] = [
     title: "PO & ABOQ",
     stage: "stage2",
     statusType: "status",
-    statusField: { key: "poReceiveStatus", label: "PO Status", type: "status" },
+    statusField: { key: "poReceiveStatus", label: "PO & ABOQ Status", type: "status" },
     fields: [
       { key: "baselineStartDate", label: "Baseline Start", type: "date" },
       { key: "baselineEndDate", label: "Baseline End", type: "date" },
       { key: "poIssuanceDate", label: "PO Issuance Date", type: "date" },
       { key: "poAmount", label: "PO Amount", type: "number" },
+    ],
+  },
+  {
+    id: "aboq",
+    title: "ABOQ",
+    stage: "stage2",
+    statusType: "status",
+    statusField: { key: "aboqStatus", label: "ABOQ Status", type: "status" },
+    fields: [
       { key: "aboqAmount", label: "ABOQ Amount", type: "number" },
-      { key: "aboqStatus", label: "ABOQ Status", type: "status" },
       { key: "aboqSubmittedDate", label: "ABOQ Submitted Date", type: "date" },
       { key: "aboqApprovedDate", label: "ABOQ Approved Date", type: "date" },
     ],
   },
   {
     id: "permit",
-    title: "Permit",
+    title: "The Permits",
     stage: "stage3",
     statusType: "permit",
     statusField: { key: "permitsStatus", label: "Permit Status", type: "permit" },
@@ -212,12 +236,10 @@ export const MILESTONES: Milestone[] = [
       { key: "permitSubmittedDate", label: "Submitted Date", type: "date" },
       { key: "permitIssuedDate", label: "Issued Date", type: "date" },
       { key: "permitClosedDate", label: "Closed Date", type: "date" },
-      { key: "permitClearancedDate", label: "Clearanced Date", type: "date" },
-      { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
     ],
   },
   {
-    id: "civil",
+    id: "execution",
     title: "Execution",
     stage: "stage3",
     statusType: "done",
@@ -230,11 +252,33 @@ export const MILESTONES: Milestone[] = [
       { key: "mhHh", label: "MH/HH", type: "number" },
       { key: "odbOdf", label: "ODB/ODF", type: "number" },
       { key: "closures", label: "Closures", type: "number" },
-      { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
-      { key: "fiberSplicingStatus", label: "Fiber Status", type: "done" },
-      { key: "patchingStatus", label: "Splicing Status", type: "done" },
-      { key: "patchingDoneStatus", label: "Patching Status", type: "done" },
     ],
+  },
+  {
+    id: "fiber",
+    title: "Fiber",
+    stage: "stage3",
+    statusType: "done",
+    statusField: { key: "fiberSplicingStatus", label: "Fiber Status", type: "done" },
+    fields: [
+      { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
+    ],
+  },
+  {
+    id: "splicing",
+    title: "Splicing",
+    stage: "stage3",
+    statusType: "done",
+    statusField: { key: "patchingStatus", label: "Splicing Status", type: "done" },
+    fields: [],
+  },
+  {
+    id: "patching",
+    title: "Patching",
+    stage: "stage3",
+    statusType: "done",
+    statusField: { key: "patchingDoneStatus", label: "Patching Status", type: "done" },
+    fields: [],
   },
   {
     id: "pat",
@@ -247,19 +291,6 @@ export const MILESTONES: Milestone[] = [
       { key: "patReqNo", label: "PAT Req No.", type: "text" },
       { key: "patStartDate", label: "PAT Start Date", type: "date" },
       { key: "patStage", label: "PAT Stages", type: "team" },
-    ],
-  },
-  {
-    id: "repat",
-    title: "Re-PAT",
-    stage: "stage4",
-    statusType: "repat-status",
-    statusField: { key: "repatStatus", label: "Re-PAT Status", type: "repat-status" },
-    fields: [
-      { key: "repatSubmittedFilesDate", label: "Re-PAT Submitted Files Date", type: "date" },
-      { key: "repatReqNo", label: "Re-PAT REQ No", type: "text" },
-      { key: "repatStage", label: "Re-PAT Stages", type: "team" },
-      { key: "repatDate", label: "Re-PAT Date", type: "date" },
     ],
   },
   {
@@ -287,15 +318,22 @@ export const MILESTONES: Milestone[] = [
   },
   {
     id: "pcr",
-    title: "PCR & SDN",
+    title: "PCR (Purchase Change Request)",
     stage: "stage5",
     statusType: "status",
-    statusField: { key: "pcrStatus", label: "PCR & SDN Status", type: "status" },
+    statusField: { key: "pcrStatus", label: "PCR Status", type: "status" },
     fields: [
       { key: "pcrDate", label: "PCR Date", type: "date" },
       { key: "pcrRef", label: "PCR Ref", type: "text" },
-      { key: "pcrStatus", label: "PCR Status", type: "status" },
-      { key: "sdnStatus", label: "SDN Status", type: "status" },
+    ],
+  },
+  {
+    id: "sdn",
+    title: "SDN",
+    stage: "stage5",
+    statusType: "status",
+    statusField: { key: "sdnStatus", label: "SDN Status", type: "status" },
+    fields: [
       { key: "sdnDate", label: "SDN Date", type: "date" },
       { key: "sdnRef", label: "SDN Reference", type: "text" },
     ],
@@ -313,11 +351,24 @@ export const MILESTONES: Milestone[] = [
     ],
   },
   {
+    id: "repat",
+    title: "Re-PAT",
+    stage: "stage4",
+    statusType: "repat-status",
+    statusField: { key: "repatStatus", label: "Re-PAT Status", type: "repat-status" },
+    fields: [
+      { key: "repatSubmittedFilesDate", label: "Re-PAT Submitted Files Date", type: "date" },
+      { key: "repatReqNo", label: "Re-PAT REQ No", type: "text" },
+      { key: "repatStage", label: "Re-PAT Stages", type: "team" },
+      { key: "repatDate", label: "Re-PAT Date", type: "date" },
+    ],
+  },
+  {
     id: "pac",
     title: "PAC",
     stage: "stage5",
     statusType: "patsub",
-    statusField: { key: "pacCrqStatus", label: "PAC CRQ Status", type: "patsub" },
+    statusField: { key: "pacCrqStatus", label: "PAC Status", type: "patsub" },
     fields: [
       { key: "pacDate", label: "PAC Due Date", type: "date" },
       { key: "pacSubmitFilesDate", label: "PAC Submit Files Date", type: "date" },
@@ -331,15 +382,23 @@ export const MILESTONES: Milestone[] = [
     title: "FAC",
     stage: "stage6",
     statusType: "patsub",
-    statusField: { key: "facCrqStatus", label: "FAC CRQ Status", type: "patsub" },
+    statusField: { key: "facCrqStatus", label: "FAC Status", type: "patsub" },
     fields: [
       { key: "facDate", label: "FAC Due Date", type: "date" },
       { key: "facSubmitFilesDate", label: "FAC Submit Files Date", type: "date" },
       { key: "facAmount", label: "FAC Amount", type: "number" },
       { key: "facCrqErqNo", label: "FAC CRQ/REQ No.", type: "text" },
       { key: "facReqNo", label: "FAC REQ No.", type: "text" },
-      { key: "clearancePermit", label: "Clearanced Status", type: "clearance" },
-      { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
+    ],
+  },
+  {
+    id: "final-clearance",
+    title: "Final Clearance",
+    stage: "stage6",
+    statusType: "clearance",
+    statusField: { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
+    fields: [
+      { key: "permitClearancedDate", label: "Clearance Date", type: "date" },
     ],
   },
 ];
@@ -366,24 +425,22 @@ export function stageShortLabel(stage: string): string {
 
 export function computeProgress(project: Record<string, unknown> | object): number {
   const proj = project as Record<string, Record<string, unknown>>;
-  const statusKeys: { stage: keyof typeof STAGE_FIELDS; keys: string[] }[] = STAGE_ORDER.map((s) => ({
-    stage: s,
-    keys: STAGE_FIELDS[s].filter((f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho").map((f) => f.key),
-  }));
-
-  let total = 0;
   let approved = 0;
-
-  for (const { stage, keys } of statusKeys) {
-    const data = proj[stage] as Record<string, unknown>;
-    for (const key of keys) {
-      total++;
-      if (data[key] === "approved" || data[key] === "closed") approved++;
-    }
+  let submitted = 0;
+  for (const m of MILESTONES) {
+    const val = proj[m.stage]?.[m.statusField.key];
+    if (val === "approved" || val === "closed" || val === "clearanced" || val === "rectified") approved++;
+    else if (val === "submitted" || val === "inprogress") submitted++;
   }
+  return Math.round((100 * (approved + submitted * 0.5)) / MILESTONES.length);
+}
 
-  if (total === 0) return 0;
-  return Math.round((approved / total) * 100);
+export function milestonePercentage(project: Record<string, unknown> | object, milestone: Milestone): number {
+  const val = (project as Record<string, Record<string, unknown>>)[milestone.stage]?.[milestone.statusField.key];
+  if (val === "approved" || val === "closed" || val === "clearanced" || val === "rectified") return 100;
+  if (val === "submitted") return 50;
+  if (val === "inprogress") return 25;
+  return 0;
 }
 
 export function currentStage(project: Record<string, unknown> | object): string {
