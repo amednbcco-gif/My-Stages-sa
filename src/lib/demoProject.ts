@@ -8,7 +8,7 @@ export const ABBREVIATIONS: Record<string, string> = {
   "SDN": "Service Delivery Note",
   "FAC": "Final Acceptance Certificate",
   "GIS": "Geographic Information System",
-  "PCR": "Purchase Change Request",
+  "PCR": "PURCHASE CHANGE REQUEST",
 };
 
 export function getAbbreviation(label: string): string | null {

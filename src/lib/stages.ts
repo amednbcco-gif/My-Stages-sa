@@ -204,7 +204,7 @@ export const MILESTONES: Milestone[] = [
   },
   {
     id: "permit",
-    title: "Permit",
+    title: "The Permits",
     stage: "stage3",
     statusType: "permit",
     statusField: { key: "permitsStatus", label: "Permit Status", type: "permit" },
