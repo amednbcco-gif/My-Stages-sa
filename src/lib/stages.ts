@@ -287,7 +287,7 @@ export const MILESTONES: Milestone[] = [
   },
   {
     id: "pcr",
-    title: "PURCHASE CHANGE REQUEST & Service Delivery Note",
+    title: "PCR & SDN",
     stage: "stage5",
     statusType: "status",
     statusField: { key: "pcrStatus", label: "PCR & SDN Status", type: "status" },
