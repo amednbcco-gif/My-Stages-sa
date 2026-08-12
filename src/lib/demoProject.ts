@@ -5,10 +5,10 @@ export const ABBREVIATIONS: Record<string, string> = {
   "PAT": "Preliminary Acceptance Test",
   "RFS": "Ready for Service",
   "PAC": "Provisional Acceptance Certificate",
-  "SDN": "Service Delivery Note",
+  "PCR & SDN": "PURCHASE CHANGE REQUEST & Service Delivery Note",
   "FAC": "Final Acceptance Certificate",
   "GIS": "Geographic Information System",
-  "PCR": "PURCHASE CHANGE REQUEST",
+  "CRQ HO": "Change Request Hand Over",
 };
 
 export function getAbbreviation(label: string): string | null {

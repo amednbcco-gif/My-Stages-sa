@@ -7,9 +7,9 @@ export interface StageField {
 }
 
 export const STAGE_LABELS: Record<string, string> = {
-  stage1: "Stage 1 — Survey & Design",
+  stage1: "Stage 1 — Survey & Design المسح والتصميم",
   stage2: "Stage 2 — PO & ABOQ",
-  stage3: "Stage 3 — The Execution",
+  stage3: "Stage 3 — The Execution التنفيذ",
   stage4: "Stage 4 — PAT & CRQ",
   stage5: "Stage 5 — RFS & Billing",
   stage6: "Stage 6 — FAC & Clearance",
@@ -172,7 +172,7 @@ export interface Milestone {
 export const MILESTONES: Milestone[] = [
   {
     id: "survey",
-    title: "Survey & Design",
+    title: "Survey & Design المسح والتصميم",
     stage: "stage1",
     statusType: "status",
     statusField: { key: "surveyStatus", label: "Survey & Design Status", type: "status" },
@@ -204,7 +204,7 @@ export const MILESTONES: Milestone[] = [
   },
   {
     id: "permit",
-    title: "The Permits",
+    title: "The Permits التصاريح",
     stage: "stage3",
     statusType: "permit",
     statusField: { key: "permitsStatus", label: "Permit Status", type: "permit" },
@@ -218,7 +218,7 @@ export const MILESTONES: Milestone[] = [
   },
   {
     id: "civil",
-    title: "The Execution",
+    title: "The Execution التنفيذ",
     stage: "stage3",
     statusType: "done",
     statusField: { key: "civilStatus", label: "Execution Status", type: "done" },
