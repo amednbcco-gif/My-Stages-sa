@@ -9,7 +9,7 @@ export interface StageField {
 export const STAGE_LABELS: Record<string, string> = {
   stage1: "Stage 1 — Survey & Design",
   stage2: "Stage 2 — PO & ABOQ",
-  stage3: "Stage 3 — Execution",
+  stage3: "Stage 3 — The Execution",
   stage4: "Stage 4 — PAT & CRQ",
   stage5: "Stage 5 — RFS & Billing",
   stage6: "Stage 6 — FAC & Clearance",
@@ -218,7 +218,7 @@ export const MILESTONES: Milestone[] = [
   },
   {
     id: "civil",
-    title: "Execution",
+    title: "The Execution",
     stage: "stage3",
     statusType: "done",
     statusField: { key: "civilStatus", label: "Execution Status", type: "done" },
