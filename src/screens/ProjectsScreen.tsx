@@ -371,10 +371,7 @@ export function ProjectsScreen() {
 
                     {/* Permit Status */}
                     <td className="px-3 py-3"><StatusPill type="permit" value={permitStatus} /></td>
-
-                    {/* Execution Status */}
-                    <td className="px-3 py-3"><StatusPill type="execution-status" value={executionStatus} /></td>
-                    
+                  
                     {/* PAT Status */}
                     <td className="px-3 py-3"><StatusPill type="pat-status" value={patStatus} /></td>
 
