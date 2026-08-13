@@ -546,7 +546,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">Card Layout</p>
-            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row</p>
+            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row, it works as a dashboard for important information, Collected and distributedd in stages</p>
           </div>
         </button>
 
@@ -560,7 +560,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">List Form</p>
-            <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields</p>
+            <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields, also it's filled with more information, To act as the premimary interface</p>
           </div>
         </button>
       </div>
