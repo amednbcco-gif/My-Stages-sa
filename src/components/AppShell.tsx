@@ -39,7 +39,7 @@ function StagesLogo({ size = 32 }: { size?: number }) {
 }
 
 const centerNav = [
-  { to: "/projects", label: "Projects", icon: FolderKanban },
+  { to: "/theprojects", label: "The Projects", icon: FolderKanban },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/team", label: "Team", icon: Users },
 ];
