@@ -32,7 +32,7 @@ export function TeamScreen() {
   const [canEdit, setCanEdit] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Assign project access (inline per member)
+  // Assign milestones access (inline per member)
   const [assignMemberId, setAssignMemberId] = useState<string | null>(null);
   const [assignProjectId, setAssignProjectId] = useState("");
   const [accessScope, setAccessScope] = useState<AccessScope>("full_project");
