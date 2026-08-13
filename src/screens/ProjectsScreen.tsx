@@ -72,7 +72,7 @@ const COLS = [
   { label: "DBOQ Amount" },
   { label: "ABOQ Amount" },
   { label: "Permit Status" },
-  { label: "ُThe Execution التنفيذ Status" },
+  { label: "The Execution Status" },
   { label: "PAT Status" },
   { label: "CRQ HO Status" },
   { label: "GIS Status" },
