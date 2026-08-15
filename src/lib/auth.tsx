@@ -1,117 +1,53 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import type { Session, User } from "@supabase/supabase-js";
-import { supabase } from "./supabase";
-import type { Profile } from "./types";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "./lib/auth";
+import { AuthScreen } from "./screens/AuthScreen";
+import { AppShell } from "./components/AppShell";
+import { DashboardScreen } from "./screens/DashboardScreen";
+import { ProjectsScreen } from "./screens/ProjectsScreen";
+import { ProjectDetailScreen } from "./screens/ProjectDetailScreen";
+import { TeamScreen } from "./screens/TeamScreen";
+import { ProfileScreen } from "./screens/ProfileScreen";
+import { ResetPasswordScreen } from "./screens/ResetPasswordScreen";
+import { Spinner } from "./components/ui";
 
-interface AuthContextValue {
-  session: Session | null;
-  user: User | null;
-  profile: Profile | null;
-  loading: boolean;
-  isGuest: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string, fullName: string, role: string) => Promise<{ error: string | null }>;
-  signInGuest: () => void;
-  signOut: () => Promise<void>;
-  refreshProfile: () => Promise<void>;
-}
+function ProtectedRoutes() {
+  const { user, loading } = useAuth();
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isGuest, setIsGuest] = useState(false);
-
-  async function loadProfile(uid: string) {
-    const { data } = await supabase
-      .from("profiles")
-      .select("id, full_name, phone, role, created_at")
-      .eq("id", uid)
-      .maybeSingle();
-    setProfile(data as Profile | null);
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-ink-900">
+        <Spinner size={40} />
+      </div>
+    );
   }
 
-  useEffect(() => {
-    let mounted = true;
-
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (!mounted) return;
-      setSession(s);
-      setUser(s?.user ?? null);
-      if (s?.user) {
-        loadProfile(s.user.id).finally(() => mounted && setLoading(false));
-      } else {
-        setLoading(false);
-      }
-    });
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
-      (async () => {
-        setSession(s);
-        setUser(s?.user ?? null);
-        if (s?.user) {
-          setIsGuest(false);
-          await loadProfile(s.user.id);
-        } else {
-          setProfile(null);
-        }
-      })();
-    });
-
-    return () => {
-      mounted = false;
-      sub.subscription.unsubscribe();
-    };
-  }, []);
-
-  async function refreshProfile() {
-    if (user) await loadProfile(user.id);
-  }
-
-  function signInGuest() {
-    setIsGuest(true);
-    setLoading(false);
-  }
-
-  async function signIn(email: string, password: string) {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
-  }
-
-  async function signUp(email: string, password: string, fullName: string, role: string) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) return { error: error.message };
-    const uid = data.user?.id;
-    if (uid) {
-      await supabase.from("profiles").insert({
-        id: uid,
-        full_name: fullName,
-        role,
-      });
-    }
-    return { error: null };
-  }
-
-  async function signOut() {
-    await supabase.auth.signOut();
-    setProfile(null);
-    setIsGuest(false);
+  if (!user) {
+    return <AuthScreen />;
   }
 
   return (
-    <AuthContext.Provider
-      value={{ session, user, profile, loading, isGuest, signIn, signUp, signInGuest, signOut, refreshProfile }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AppShell>
+      <Routes>
+        <Route path="/dashboard" element={<DashboardScreen />} />
+        <Route path="/projects" element={<ProjectsScreen />} />
+        <Route path="/projects/:id" element={<ProjectDetailScreen />} />
+        <Route path="/team" element={<TeamScreen />} />
+        <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/reset-password" element={<ResetPasswordScreen />} />
+        <Route path="*" element={<Navigate to="/projects" replace />} />
+      </Routes>
+    </AppShell>
   );
 }
 
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  return ctx;
+export default function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/*" element={<ProtectedRoutes />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
