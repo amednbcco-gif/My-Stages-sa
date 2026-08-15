@@ -756,8 +756,7 @@ export function ProjectDetailScreen() {
 
    
 
-  if (!project) {
-    return <div className="text-center py-10 text-zinc-400">Project not found</div>;
+  
   }
 
   const progress = computeProgress(project);
