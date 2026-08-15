@@ -430,7 +430,7 @@ function MilestoneCard({
         <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} />
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
-          {milestone?.fields || [] ).map((field) => {
+          {(milestone?.fields || []).map((field) => {
             const value = stageData[field.key] ?? "";
             return (
               <div key={field.key} className="flex flex-col gap-1">
