@@ -576,7 +576,7 @@ export function ProjectDetailScreen() {
 
   const [project, setProject] = useState<Project | null>(null);
   const [notes, setNotes] = useState<ProjectNote[]>([]);
-  const [attachments, setAttachments] = useState<StageAttachment[]>([]);
+  // Synchronized State via Parent<StageAttachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
   const [noteBody, setNoteBody] = useState("");
