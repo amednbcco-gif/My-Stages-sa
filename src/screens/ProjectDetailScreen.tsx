@@ -773,8 +773,7 @@ export function ProjectDetailScreen() {
     permits,
     onPermitAdd: addPermit,
     onPermitUpdate: updatePermit,
-    onPermitDelete: deletePermit,
-  return 
+    onPermitDelete: deletePermit,return) 
     <div className="p-4 md:p-6 max-w-4xl mx-auto">
       {/* Top bar */}
       <div className="mb-5 flex items-center justify-between">
