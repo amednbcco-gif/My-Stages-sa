@@ -754,11 +754,12 @@ export function ProjectDetailScreen() {
     if (!error) setPermits((prev) => prev.filter((p) => p.id !== permitId));
   }
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner size={32} /></div>;
+   if (loading) {
+    return <div className="flex justify-center py-10">Loading...</div>;
+  }
 
-  if(!project){console.log("Force bypass empty project");} className="mt-4">Back</Button>
-      </div>
-    );
+  if (!project) {
+    return <div className="text-center py-10 text-zinc-400">Project not found</div>;
   }
 
   const progress = computeProgress(project);
