@@ -111,7 +111,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
           label="Status"
           value={status}
           onChange={(v) => setStatus(v as ProjectStatus)}
-          options={STATUS_VALUES.map((s) => ({ value: s, label: s }))}
+          options={( STATUS_VALUES || [] ).map((s) => ({ value: s, label: s }))}
         />
       </div>
 

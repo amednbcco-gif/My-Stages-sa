@@ -113,7 +113,7 @@ function FieldInput({ field, value, stage, onFieldChange }: FieldInputProps) {
         className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-xs text-white outline-none cursor-pointer appearance-none pr-5 focus:border-gold/50"
         style={{ backgroundImage: chevronBg, backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center" }}
       >
-        {TEAM_OPTIONS.map((o) => (
+        {( TEAM_OPTIONS || [] ).map((o) => (
           <option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>
         ))}
       </select>
@@ -217,7 +217,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
       </div>
 
       <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
-        {fields.map((field) => {
+        {( fields || [] ).map((field) => {
           const value = stageData[field.key] ?? "";
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
@@ -254,7 +254,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           <p className="text-xs text-gray-600">No files attached.</p>
         ) : (
           <div className="space-y-1">
-            {stageAtts.map((att) => (
+            {( stageAtts || [] ).map((att) => (
               <div key={att.id} className="flex items-center justify-between gap-2">
                 <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                   <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
@@ -318,7 +318,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
             {permits.length === 0 ? (
               <tr><td colSpan={8} className="py-4 text-center text-gray-600">No permits yet. Click + to add one.</td></tr>
             ) : (
-              permits.map((p) => (
+              ( permits || [] ).map((p) => (
                 <tr key={p.id} className="border-b border-ink-700/40 hover:bg-ink-800/40 transition-colors">
                   <td className="py-1.5 px-2">
                     <input type="number" className={inputCls + " w-12"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} />
@@ -340,7 +340,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
                   </td>
                   <td className="py-1.5 px-2">
                     <select value={p.permit_status} onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })} className={inputCls + " cursor-pointer"}>
-                      {PERMIT_OPTIONS.map((o) => (<option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>))}
+                      {( PERMIT_OPTIONS || [] ).map((o) => (<option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>))}
                     </select>
                   </td>
                   <td className="py-1.5 px-2 text-center">
@@ -430,7 +430,7 @@ function MilestoneCard({
         <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} />
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
-          {milestone.fields.map((field) => {
+          {milestone.( fields || [] ).map((field) => {
             const value = stageData[field.key] ?? "";
             return (
               <div key={field.key} className="flex flex-col gap-1">
@@ -497,7 +497,7 @@ function MilestoneCard({
             <p className="text-xs text-gray-600">No files attached.</p>
           ) : (
             <div className="space-y-1">
-              {msAtts.map((att) => (
+              {( msAtts || [] ).map((att) => (
                 <div key={att.id} className="flex items-center justify-between gap-2">
                   <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                     <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
@@ -518,7 +518,7 @@ function MilestoneCard({
 function MilestoneList(props: MilestoneListProps) {
   return (
     <div className="space-y-3">
-      {MILESTONES.map((m) => (
+      {( MILESTONES || [] ).map((m) => (
         <MilestoneCard key={m.id} milestone={m} {...props} permits={props.permits} onPermitAdd={props.onPermitAdd} onPermitUpdate={props.onPermitUpdate} onPermitDelete={props.onPermitDelete} />
       ))}
     </div>
@@ -735,7 +735,7 @@ export function ProjectDetailScreen() {
 
   async function addPermit() {
     if (!project) return;
-    const nextSn = permits.length > 0 ? Math.max(...permits.map((p) => p.sn)) + 1 : 1;
+    const nextSn = permits.length > 0 ? Math.max(...( permits || [] ).map((p) => p.sn)) + 1 : 1;
     const { data, error } = await supabase
       .from("project_permits")
       .insert({ project_id: project.id, sn: nextSn, permit_no: "", permit_status: "pending" })
@@ -745,7 +745,7 @@ export function ProjectDetailScreen() {
   }
 
   async function updatePermit(permitId: string, patch: Partial<PermitRow>) {
-    setPermits((prev) => prev.map((p) => (p.id === permitId ? { ...p, ...patch } : p)));
+    setPermits((prev) => ( prev || [] ).map((p) => (p.id === permitId ? { ...p, ...patch } : p)));
     await supabase.from("project_permits").update(patch).eq("id", permitId);
   }
 
@@ -862,7 +862,7 @@ export function ProjectDetailScreen() {
         />
       ) : viewMode === "card" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {STAGE_ORDER.map((stage) => (
+          {( STAGE_ORDER || [] ).map((stage) => (
             <StageCard key={stage} stage={stage} {...sharedProps} />
           ))}
         </div>
@@ -915,7 +915,7 @@ export function ProjectDetailScreen() {
             <p className="text-xs text-gray-600">No notes yet.</p>
           ) : (
             <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-              {notes.map((note) => (
+              {( notes || [] ).map((note) => (
                 <div key={note.id} className="flex items-start justify-between gap-3 rounded-xl border border-ink-700/50 bg-ink-900/40 px-4 py-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1">
