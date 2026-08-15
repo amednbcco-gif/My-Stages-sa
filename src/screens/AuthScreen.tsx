@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Lock, ArrowRight, Phone, User, HardHat, Briefcase } from "lucide-react";
+import { Mail, Lock, ArrowRight, Phone, User, HardHat, Briefcase, X } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { Spinner } from "../components/ui";
 
@@ -32,7 +32,7 @@ function StagesLogoIcon({ size = 52 }: { size?: number }) {
 }
 
 export function AuthScreen() {
-  const { signIn, signUp, signInGuest } = useAuth();
+  const { signIn, signUp, resetPassword } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,6 +41,12 @@ export function AuthScreen() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetSent, setResetSent] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -59,7 +65,32 @@ export function AuthScreen() {
   }
 
   function handleGuest() {
-    signInGuest();
+    setInfo("Guest access is not available in this version. Please sign in or create an account.");
+  }
+
+  function openForgotModal() {
+    setResetEmail(email);
+    setResetError(null);
+    setResetSent(false);
+    setShowForgotModal(true);
+  }
+
+  async function handleResetSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setResetError(null);
+    setResetBusy(true);
+    const { error } = await resetPassword(resetEmail);
+    setResetBusy(false);
+    if (error) {
+      setResetError(error);
+    } else {
+      setResetSent(true);
+      setTimeout(() => {
+        setShowForgotModal(false);
+        setResetSent(false);
+        setResetEmail("");
+      }, 3000);
+    }
   }
 
   return (
@@ -141,16 +172,30 @@ export function AuthScreen() {
             </div>
 
             {/* Password */}
-            <div className="flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 focus-within:border-gold/50 transition-colors">
-              <Lock size={17} className="shrink-0 text-gray-500" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                required
-                className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none"
-              />
+            <div>
+              {mode === "signin" && (
+                <div className="mb-1.5 flex items-center justify-between px-1">
+                  <span className="text-xs font-medium text-gray-400">Password</span>
+                  <button
+                    type="button"
+                    onClick={openForgotModal}
+                    className="text-xs font-semibold text-gold hover:underline"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              )}
+              <div className="flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 focus-within:border-gold/50 transition-colors">
+                <Lock size={17} className="shrink-0 text-gray-500" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  required
+                  className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none"
+                />
+              </div>
             </div>
 
             {/* Account type pill switcher — only on Sign Up */}
@@ -277,6 +322,61 @@ export function AuthScreen() {
           </span>
         </div>
       </footer>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-sm rounded-3xl border border-ink-700/60 bg-ink-800/90 p-7 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">Reset your password</h2>
+              <button
+                type="button"
+                onClick={() => setShowForgotModal(false)}
+                className="text-gray-500 hover:text-white transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {!resetSent ? (
+              <form onSubmit={handleResetSubmit} className="space-y-3">
+                <p className="text-xs text-gray-400">
+                  Enter your email address and we'll send you a link to reset your password.
+                </p>
+                <div className="flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 focus-within:border-gold/50 transition-colors">
+                  <Mail size={17} className="shrink-0 text-gray-500" />
+                  <input
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="Email address"
+                    required
+                    className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none"
+                  />
+                </div>
+
+                {resetError && (
+                  <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
+                    {resetError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={resetBusy}
+                  className="mt-1 flex w-full items-center justify-center gap-2 rounded-2xl bg-gold py-3.5 text-sm font-bold text-ink-900 shadow-md transition-all hover:brightness-110 disabled:opacity-60"
+                >
+                  {resetBusy ? <Spinner size={18} /> : "Send reset link"}
+                </button>
+              </form>
+            ) : (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-3 text-sm text-emerald-300">
+                Check your email — we've sent you a link to reset your password.
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
