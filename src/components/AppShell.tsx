@@ -133,7 +133,7 @@ export function AppShell({ children }: AppShellProps) {
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-extrabold leading-none tracking-[0.18em] text-white">STAGES</p>
-            <p className="text-[9px] tracking-wide text-gold leading-tight">Infrastructure Projects Tracker</p>
+            <p className="text-[9px] tracking-wide text-gold leading-tight">Infrastructure Project Tracker</p>
           </div>
         </div>
 

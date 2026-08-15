@@ -4,7 +4,7 @@ import { AuthScreen } from "./screens/AuthScreen";
 import { AppShell } from "./components/AppShell";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { ProjectsScreen } from "./screens/ProjectsScreen";
-// Removed missing import
+import { ProjectDetailScreen } from "./screens/ProjectDetailScreen";
 import { TeamScreen } from "./screens/TeamScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { Spinner } from "./components/ui";
@@ -29,7 +29,7 @@ function ProtectedRoutes() {
       <Routes>
         <Route path="/dashboard" element={<DashboardScreen />} />
         <Route path="/projects" element={<ProjectsScreen />} />
-        <Route path="/projects/:id" element={<div className="p-8 text-center text-white">جاري إعادة بناء صفحة تفاصيل المشروع...</div>} />
+        <Route path="/projects/:id" element={<ProjectDetailScreen />} />
         <Route path="/team" element={<TeamScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="*" element={<Navigate to="/projects" replace />} />

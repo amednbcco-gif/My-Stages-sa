@@ -157,7 +157,7 @@ export function ProjectsScreen() {
   }
 
   async function exportCSV() {
-    const projectIds = [...filtered].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((p) => p.id);
+    const projectIds = filtered.map((p) => p.id);
     let notesMap: Record<string, string> = {};
     if (projectIds.length > 0) {
       const { data: notesData } = await supabase
@@ -193,7 +193,7 @@ export function ProjectsScreen() {
       "Notes",
     ];
 
-    const rows = [...filtered].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((p) => [
+    const rows = filtered.map((p) => [
       p.sn,
       p.project_name,
       // Stage 1 — Survey & Design
@@ -254,7 +254,7 @@ export function ProjectsScreen() {
     ]);
 
     const csv = [headers, ...rows]
-      .map((r) => [...r].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
+      .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
       .join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -323,7 +323,7 @@ export function ProjectsScreen() {
           <table className="w-full min-w-[1200px] text-sm border-collapse">
             <thead>
               <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-gray-500">
-                {[...COLS].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((c, i) => (
+                {COLS.map((c, i) => (
                   <th key={i} className={`px-3 py-3 font-semibold whitespace-nowrap ${i === COLS.length - 1 ? "text-right" : ""}`}>
                     {c.label}
                   </th>
@@ -331,7 +331,7 @@ export function ProjectsScreen() {
               </tr>
             </thead>
             <tbody>
-              {[...filtered].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((p) => {
+              {filtered.map((p) => {
                 const dboq = fmtNumber(getVal(p, "stage1", "dboqAmount"));
                 const aboq = fmtNumber(getVal(p, "stage2", "aboqAmount"));
                 const permitStatus = getVal(p, "stage3", "permitsStatus");
