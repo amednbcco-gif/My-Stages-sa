@@ -76,7 +76,7 @@ export function AuthScreen() {
         <div className="text-center">
           <h1 className="text-2xl font-extrabold tracking-[0.15em] text-white">STAGES</h1>
           <p className="mt-0.5 text-sm font-medium tracking-wide text-gold">
-            Infrastructure Projects Tracker
+            Infrastructure Project Tracker
           </p>
         </div>
       </div>
