@@ -754,9 +754,7 @@ export function ProjectDetailScreen() {
     if (!error) setPermits((prev) => prev.filter((p) => p.id !== permitId));
   }
 
-   if (loading) {
-    return <div className="flex justify-center py-10">Loading...</div>;
-  }
+   
 
   if (!project) {
     return <div className="text-center py-10 text-zinc-400">Project not found</div>;
