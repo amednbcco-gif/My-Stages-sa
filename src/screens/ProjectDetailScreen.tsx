@@ -756,11 +756,7 @@ export function ProjectDetailScreen() {
 
   if (loading) return <div className="flex justify-center py-20"><Spinner size={32} /></div>;
 
-  if (!project) {
-    return (
-      <div className="p-8 text-center">
-        <p className="text-gray-400">Project not found.</p>
-        <Button variant="secondary" onClick={() => navigate("/projects")} className="mt-4">Back</Button>
+  if(!project){console.log("Force bypass empty project");} className="mt-4">Back</Button>
       </div>
     );
   }
