@@ -609,7 +609,7 @@ export function ProjectDetailScreen() {
   }, [id]);
 
   async function handleSaveProject(data: Partial<Project>) {
-    if (!project) return;
+    
     const { error } = await supabase.from("projects").update(data).eq("id", project.id);
     if (!error) {
       setEditOpen(false);
@@ -619,7 +619,7 @@ export function ProjectDetailScreen() {
   }
 
   async function handleDeleteProject() {
-    if (!project) return;
+    
     if (!confirm(`Delete project "${project.project_name || project.sn}"? This cannot be undone.`)) return;
     await supabase.from("project_notes").delete().eq("project_id", project.id);
     await supabase.from("stage_attachments").delete().eq("project_id", project.id);
@@ -628,7 +628,7 @@ export function ProjectDetailScreen() {
   }
 
   async function updateStageField(stage: string, key: string, value: string | number) {
-    if (!project) return;
+    
     const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
     const linked: Record<string, string | number> = { [key]: value };
     if (key === "pacCrqStatus") linked.pacStatus = value;
@@ -678,7 +678,7 @@ export function ProjectDetailScreen() {
   }
 
   async function saveStage(stage: string) {
-    if (!project) return;
+    
     const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
     const { error } = await supabase.from("projects").update({ [stage]: stageData }).eq("id", project.id);
     if (!error) showToast("Saved");
@@ -705,7 +705,7 @@ export function ProjectDetailScreen() {
   }
 
   async function handleUpload(stage: string, file: File, fieldKey = "_stage") {
-    if (!project) return;
+    
     setUploading(`${stage}.${fieldKey}`);
     const filePath = `${project.id}/${stage}/${fieldKey}/${Date.now()}_${file.name}`;
     const { error: upErr } = await supabase.storage.from("stage-attachments").upload(filePath, file);
@@ -734,7 +734,7 @@ export function ProjectDetailScreen() {
   }
 
   async function addPermit() {
-    if (!project) return;
+    
     const nextSn = permits.length > 0 ? Math.max(...( permits || [] ).map((p) => p.sn)) + 1 : 1;
     const { data, error } = await supabase
       .from("project_permits")
