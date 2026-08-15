@@ -7,10 +7,11 @@ import { ProjectsScreen } from "./screens/ProjectsScreen";
 import { ProjectDetailScreen } from "./screens/ProjectDetailScreen";
 import { TeamScreen } from "./screens/TeamScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
+import { ResetPasswordScreen } from "./screens/ResetPasswordScreen";
 import { Spinner } from "./components/ui";
 
 function ProtectedRoutes() {
-  const { user, loading, isGuest } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -20,7 +21,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (!user && !isGuest) {
+  if (!user) {
     return <AuthScreen />;
   }
 
@@ -32,6 +33,7 @@ function ProtectedRoutes() {
         <Route path="/projects/:id" element={<ProjectDetailScreen />} />
         <Route path="/team" element={<TeamScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/reset-password" element={<ResetPasswordScreen />} />
         <Route path="*" element={<Navigate to="/projects" replace />} />
       </Routes>
     </AppShell>
