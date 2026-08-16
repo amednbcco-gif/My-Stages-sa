@@ -273,11 +273,7 @@ export function AppShell({ children }: AppShellProps) {
                 className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-300 hover:bg-ink-700 hover:text-white"
               >
                 <FileSpreadsheet size={17} />
-                Export CSV
-              </button>
-              <button
-                onClick={handleSignOut}
-                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-rose-300 hover:bg-rose-500/10"
+              
               >
                 <LogOut size={17} />
                 Sign Out
