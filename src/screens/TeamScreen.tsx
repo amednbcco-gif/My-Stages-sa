@@ -4,20 +4,19 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Button, Input, Spinner } from "../components/ui";
 import { Modal } from "../components/Modal";
-import { STAGE_LABELS, STAGE_ORDER, STAGE_FIELDS } from "../lib/stages";
+import { MILESTONES } from "../lib/stages";
 import type { TeamMember, ProjectPermission, Project } from "../lib/types";
 
-type AccessScope = "full_project" | "whole_stage" | "specific_field";
-
-interface PermissionRow extends ProjectPermission {
-  project?: Project;
+function milestoneLabel(title: string): string {
+  const englishOnly = title.replace(/[\u0600-\u06FF].*$/, "").trim();
+  return `${englishOnly} Status`;
 }
 
 export function TeamScreen() {
   const { user } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [permissions, setPermissions] = useState<PermissionRow[]>([]);
+  const [milestonePerms, setMilestonePerms] = useState<ProjectPermission[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -28,17 +27,12 @@ export function TeamScreen() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [canAdd, setCanAdd] = useState(false);
-  const [canView, setCanView] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Assign project access (inline per member)
+  // Assign milestones access (inline per member)
   const [assignMemberId, setAssignMemberId] = useState<string | null>(null);
-  const [assignProjectId, setAssignProjectId] = useState("");
-  const [accessScope, setAccessScope] = useState<AccessScope>("full_project");
-  const [assignStage, setAssignStage] = useState("");
-  const [assignField, setAssignField] = useState("");
-  const [assignCanEdit, setAssignCanEdit] = useState(true);
+  const [assignMilestoneIds, setAssignMilestoneIds] = useState<string[]>([]);
   const [assignSaving, setAssignSaving] = useState(false);
 
   async function load() {
@@ -50,7 +44,7 @@ export function TeamScreen() {
     ]);
     setMembers((membersRes.data as TeamMember[]) ?? []);
     setProjects((projectsRes.data as Project[]) ?? []);
-    setPermissions((permsRes.data as PermissionRow[]) ?? []);
+    setMilestonePerms((permsRes.data as ProjectPermission[]) ?? []);
     setLoading(false);
   }
 
@@ -69,7 +63,6 @@ export function TeamScreen() {
     setFullName("");
     setPhone("");
     setCanAdd(false);
-    setCanView(false);
     setCanEdit(false);
   }
 
@@ -82,7 +75,7 @@ export function TeamScreen() {
       full_name: fullName,
       phone,
       can_add_projects: canAdd,
-      can_view_all: canView,
+      can_view_all: true,
       can_edit_all: canEdit,
     });
     setSaving(false);
@@ -104,67 +97,66 @@ export function TeamScreen() {
   }
 
   function openAssign(memberId: string) {
-    // Expand the row and open the assign panel
+    // Expand the row and open the assign panel, preloading this member's current milestones
     setExpanded(memberId);
     setAssignMemberId(memberId);
-    setAssignProjectId(projects[0]?.id ?? "");
-    setAccessScope("full_project");
-    setAssignStage("");
-    setAssignField("");
-    setAssignCanEdit(true);
+    setAssignMilestoneIds(memberMilestonePerms(memberId).map((p) => p.field));
   }
 
   function cancelAssign() {
     setAssignMemberId(null);
   }
 
-  async function handleAssign() {
-    if (!assignMemberId || !assignProjectId) return;
-    setAssignSaving(true);
-
-    const scope =
-      accessScope === "full_project" ? "project" :
-      accessScope === "whole_stage" ? "stage" : "field";
-
-    const { error } = await supabase.from("project_permissions").insert({
-      owner_id: user?.id,
-      team_member_id: assignMemberId,
-      project_id: assignProjectId,
-      scope,
-      stage: accessScope !== "full_project" ? assignStage : null,
-      field: accessScope === "specific_field" ? assignField : null,
-      can_edit: assignCanEdit,
-    });
-    setAssignSaving(false);
-    if (!error) {
-      setToast("Project access assigned.");
-      setAssignMemberId(null);
-      load();
-    }
+  function toggleMilestone(id: string) {
+    setAssignMilestoneIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
   }
 
-  async function handleDeletePerm(permId: string) {
-    await supabase.from("project_permissions").delete().eq("id", permId);
-    setToast("Permission removed.");
+  async function handleAssignMilestones() {
+    if (!assignMemberId) return;
+    setAssignSaving(true);
+
+    // Clear this member's previous milestone-based (field-scope) permissions across all projects
+    await supabase
+      .from("project_permissions")
+      .delete()
+      .eq("team_member_id", assignMemberId)
+      .eq("scope", "field");
+
+    if (assignMilestoneIds.length > 0 && projects.length > 0) {
+      const rows = projects.flatMap((proj) =>
+        assignMilestoneIds.map((milestoneId) => {
+          const ms = MILESTONES.find((m) => m.id === milestoneId);
+          return {
+            owner_id: user?.id,
+            team_member_id: assignMemberId,
+            project_id: proj.id,
+            scope: "field",
+            stage: ms?.stage ?? "",
+            field: milestoneId,
+            can_edit: true,
+          };
+        })
+      );
+      await supabase.from("project_permissions").insert(rows);
+    }
+
+    setAssignSaving(false);
+    setToast("Milestone access updated across all your current projects.");
+    setAssignMemberId(null);
     load();
   }
 
-  function memberPerms(memberId: string) {
-    return permissions.filter((p) => p.team_member_id === memberId);
+  function memberMilestonePerms(memberId: string) {
+    const rows = milestonePerms.filter((p) => p.team_member_id === memberId && p.scope === "field");
+    const seen = new Set<string>();
+    return rows.filter((p) => {
+      if (seen.has(p.field)) return false;
+      seen.add(p.field);
+      return true;
+    });
   }
-
-  function permLabel(p: ProjectPermission) {
-    const proj = projects.find((x) => x.id === p.project_id);
-    const projName = proj ? `${proj.sn || proj.project_name}` : "Unknown project";
-    if (p.scope === "project") return `${projName} — Full project`;
-    if (p.scope === "stage") return `${projName} — ${STAGE_LABELS[p.stage] ?? p.stage}`;
-    const fieldLabel = STAGE_FIELDS[p.stage]?.find((f) => f.key === p.field)?.label ?? p.field;
-    return `${projName} — ${STAGE_LABELS[p.stage] ?? p.stage} › ${fieldLabel}`;
-  }
-
-  const stageFieldOptions = assignStage ? (STAGE_FIELDS[assignStage] ?? []) : [];
-
-  const canViewCount = members.filter((m) => m.can_view_all).length;
   const canEditCount = members.filter((m) => m.can_edit_all).length;
   const canAddCount  = members.filter((m) => m.can_add_projects).length;
 
@@ -213,7 +205,7 @@ export function TeamScreen() {
         <div className="space-y-3">
           {members.map((m) => {
             const isOpen = expanded === m.id;
-            const perms = memberPerms(m.id);
+            const perms = memberMilestonePerms(m.id);
             const isAssigning = assignMemberId === m.id;
             const isPending = !m.user_id;
 
@@ -258,7 +250,7 @@ export function TeamScreen() {
                       </span>
                     </div>
 
-                    <p className="mt-2 text-xs text-gray-500">{perms.length} project-specific permission{perms.length !== 1 ? "s" : ""}</p>
+                    <p className="mt-2 text-xs text-gray-500">{perms.length} milestone edit permission{perms.length !== 1 ? "s" : ""}</p>
                   </div>
 
                   {/* Delete */}
@@ -273,126 +265,51 @@ export function TeamScreen() {
                 {/* Expanded body */}
                 {isOpen && (
                   <div className="border-t border-ink-700 px-4 pb-4 pt-3 space-y-4">
-                    {/* Existing permissions list */}
+                    {/* Existing milestone permissions list */}
                     {perms.length > 0 && (
-                      <div className="space-y-1.5">
-                        {perms.map((p) => (
-                          <div key={p.id} className="flex items-center justify-between rounded-lg bg-ink-700/50 px-3 py-2">
-                            <div>
-                              <p className="text-xs text-gray-200">{permLabel(p)}</p>
-                              <p className="text-[11px] text-gray-500 mt-0.5">{p.can_edit ? "Can edit" : "View only"}</p>
-                            </div>
-                            <button
-                              onClick={() => handleDeletePerm(p.id)}
-                              className="rounded p-1 text-gray-500 hover:text-rose-300 transition-colors"
+                      <div className="flex flex-wrap gap-1.5">
+                        {perms.map((p) => {
+                          const ms = MILESTONES.find((x) => x.id === p.field);
+                          return (
+                            <span
+                              key={p.id}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs text-gold"
                             >
-                              <Trash2 size={13} />
-                            </button>
-                          </div>
-                        ))}
+                              {ms ? milestoneLabel(ms.title) : p.field}
+                            </span>
+                          );
+                        })}
                       </div>
                     )}
 
-                    {/* Assign project access panel */}
+                    {/* Assign milestones access panel */}
                     {isAssigning ? (
                       <div className="rounded-xl border border-ink-600 bg-ink-900/60 p-4 space-y-4">
-                        <p className="text-sm font-semibold text-white">Assign project access</p>
-
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                          {/* Project picker */}
-                          <div>
-                            <label className="mb-1 block text-xs text-gray-400">Project</label>
-                            <select
-                              value={assignProjectId}
-                              onChange={(e) => setAssignProjectId(e.target.value)}
-                              className="w-full rounded-lg border border-ink-600 bg-ink-800 px-3 py-2 text-sm text-white outline-none focus:border-gold/60"
-                            >
-                              {projects.map((p) => (
-                                <option key={p.id} value={p.id}>
-                                  {p.sn ? `${p.sn} — ` : ""}{p.project_name || p.site_id || p.id}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-
-                          {/* Access type */}
-                          <div>
-                            <label className="mb-1 block text-xs text-gray-400">Access</label>
-                            <select
-                              value={accessScope}
-                              onChange={(e) => {
-                                setAccessScope(e.target.value as AccessScope);
-                                setAssignStage("");
-                                setAssignField("");
-                              }}
-                              className="w-full rounded-lg border border-ink-600 bg-ink-800 px-3 py-2 text-sm text-white outline-none focus:border-gold/60"
-                            >
-                              <option value="full_project">Full project</option>
-                              <option value="whole_stage">Whole stage</option>
-                              <option value="specific_field">Specific field</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        {/* Stage picker */}
-                        {(accessScope === "whole_stage" || accessScope === "specific_field") && (
-                          <div>
-                            <label className="mb-1 block text-xs text-gray-400">Stage</label>
-                            <select
-                              value={assignStage}
-                              onChange={(e) => { setAssignStage(e.target.value); setAssignField(""); }}
-                              className="w-full rounded-lg border border-ink-600 bg-ink-800 px-3 py-2 text-sm text-white outline-none focus:border-gold/60"
-                            >
-                              <option value="">— Select stage —</option>
-                              {STAGE_ORDER.map((s) => (
-                                <option key={s} value={s}>{STAGE_LABELS[s]}</option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-
-                        {/* Field picker */}
-                        {accessScope === "specific_field" && assignStage && (
-                          <div>
-                            <label className="mb-1 block text-xs text-gray-400">Field</label>
-                            <select
-                              value={assignField}
-                              onChange={(e) => setAssignField(e.target.value)}
-                              className="w-full rounded-lg border border-ink-600 bg-ink-800 px-3 py-2 text-sm text-white outline-none focus:border-gold/60"
-                            >
-                              <option value="">— Select field —</option>
-                              {stageFieldOptions.map((f) => (
-                                <option key={f.key} value={f.key}>{f.label}</option>
-                              ))}
-                            </select>
-                          </div>
-                        )}
-
-                        {/* Allow editing */}
-                        <label className="flex items-center gap-2 text-sm text-gray-300">
-                          <input
-                            type="checkbox"
-                            checked={assignCanEdit}
-                            onChange={(e) => setAssignCanEdit(e.target.checked)}
-                            className="accent-gold h-4 w-4"
-                          />
-                          Allow editing
-                        </label>
-
+                        <p className="text-sm font-semibold text-white">Assign milestones access</p>
                         <p className="text-[11px] text-gray-500">
-                          Example: pick{" "}
-                          <span className="text-gold">Stage 4 + RFS field</span> to let {m.full_name || m.email} edit only that field. Pick{" "}
-                          <span className="text-gold">Full project</span> to grant access to all stages.
+                          {m.full_name || m.email} already sees all your projects. Check the milestones below to also let them edit that milestone across all your <span className="text-gold">current</span> projects. If you add a new project later, come back here and save again to extend access to it too.
                         </p>
 
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          {MILESTONES.map((ms) => (
+                            <label
+                              key={ms.id}
+                              className="flex items-center gap-2 rounded-lg border border-ink-700 bg-ink-800 px-3 py-2 text-sm text-gray-300 hover:border-gold/30 transition-colors cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={assignMilestoneIds.includes(ms.id)}
+                                onChange={() => toggleMilestone(ms.id)}
+                                className="accent-gold h-4 w-4"
+                              />
+                              {milestoneLabel(ms.title)}
+                            </label>
+                          ))}
+                        </div>
+
                         <div className="flex items-center gap-2 pt-1">
-                          <Button variant="primary" onClick={handleAssign} disabled={
-                            assignSaving ||
-                            !assignProjectId ||
-                            (accessScope !== "full_project" && !assignStage) ||
-                            (accessScope === "specific_field" && !assignField)
-                          }>
-                            {assignSaving ? "Saving…" : "Assign"}
+                          <Button variant="primary" onClick={handleAssignMilestones} disabled={assignSaving}>
+                            {assignSaving ? "Saving…" : "Save milestone access"}
                           </Button>
                           <Button variant="ghost" onClick={cancelAssign}>Cancel</Button>
                         </div>
@@ -402,7 +319,7 @@ export function TeamScreen() {
                         onClick={() => openAssign(m.id)}
                         className="flex items-center gap-1.5 text-xs text-gold hover:text-gold/80 transition-colors"
                       >
-                        <Plus size={13} /> Assign project access
+                        <Plus size={13} /> Assign milestones access
                       </button>
                     )}
                   </div>
@@ -434,10 +351,9 @@ export function TeamScreen() {
           <Input label="Phone" value={phone} onChange={setPhone} placeholder="+966 5X XXX XXXX" />
           <div className="space-y-2 pt-1">
             <p className="text-xs font-medium text-gray-400">Global Permissions</p>
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input type="checkbox" checked={canView} onChange={(e) => setCanView(e.target.checked)} className="accent-gold h-4 w-4" />
-              View all projects
-            </label>
+            <p className="rounded-lg border border-ink-700 bg-ink-900/50 px-3 py-2 text-xs text-gray-400">
+              This member will automatically be able to view all your projects. Use "Assign milestones access" after adding them to grant edit permission for specific milestones.
+            </p>
             <label className="flex items-center gap-2 text-sm text-gray-300">
               <input type="checkbox" checked={canEdit} onChange={(e) => setCanEdit(e.target.checked)} className="accent-gold h-4 w-4" />
               Edit all stages
