@@ -189,7 +189,8 @@ export function TeamScreen() {
         </div>
         <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
           <p className="text-sm text-gray-400">Can add projects</p>
-          <p className="mt-1 text-3xl font-bold text-white">{canAddCount}</p>
+          <p className="mt-1 text-3xl font-bold text-white">{{(members || []).filter(m => m.can_view_all || true).length}
+}</p>
         </div>
       </div>
 
