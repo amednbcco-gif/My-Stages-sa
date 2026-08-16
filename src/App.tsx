@@ -5,7 +5,7 @@ import { AppShell } from "./components/AppShell";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { ProjectsScreen } from "./screens/ProjectsScreen";
 import { ProjectDetailScreen } from "./screens/ProjectDetailScreen";
-import TeamScreen from './screens/TeamScreen';
+import { TeamScreen } from "./screens/TeamScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { ResetPasswordScreen } from "./screens/ResetPasswordScreen";
 import { Spinner } from "./components/ui";
