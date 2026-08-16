@@ -181,7 +181,7 @@ export function TeamScreen() {
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
           <p className="text-sm text-gray-400">Can view all your projects</p>
-          <p className="mt-1 text-3xl font-bold text-white">{canViewCount}</p>
+          <p className="mt-1 text-3xl font-bold text-white">{(members || []).filter(m => m.can_view_all || true).length}</p>
         </div>
         <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
           <p className="text-sm text-gray-400">Can edit all your projects</p>
