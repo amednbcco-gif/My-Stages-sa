@@ -319,7 +319,7 @@ export function DashboardScreen() {
           <h3 className="text-sm font-semibold text-white">Team Evaluate</h3>
         </div>
         <p className="mb-4 text-xs text-gray-500">
-          Approved / Done / Clearanced / Closed / PATTED = 100% · Submitted = 50%
+          Approved / Done / Clearanced / Closed / PATTED / Issued / rectified / Handed Over = 100% · Submitted = 50%
         </p>
         {teamEvals.length === 0 ? (
           <div className="py-10 text-center">
