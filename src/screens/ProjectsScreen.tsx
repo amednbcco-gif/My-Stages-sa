@@ -130,7 +130,7 @@ export function ProjectsScreen() {
         site_id: data.site_id,
         region: data.region,
         city: data.city,
-        sector: data.sector,
+        owner: data.Owner,
         project_type: data.project_type,
         latitude: data.latitude,
         longitude: data.longitude,
