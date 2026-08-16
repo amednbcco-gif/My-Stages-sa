@@ -87,7 +87,7 @@ export function DashboardScreen() {
   // ── Team Evaluate ──
   // For each team member, gather their assigned projects (via permissions or
   // can_view_all / can_edit_all = all projects), then evaluate every milestone
-  // status field across those projects.  Approved/Done/Clearanced/Closed/PATTED
+  // status field across those projects.  Approved/Rectified/Handed over/Done/Clearanced/Closed/PATTED
   // = 100%, Submitted = 50%.
   const teamEvals: TeamEval[] = members.map((m) => {
     const memberPerms = permissions.filter((p) => p.team_member_id === m.id);
