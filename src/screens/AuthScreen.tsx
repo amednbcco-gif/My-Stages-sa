@@ -32,7 +32,7 @@ function StagesLogoIcon({ size = 52 }: { size?: number }) {
 }
 
 export function AuthScreen() {
-  const { signIn, signUp, resetPassword } = useAuth();
+  const { signIn, signUp, resetPassword, verifySignupOtp, resendSignupOtp } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,6 +48,12 @@ export function AuthScreen() {
   const [resetBusy, setResetBusy] = useState(false);
   const [resetError, setResetError] = useState<string | null>(null);
 
+  const [otpStep, setOtpStep] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpBusy, setOtpBusy] = useState(false);
+  const [otpResendMsg, setOtpResendMsg] = useState<string | null>(null);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -59,7 +65,11 @@ export function AuthScreen() {
     } else {
       const { error } = await signUp(email, password, fullName, role);
       if (error) setError(error);
-      else setInfo("Account created! You can now sign in.");
+      else {
+        setOtpStep(true);
+        setOtpCode("");
+        setOtpError(null);
+      }
     }
     setBusy(false);
   }
@@ -93,6 +103,27 @@ export function AuthScreen() {
     }
   }
 
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setOtpError(null);
+    setOtpBusy(true);
+    const { error } = await verifySignupOtp(email, otpCode);
+    setOtpBusy(false);
+    if (error) {
+      setOtpError(error);
+    }
+    // On success, the auth listener picks up the new session automatically
+    // and the app navigates in — nothing else to do here.
+  }
+
+  async function handleResendOtp() {
+    setOtpError(null);
+    setOtpResendMsg(null);
+    const { error } = await resendSignupOtp(email);
+    if (error) setOtpError(error);
+    else setOtpResendMsg("A new code has been sent.");
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center bg-ink-900 px-4">
 
@@ -116,6 +147,64 @@ export function AuthScreen() {
       <div className="w-full max-w-md">
         <div className="rounded-3xl border border-ink-700/60 bg-ink-800/90 p-7 shadow-2xl">
 
+          {otpStep ? (
+            <>
+              <h2 className="mb-1 text-lg font-bold text-white">Verify your email</h2>
+              <p className="mb-5 text-sm text-gray-400">
+                Enter the 6-digit code we sent to <span className="text-gold">{email}</span>
+              </p>
+
+              <form onSubmit={handleVerifyOtp} className="space-y-3">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  maxLength={6}
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                  placeholder="123456"
+                  required
+                  className="w-full rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 text-center text-xl tracking-[0.5em] text-white placeholder-gray-600 outline-none focus:border-gold/50 transition-colors"
+                />
+
+                {otpError && (
+                  <div className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
+                    {otpError}
+                  </div>
+                )}
+                {otpResendMsg && (
+                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+                    {otpResendMsg}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={otpBusy || otpCode.length !== 6}
+                  className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gold py-3.5 text-sm font-bold text-ink-900 shadow-md transition-all hover:brightness-110 disabled:opacity-60"
+                >
+                  {otpBusy ? <Spinner size={18} /> : (<>Verify &amp; Continue<ArrowRight size={17} strokeWidth={2.5} /></>)}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  className="w-full text-center text-xs font-semibold text-gold hover:underline"
+                >
+                  Didn't get a code? Resend
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => { setOtpStep(false); setOtpCode(""); setOtpError(null); setOtpResendMsg(null); }}
+                  className="w-full text-center text-xs text-gray-500 hover:text-gray-300"
+                >
+                  Back
+                </button>
+              </form>
+            </>
+          ) : (
+          <>
           {/* Tab switcher */}
           <div className="mb-5 flex rounded-full bg-ink-900/70 p-1">
             <button
@@ -283,6 +372,8 @@ export function AuthScreen() {
           >
             Continue as Guest
           </button>
+          </>
+          )}
         </div>
       </div>
 
