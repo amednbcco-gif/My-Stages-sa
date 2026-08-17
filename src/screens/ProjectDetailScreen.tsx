@@ -88,9 +88,33 @@ interface FieldInputProps {
   value: unknown;
   stage: string;
   onFieldChange: (stage: string, key: string, value: string | number) => void;
+  disabled?: boolean;
 }
-function FieldInput({ field, value, stage, onFieldChange }: FieldInputProps) {
+function FieldInput({ field, value, stage, onFieldChange, disabled }: FieldInputProps) {
   const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done"].includes(field.type);
+
+  if (disabled) {
+    if (isStatus) {
+      const val = String(value || "pending");
+      const label = optionsFor(field.type).find((o) => o.value === val)?.label ?? val;
+      return (
+        <span className={`rounded-lg border px-2 py-1 text-xs font-semibold ${statusColor(val)}`}>{label}</span>
+      );
+    }
+    if (field.type === "team") {
+      const val = String(value || "");
+      const label = TEAM_OPTIONS.find((o) => o.value === val)?.label ?? val ?? "—";
+      return <span className="text-xs text-gray-300">{label || "—"}</span>;
+    }
+    if (field.type === "date") {
+      return <span className="text-xs text-gray-300">{value ? fmtDate(String(value)) : "—"}</span>;
+    }
+    if (field.type === "number") {
+      return <span className="text-xs text-gray-300">{fmtNum(Number(value) || 0)}</span>;
+    }
+    return <span className="text-xs text-gray-300">{String(value ?? "") || "—"}</span>;
+  }
+
   if (isStatus) {
     return (
       <select
@@ -164,12 +188,13 @@ interface StageCardProps {
   onDeleteAttachment: (att: StageAttachment) => void;
   onDownloadAttachment: (att: StageAttachment) => void;
   onSaveStage: (stage: string) => void;
+  canEdit: boolean;
 }
 
 // Stage 6 FAC Status now shown as first field inside the card body (before FAC Due Date)
 const TOP_STATUS_FIELD: Record<string, { key: string; label: string }> = {};
 
-function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage }: StageCardProps) {
+function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage, canEdit }: StageCardProps) {
   const fields = STAGE_FIELDS[stage];
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
   const pct = stageProgress(project, stage);
@@ -197,6 +222,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           </div>
           <div className="flex items-center gap-2">
             {topStatus && (
+              canEdit ? (
               <select
                 value={topStatusVal}
                 onChange={(e) => onFieldChange(stage, topStatus.key, e.target.value)}
@@ -207,6 +233,11 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
                   <option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>
                 ))}
               </select>
+              ) : (
+                <span className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold ${statusColor(topStatusVal)}`}>
+                  {optionsFor("patsub").find((o) => o.value === topStatusVal)?.label ?? topStatusVal}
+                </span>
+              )
             )}
             <span className={`text-sm font-bold ${isDone ? "text-emerald-400" : "text-gray-400"}`}>{pct}%</span>
           </div>
@@ -222,7 +253,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
               <span className="shrink-0 text-sm text-gray-300">{field.label}</span>
-              <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} />
+              <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} disabled={!canEdit} />
             </div>
           );
         })}
@@ -237,16 +268,20 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
             )}
           </span>
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => onSaveStage(stage)}
-              className="flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:opacity-80 transition-opacity"
-            >
-              <Save size={11} /> Save
-            </button>
-            <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
-              <Paperclip size={11} /> Add file
-              <input type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(stage, f); e.target.value = ""; }} />
-            </label>
+            {canEdit && (
+              <>
+                <button
+                  onClick={() => onSaveStage(stage)}
+                  className="flex items-center gap-1 text-xs font-semibold text-emerald-400 hover:opacity-80 transition-opacity"
+                >
+                  <Save size={11} /> Save
+                </button>
+                <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
+                  <Paperclip size={11} /> Add file
+                  <input type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(stage, f); e.target.value = ""; }} />
+                </label>
+              </>
+            )}
           </div>
         </div>
         {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
@@ -259,9 +294,11 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
                 <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                   <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
                 </button>
-                <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
-                  <Trash2 size={11} />
-                </button>
+                {canEdit && (
+                  <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
+                    <Trash2 size={11} />
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -285,6 +322,7 @@ interface MilestoneListProps {
   onPermitAdd: () => void;
   onPermitUpdate: (id: string, patch: Partial<PermitRow>) => void;
   onPermitDelete: (id: string) => void;
+  canEditMilestone: (milestoneId: string) => boolean;
 }
 
 function milestoneDone(statusVal: unknown): boolean {
@@ -361,7 +399,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
 
 function MilestoneCard({
   milestone, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage,
-  permits, onPermitAdd, onPermitUpdate, onPermitDelete,
+  permits, onPermitAdd, onPermitUpdate, onPermitDelete, canEdit,
 }: {
   milestone: typeof MILESTONES[number];
   project: Project;
@@ -376,6 +414,7 @@ function MilestoneCard({
   onPermitAdd: () => void;
   onPermitUpdate: (id: string, patch: Partial<PermitRow>) => void;
   onPermitDelete: (id: string) => void;
+  canEdit: boolean;
 }) {
   const [showFiles, setShowFiles] = useState(false);
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[milestone.stage] ?? {};
@@ -412,6 +451,7 @@ function MilestoneCard({
 
         {/* Status dropdown */}
         <div className="shrink-0">
+          {canEdit ? (
           <select
             value={statusVal}
             onChange={(e) => onFieldChange(milestone.stage, milestone.statusField.key, e.target.value)}
@@ -422,6 +462,11 @@ function MilestoneCard({
               <option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>
             ))}
           </select>
+          ) : (
+            <span className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold ${statusColor(statusVal)}`}>
+              {optionsFor(milestone.statusType).find((o) => o.value === statusVal)?.label ?? statusVal}
+            </span>
+          )}
         </div>
       </div>
 
@@ -435,7 +480,7 @@ function MilestoneCard({
             return (
               <div key={field.key} className="flex flex-col gap-1">
                 <label className="text-[11px] font-medium text-gray-500">{field.label}</label>
-                <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} />
+                <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
               </div>
             );
           })}
@@ -452,12 +497,14 @@ function MilestoneCard({
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
+          {canEdit && (
           <button
             onClick={() => onSaveStage(milestone.stage)}
             className="flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-500/70 hover:text-emerald-200 transition-colors"
           >
             <Save size={12} /> Save
           </button>
+          )}
           {/* Attachment button */}
           <button
             onClick={() => setShowFiles((v) => !v)}
@@ -479,6 +526,7 @@ function MilestoneCard({
                 <span className="ml-0.5 rounded-full bg-ink-700 px-1.5 py-0.5 text-[10px] text-gray-300">{msAtts.length}</span>
               )}
             </span>
+            {canEdit && (
             <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
               <Paperclip size={11} /> Add file
               <input
@@ -491,6 +539,7 @@ function MilestoneCard({
                 }}
               />
             </label>
+            )}
           </div>
           {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
           {msAtts.length === 0 && !isUploading ? (
@@ -502,9 +551,11 @@ function MilestoneCard({
                   <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                     <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
                   </button>
-                  <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
-                    <Trash2 size={11} />
-                  </button>
+                  {canEdit && (
+                    <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
+                      <Trash2 size={11} />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
@@ -516,10 +567,11 @@ function MilestoneCard({
 }
 
 function MilestoneList(props: MilestoneListProps) {
+  const { canEditMilestone, ...rest } = props;
   return (
     <div className="space-y-3">
       {MILESTONES.map((m) => (
-        <MilestoneCard key={m.id} milestone={m} {...props} permits={props.permits} onPermitAdd={props.onPermitAdd} onPermitUpdate={props.onPermitUpdate} onPermitDelete={props.onPermitDelete} />
+        <MilestoneCard key={m.id} milestone={m} {...rest} permits={props.permits} onPermitAdd={props.onPermitAdd} onPermitUpdate={props.onPermitUpdate} onPermitDelete={props.onPermitDelete} canEdit={canEditMilestone(m.id)} />
       ))}
     </div>
   );
@@ -585,6 +637,9 @@ export function ProjectDetailScreen() {
   const [uploading, setUploading] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode | null>(null);
   const [permits, setPermits] = useState<PermitRow[]>([]);
+  const [canEditAll, setCanEditAll] = useState(false);
+  const [editableMilestoneIds, setEditableMilestoneIds] = useState<string[]>([]);
+  const [permsLoaded, setPermsLoaded] = useState(false);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -607,6 +662,62 @@ export function ProjectDetailScreen() {
       setLoading(false);
     });
   }, [id]);
+
+  useEffect(() => {
+    if (!project || !user) return;
+
+    const isOwner = project.owner_id === user.id;
+    if (isOwner) {
+      setCanEditAll(true);
+      setEditableMilestoneIds([]);
+      setPermsLoaded(true);
+      return;
+    }
+
+    setPermsLoaded(false);
+    supabase
+      .from("team_members")
+      .select("id, can_edit_all")
+      .eq("owner_id", project.owner_id)
+      .eq("user_id", user.id)
+      .maybeSingle()
+      .then(({ data: tm }) => {
+        if (!tm) {
+          setCanEditAll(false);
+          setEditableMilestoneIds([]);
+          setPermsLoaded(true);
+          return;
+        }
+        if (tm.can_edit_all) {
+          setCanEditAll(true);
+          setEditableMilestoneIds([]);
+          setPermsLoaded(true);
+          return;
+        }
+        setCanEditAll(false);
+        supabase
+          .from("project_permissions")
+          .select("field")
+          .eq("project_id", project.id)
+          .eq("team_member_id", tm.id)
+          .eq("scope", "field")
+          .eq("can_edit", true)
+          .then(({ data: perms }) => {
+            setEditableMilestoneIds((perms ?? []).map((p) => p.field));
+            setPermsLoaded(true);
+          });
+      });
+  }, [project?.id, project?.owner_id, user?.id]);
+
+  function canEditMilestone(milestoneId: string): boolean {
+    if (canEditAll) return true;
+    return editableMilestoneIds.includes(milestoneId);
+  }
+
+  function canEditStage(stage: string): boolean {
+    if (canEditAll) return true;
+    return MILESTONES.some((m) => m.stage === stage && editableMilestoneIds.includes(m.id));
+  }
 
   async function handleSaveProject(data: Partial<Project>) {
     if (!project) return;
@@ -809,12 +920,16 @@ export function ProjectDetailScreen() {
               </button>
             </div>
           )}
-          <Button variant="secondary" onClick={() => setEditOpen(true)}>
-            <Pencil size={14} className="mr-1.5" /> Edit
-          </Button>
-          <Button variant="danger" onClick={handleDeleteProject}>
-            <Trash2 size={14} className="mr-1.5" /> Delete
-          </Button>
+          {canEditAll && (
+            <>
+              <Button variant="secondary" onClick={() => setEditOpen(true)}>
+                <Pencil size={14} className="mr-1.5" /> Edit
+              </Button>
+              <Button variant="danger" onClick={handleDeleteProject}>
+                <Trash2 size={14} className="mr-1.5" /> Delete
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -863,11 +978,11 @@ export function ProjectDetailScreen() {
       ) : viewMode === "card" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {STAGE_ORDER.map((stage) => (
-            <StageCard key={stage} stage={stage} {...sharedProps} />
+            <StageCard key={stage} stage={stage} {...sharedProps} canEdit={canEditStage(stage)} />
           ))}
         </div>
       ) : (
-        <MilestoneList {...sharedProps} />
+        <MilestoneList {...sharedProps} canEditMilestone={canEditMilestone} />
       )}
 
       {/* Notes */}
