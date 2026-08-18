@@ -151,7 +151,7 @@ export function AuthScreen() {
             <>
               <h2 className="mb-1 text-lg font-bold text-white">Verify your email</h2>
               <p className="mb-5 text-sm text-gray-400">
-                Enter the 6-digit code we sent to <span className="text-gold">{email}</span>
+                Enter the verification code we sent to <span className="text-gold">{email}</span>
               </p>
 
               <form onSubmit={handleVerifyOtp} className="space-y-3">
@@ -159,12 +159,12 @@ export function AuthScreen() {
                   type="text"
                   inputMode="numeric"
                   autoComplete="one-time-code"
-                  maxLength={6}
+                  maxLength={10}
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
                   placeholder="123456"
                   required
-                  className="w-full rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 text-center text-xl tracking-[0.5em] text-white placeholder-gray-600 outline-none focus:border-gold/50 transition-colors"
+                  className="w-full rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 text-center text-xl tracking-[0.3em] text-white placeholder-gray-600 outline-none focus:border-gold/50 transition-colors"
                 />
 
                 {otpError && (
@@ -180,7 +180,7 @@ export function AuthScreen() {
 
                 <button
                   type="submit"
-                  disabled={otpBusy || otpCode.length !== 6}
+                  disabled={otpBusy || otpCode.length < 4}
                   className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gold py-3.5 text-sm font-bold text-ink-900 shadow-md transition-all hover:brightness-110 disabled:opacity-60"
                 >
                   {otpBusy ? <Spinner size={18} /> : (<>Verify &amp; Continue<ArrowRight size={17} strokeWidth={2.5} /></>)}
@@ -324,7 +324,7 @@ export function AuthScreen() {
                 </p>
                 <p className="mt-1 flex items-center gap-1.5 text-xs text-gold">
                   <Mail size={11} />
-                  We'll email you a 6-digit code to verify your address.
+                  We'll email you a verification code to confirm your address.
                 </p>
               </div>
             )}
