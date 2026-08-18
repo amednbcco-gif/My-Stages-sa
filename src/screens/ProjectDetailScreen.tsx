@@ -58,9 +58,10 @@ function stageProgress(project: Project, stage: string): number {
 function statusColor(val: string) {
   switch (val) {
     case "approved": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
+    case "rectified": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
     case "inprogress": return "border-amber-500/70 text-amber-300 bg-amber-500/15";
     case "submitted": return "border-sky-500/70 text-sky-300 bg-sky-500/15";
-    case "closed": return "border-rose-500/70 text-rose-300 bg-rose-500/15";
+    case "closed": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
     case "clearanced": return "border-teal-500/70 text-teal-300 bg-teal-500/15";
     default: return "border-ink-600 text-gray-400 bg-ink-900/50";
   }
