@@ -151,12 +151,21 @@ export function ProjectsScreen() {
     if (!error) { setToast("Project Deleted"); loadProjects(); }
   }
 
-  function labelOf(opts: { value: string; label: string }[], val: string): string {
-    return opts.find((o) => o.value === val)?.label ?? "";
-  }
+function labelOf(opts: { value: string; label: string }[], val: string): string {
+  return opts.find((o) => o.value === val)?.label ?? "";
+}
+
+// Stable sequential numbering: oldest project = 1, next = 2, etc.
+// Recomputed fresh every render from created_at, so deleting a project
+// never leaves a gap and adding one never causes a duplicate number.
+function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { displaySn: string })[] {
+  return [...list]
+    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+    .map((p, idx) => ({ ...p, displaySn: String(idx + 1).padStart(2, "0") }));
+}
 
   async function exportCSV() {
-    const projectIds = [...filtered].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((p) => p.id);
+    const projectIds = withSequentialSn(filtered).map((p) => p.id);
     let notesMap: Record<string, string> = {};
     if (projectIds.length > 0) {
       const { data: notesData } = await supabase
@@ -192,8 +201,8 @@ export function ProjectsScreen() {
       "Notes",
     ];
 
-    const rows = [...filtered].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((p) => [
-      p.sn,
+    const rows = withSequentialSn(filtered).map((p) => [
+      p.displaySn,
       p.project_name,
       // Stage 1 — Survey & Design
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "surveyStatus")),
@@ -253,7 +262,7 @@ export function ProjectsScreen() {
     ]);
 
     const csv = [headers, ...rows]
-      .map((r) => [...r].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
+      .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
       .join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
@@ -330,7 +339,7 @@ export function ProjectsScreen() {
               </tr>
             </thead>
             <tbody>
-              {[...filtered].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((p) => {
+              {withSequentialSn(filtered).map((p) => {
                 const dboq = fmtNumber(getVal(p, "stage1", "dboqAmount"));
                 const aboq = fmtNumber(getVal(p, "stage2", "aboqAmount"));
                 const permitStatus = getVal(p, "stage3", "permitsStatus");
@@ -350,7 +359,7 @@ export function ProjectsScreen() {
                     onClick={() => navigate(`/projects/${p.id}`)}
                   >
                     {/* SN */}
-                    <td className="px-3 py-3 font-mono text-xs text-gold whitespace-nowrap">{p.sn || "—"}</td>
+                    <td className="px-3 py-3 font-mono text-xs text-gold whitespace-nowrap">{p.displaySn}</td>
 
                     {/* Project Name */}
                     <td className="px-3 py-3 font-medium text-white max-w-[220px]">
