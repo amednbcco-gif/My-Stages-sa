@@ -23,9 +23,10 @@ import type { Project } from "../lib/types";
 function statusColor(value: string): string {
   switch (value) {
     case "approved": return "border-emerald-500/60 text-emerald-300 bg-emerald-500/10";
+    case "rectified": return "border-emerald-500/60 text-emerald-300 bg-emerald-500/10";
     case "inprogress": return "border-sky-500/60 text-sky-300 bg-sky-500/10";
     case "submitted": return "border-amber-500/60 text-amber-300 bg-amber-500/10";
-    case "closed": return "border-rose-500/60 text-rose-300 bg-rose-500/10";
+    case "closed": return "border-emerald-500/60 text-emerald-300 bg-emerald-500/10";
     case "clearanced": return "border-teal-500/60 text-teal-300 bg-teal-500/10";
     default: return "border-ink-600 text-gray-500 bg-ink-900/40";
   }
