@@ -27,7 +27,8 @@ import {
   addDays,
 } from "../lib/stages";
 import { getAbbreviation } from "../lib/demoProject";
-import type { Project, ProjectNote, StageAttachment, PermitRow } from "../lib/types";
+import type { Project, ProjectNote as BaseProjectNote, StageAttachment, PermitRow } from "../lib/types";
+type ProjectNote = BaseProjectNote & { author_name?: string };
 
 /* ─── Helpers ────────────────────────────────────────────── */
 function fmtDate(iso: string): string {
@@ -625,7 +626,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
 export function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
 
   const [project, setProject] = useState<Project | null>(null);
   const [notes, setNotes] = useState<ProjectNote[]>([]);
@@ -799,9 +800,10 @@ export function ProjectDetailScreen() {
 
   async function addNote() {
     if (!project || !noteBody.trim()) return;
+    const authorName = profile?.full_name?.trim() || user?.email || "Unknown";
     const { data, error } = await supabase
       .from("project_notes")
-      .insert({ project_id: project.id, author_id: user?.id, body: noteBody, category: noteCategory })
+      .insert({ project_id: project.id, author_id: user?.id, author_name: authorName, body: noteBody, category: noteCategory })
       .select()
       .single();
     if (!error && data) {
@@ -1041,6 +1043,7 @@ export function ProjectDetailScreen() {
                         note.category === "field" ? "bg-sky-500/15 text-sky-300" :
                         "bg-ink-700 text-gray-400"
                       }`}>{note.category ?? "general"}</span>
+                      <span className="text-[11px] font-semibold text-gold">{note.author_name ?? "Unknown"}</span>
                       <span className="text-[10px] text-gray-600">{fmtDateTime(note.created_at)}</span>
                     </div>
                     <p className="text-sm text-gray-300 leading-relaxed break-words">{note.body}</p>
