@@ -1,11 +1,7 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, FileSpreadsheet, Phone, Mail, Settings } from "lucide-react";
+import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, Phone, Mail, Settings } from "lucide-react";
 import { useAuth } from "../lib/auth";
-import { supabase } from "../lib/supabase";
-import { computeProgress, currentStage, stageShortLabel } from "../lib/stages";
-import { DEMO_PROJECT } from "../lib/demoProject";
-import type { Project } from "../lib/types";
 
 interface AppShellProps {
   children: ReactNode;
@@ -67,51 +63,6 @@ export function AppShell({ children }: AppShellProps) {
     navigate("/");
   }
 
-  async function exportCSV() {
-    if (isGuest) {
-      const projects = [DEMO_PROJECT];
-      const headers = ["SN", "Project Name", "Site ID", "PO Number", "Plan No", "PO Value SAR", "Status", "Progress %", "Current Stage"];
-      const rows = projects.map((p) => [
-        p.sn, p.project_name, p.site_id, p.po_number, p.plan_no,
-        p.po_value_sar, p.status,
-        computeProgress(p), stageShortLabel(currentStage(p)),
-      ]);
-      const csv = [headers, ...rows]
-        .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
-        .join("\n");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `STAGES_Tracksheet_${new Date().toISOString().split("T")[0]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      return;
-    }
-    const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-    const projects = (data as Project[]) ?? [];
-    const headers = ["SN", "Project Name", "Site ID", "PO Number", "Plan No", "PO Value SAR", "Status", "Progress %", "Current Stage"];
-    const rows = projects.map((p) => [
-      p.sn, p.project_name, p.site_id, p.po_number, p.plan_no,
-      p.po_value_sar, p.status,
-      computeProgress(p), stageShortLabel(currentStage(p)),
-    ]);
-    const csv = [headers, ...rows]
-      .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
-      .join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `STAGES_Tracksheet_${new Date().toISOString().split("T")[0]}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
   const displayName = isGuest ? "Guest" : (profile?.full_name || "User");
   const displayRole = isGuest ? "guest" : (profile?.role || "engineer");
   const initials = isGuest ? "G" : (profile?.full_name || "U")
@@ -160,16 +111,8 @@ export function AppShell({ children }: AppShellProps) {
           })}
         </nav>
 
-        {/* Right: Export + User */}
+        {/* Right: User */}
         <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={exportCSV}
-            className="hidden sm:flex items-center gap-1.5 rounded-lg border border-ink-700 bg-ink-900/60 px-3 py-1.5 text-xs font-semibold text-gray-300 transition-all hover:border-gold/30 hover:text-white"
-          >
-            <FileSpreadsheet size={13} />
-            Export CSV
-          </button>
-
           {/* User menu */}
           <div ref={userMenuRef} className="relative">
             <button
@@ -268,13 +211,6 @@ export function AppShell({ children }: AppShellProps) {
               </NavLink>
             </nav>
             <div className="border-t border-ink-700 p-3 space-y-1">
-              <button
-                onClick={() => { setMobileOpen(false); exportCSV(); }}
-                className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-gray-300 hover:bg-ink-700 hover:text-white"
-              >
-                <FileSpreadsheet size={17} />
-                Export CSV
-              </button>
               <button
                 onClick={handleSignOut}
                 className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-rose-300 hover:bg-rose-500/10"
