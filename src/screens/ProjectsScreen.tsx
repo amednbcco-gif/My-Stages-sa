@@ -70,9 +70,13 @@ function fmtNumber(val: string): string {
 const COLS = [
   { label: "SN" },
   { label: "Project Name" },
+  { label: "City" },
+  { label: "Plan No." },
+  { label: "PO No." },
   { label: "DBOQ Amount" },
   { label: "ABOQ Amount" },
   { label: "Permit Status" },
+  { label: "The Execution" },
   { label: "PAT Status" },
   { label: "CRQ HO Status" },
   { label: "GIS Status" },
@@ -295,7 +299,8 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
   const filtered = projects.filter(
     (p) =>
       p.project_name?.toLowerCase().includes(search.toLowerCase()) ||
-      p.sn?.toLowerCase().includes(search.toLowerCase()) ||
+      p.po_number?.toLowerCase().includes(search.toLowerCase()) ||
+      p.plan_no?.toLowerCase().includes(search.toLowerCase()) ||
       p.site_id?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -331,7 +336,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, SN, or site ID..."
+          placeholder="Search by name, PO No., Plan No., Site ID..."
           className="w-full rounded-lg border border-ink-700 bg-ink-800 py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-500 outline-none focus:border-gold/50"
         />
       </div>
@@ -344,10 +349,10 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
-          <table className="w-full min-w-[1200px] text-sm border-collapse">
+          <table className="w-full min-w-[1560px] text-sm border-collapse">
             <thead>
-              <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-gray-500">
-                {[...COLS].sort((a,b)=>parseInt(a.sn||a.id||0)-parseInt(b.sn||b.id||0)).map((c, i) => (
+              <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
+                {COLS.map((c, i) => (
                   <th key={i} className={`px-3 py-3 font-semibold whitespace-nowrap ${i === COLS.length - 1 ? "text-right" : ""}`}>
                     {c.label}
                   </th>
@@ -359,6 +364,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
                 const dboq = fmtNumber(getVal(p, "stage1", "dboqAmount"));
                 const aboq = fmtNumber(getVal(p, "stage2", "aboqAmount"));
                 const permitStatus = getVal(p, "stage3", "permitsStatus");
+                const executionStatus = getVal(p, "stage3", "civilStatus");
                 const patStatus    = getVal(p, "stage4", "patStatus");
                 const crqHoStatus  = getVal(p, "stage4", "crqHoStatus");
                 const gisStatus    = getVal(p, "stage4", "gisStatus");
@@ -379,8 +385,17 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
 
                     {/* Project Name */}
                     <td className="px-3 py-3 font-medium text-white max-w-[220px]">
-                      <span className="line-clamp-2 leading-snug">{p.project_name || "—"}</span>
+                      <span className="line-clamp-2 leading-snug" title={p.project_name || ""}>{p.project_name || "—"}</span>
                     </td>
+
+                    {/* City */}
+                    <td className="px-3 py-3 text-xs text-gray-300 whitespace-nowrap">{p.city || "—"}</td>
+
+                    {/* Plan No. */}
+                    <td className="px-3 py-3 text-xs text-gray-300 whitespace-nowrap">{p.plan_no || "—"}</td>
+
+                    {/* PO No. */}
+                    <td className="px-3 py-3 text-xs text-gray-300 whitespace-nowrap">{p.po_number || "—"}</td>
 
                     {/* DBOQ Amount */}
                     <td className="px-3 py-3 text-right font-mono text-xs text-gray-300 whitespace-nowrap">
@@ -394,6 +409,9 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
 
                     {/* Permit Status */}
                     <td className="px-3 py-3"><StatusPill type="permit" value={permitStatus} /></td>
+
+                    {/* The Execution */}
+                    <td className="px-3 py-3"><StatusPill type="status" value={executionStatus} /></td>
 
                                       
                     {/* PAT Status */}
