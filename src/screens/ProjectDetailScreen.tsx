@@ -254,7 +254,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           const value = stageData[field.key] ?? "";
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
-              <span className="shrink-0 text-sm text-gray-300">{field.label}</span>
+              <span className="shrink-0 text-sm font-semibold text-white">{field.label}</span>
               <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} disabled={!canEdit} />
             </div>
           );
@@ -481,7 +481,7 @@ function MilestoneCard({
             const value = stageData[field.key] ?? "";
             return (
               <div key={field.key} className="flex flex-col gap-1">
-                <label className="text-[11px] font-medium text-gray-500">{field.label}</label>
+                <label className="text-[11px] font-semibold text-white">{field.label}</label>
                 <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
               </div>
             );
