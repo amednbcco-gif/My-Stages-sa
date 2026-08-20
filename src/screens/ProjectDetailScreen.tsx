@@ -790,11 +790,27 @@ export function ProjectDetailScreen() {
     }
   }
 
+  async function notifyChange(message: string) {
+    if (!project || !user) return;
+    const actorName = profile?.full_name?.trim() || user.email || "Someone";
+    await supabase.from("notifications").insert({
+      owner_id: project.owner_id,
+      project_id: project.id,
+      project_name: project.project_name,
+      actor_id: user.id,
+      actor_name: actorName,
+      message,
+    });
+  }
+
   async function saveStage(stage: string) {
     if (!project) return;
     const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
     const { error } = await supabase.from("projects").update({ [stage]: stageData }).eq("id", project.id);
-    if (!error) showToast("Saved");
+    if (!error) {
+      showToast("Saved");
+      notifyChange(`updated ${STAGE_LABELS[stage] ?? stage}`);
+    }
     else showToast("Save failed");
   }
 
@@ -810,6 +826,7 @@ export function ProjectDetailScreen() {
       setNotes((prev) => [data as ProjectNote, ...prev]);
       setNoteBody("");
       showToast("Note added");
+      notifyChange("added a note");
     }
   }
 
