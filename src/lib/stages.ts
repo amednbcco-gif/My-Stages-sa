@@ -231,9 +231,9 @@ export const MILESTONES: Milestone[] = [
       { key: "odbOdf", label: "ODB/ODF", type: "number" },
       { key: "closures", label: "Closures", type: "number" },
       { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
-      { key: "fiberSplicingStatus", label: "Fiber Status", type: "done" },
-      { key: "patchingStatus", label: "Splicing Status", type: "done" },
-      { key: "patchingDoneStatus", label: "Patching Status", type: "done" },
+      { key: "fiberSplicingStatus", label: "Splicing Status", type: "done" },
+      { key: "patchingStatus", label: "Patching Status", type: "done" },
+      { key: "patchingDoneStatus", label: "Patching Done Status", type: "done" },
     ],
   },
   {
@@ -290,7 +290,7 @@ export const MILESTONES: Milestone[] = [
     title: "PCR & SDN",
     stage: "stage5",
     statusType: "status",
-    statusField: { key: "pcrStatus", label: "PCR & SDN Status", type: "status" },
+    statusField: { key: "pcrSdnStatus", label: "PCR & SDN Status", type: "status" },
     fields: [
       { key: "pcrDate", label: "PCR Date", type: "date" },
       { key: "pcrRef", label: "PCR Ref", type: "text" },
