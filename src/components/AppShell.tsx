@@ -1,10 +1,20 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, Phone, Mail, Settings } from "lucide-react";
+import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell } from "lucide-react";
 import { useAuth } from "../lib/auth";
+import { supabase } from "../lib/supabase";
 
 interface AppShellProps {
   children: ReactNode;
+}
+
+interface NotificationRow {
+  id: string;
+  project_id: string | null;
+  project_name: string | null;
+  actor_name: string;
+  message: string;
+  created_at: string;
 }
 
 function StagesLogo({ size = 32 }: { size?: number }) {
@@ -47,10 +57,64 @@ export function AppShell({ children }: AppShellProps) {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
+  const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isGuest || !user) return;
+
+    async function loadNotifications() {
+      const { data } = await supabase
+        .from("notifications")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(30);
+      const list = (data as NotificationRow[]) ?? [];
+      setNotifications(list);
+      const lastSeen = localStorage.getItem(`notif_last_seen_${user!.id}`);
+      const unread = lastSeen ? list.filter((n) => new Date(n.created_at) > new Date(lastSeen)).length : list.length;
+      setUnreadCount(unread);
+    }
+    loadNotifications();
+
+    const channel = supabase
+      .channel("notifications_live")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications" }, (payload) => {
+        setNotifications((prev) => [payload.new as NotificationRow, ...prev].slice(0, 30));
+        setUnreadCount((c) => c + 1);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [isGuest, user]);
+
+  function openNotifications() {
+    setNotifOpen((v) => !v);
+    if (!notifOpen && user) {
+      localStorage.setItem(`notif_last_seen_${user.id}`, new Date().toISOString());
+      setUnreadCount(0);
+    }
+  }
+
+  function timeAgo(iso: string): string {
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
+
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
         setUserMenuOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -84,7 +148,7 @@ export function AppShell({ children }: AppShellProps) {
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-extrabold leading-none tracking-[0.18em] text-white">STAGES</p>
-            <p className="text-[9px] tracking-wide text-gold leading-tight">Infrastructure Projects Tracker</p>
+            <p className="text-[9px] tracking-wide text-gold leading-tight">Infrastructure Project Tracker</p>
           </div>
         </div>
 
@@ -111,8 +175,52 @@ export function AppShell({ children }: AppShellProps) {
           })}
         </nav>
 
-        {/* Right: User */}
+        {/* Right: Notifications + User */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Notifications bell */}
+          {!isGuest && (
+            <div ref={notifRef} className="relative">
+              <button
+                onClick={openNotifications}
+                className="relative flex items-center justify-center rounded-lg border border-ink-700 bg-ink-900/60 p-2 text-gray-300 transition-all hover:border-gold/30 hover:text-white"
+              >
+                <Bell size={16} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-80 max-h-96 overflow-y-auto rounded-xl border border-ink-700 bg-ink-800 shadow-xl">
+                  <div className="sticky top-0 border-b border-ink-700 bg-ink-800 px-4 py-3">
+                    <p className="text-sm font-semibold text-white">Notifications</p>
+                  </div>
+                  {notifications.length === 0 ? (
+                    <p className="px-4 py-6 text-center text-xs text-gray-500">No notifications yet.</p>
+                  ) : (
+                    <div className="divide-y divide-ink-700/60">
+                      {notifications.map((n) => (
+                        <button
+                          key={n.id}
+                          onClick={() => { setNotifOpen(false); if (n.project_id) navigate(`/projects/${n.project_id}`); }}
+                          className="flex w-full flex-col items-start gap-0.5 px-4 py-2.5 text-left hover:bg-ink-700/40 transition-colors"
+                        >
+                          <p className="text-xs text-gray-200">
+                            <span className="font-semibold text-gold">{n.actor_name}</span> {n.message}
+                          </p>
+                          {n.project_name && <p className="text-[11px] text-gray-500 truncate w-full">{n.project_name}</p>}
+                          <p className="text-[10px] text-gray-600">{timeAgo(n.created_at)}</p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* User menu */}
           <div ref={userMenuRef} className="relative">
             <button
