@@ -89,7 +89,7 @@ const COLS = [
 ];
 
 export function ProjectsScreen() {
-  const { user, isGuest } = useAuth();
+  const { user, profile, isGuest } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,7 +124,7 @@ export function ProjectsScreen() {
       if (!error) { setToast("Project Updated"); setEditTarget(null); loadProjects(); }
     } else {
       const poVal = Number(data.po_value_sar) || 0;
-      const { error } = await supabase.from("projects").insert({
+      const { data: inserted, error } = await supabase.from("projects").insert({
         owner_id: user?.id,
         project_name: data.project_name,
         po_number: data.po_number,
@@ -144,8 +144,21 @@ export function ProjectsScreen() {
         stage4: data.stage4,
         stage5: data.stage5,
         stage6: data.stage6,
-      });
-      if (!error) { setToast("Project Added"); setShowAdd(false); loadProjects(); }
+      }).select().single();
+      if (!error) {
+        setToast("Project Added"); setShowAdd(false); loadProjects();
+        if (inserted) {
+          const actorName = profile?.full_name?.trim() || user?.email || "Someone";
+          await supabase.from("notifications").insert({
+            owner_id: (inserted as Project).owner_id,
+            project_id: (inserted as Project).id,
+            project_name: (inserted as Project).project_name,
+            actor_id: user?.id,
+            actor_name: actorName,
+            message: "added a new project",
+          });
+        }
+      }
     }
   }
 
