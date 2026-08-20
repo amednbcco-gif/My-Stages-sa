@@ -19,7 +19,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [poValueSAR, setPoValueSAR] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
-  const [sector, setSector] = useState("");
+  const [Owner, setOwner] = useState("");
   const [projectType, setProjectType] = useState("");
   const [siteId, setSiteId] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -36,7 +36,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setSiteId(initial.site_id);
       setRegion(initial.region ?? "");
       setCity(initial.city ?? "");
-      setSector(initial.sector ?? "");
+      setOwner(initial.owner ?? "");
       setProjectType(initial.project_type ?? "");
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
@@ -48,7 +48,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setPoValueSAR("");
       setRegion("");
       setCity("");
-      setSector("");
+      setOwner("");
       setProjectType("");
       setSiteId("");
       setLatitude("");
@@ -103,7 +103,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
         </div>
         <Input label="Region" value={region} onChange={setRegion} placeholder="Region" />
         <Input label="City" value={city} onChange={setCity} placeholder="City" />
-        <Input label="Sector" value={sector} onChange={setSector} placeholder="Sector" />
+        <Input label="Owner" value={Owner} onChange={setOwner} placeholder="Owner" />
         <Input label="Project Type" value={projectType} onChange={setProjectType} placeholder="Project Type" />
         <Input label="Latitude" value={latitude} onChange={setLatitude} type="number" placeholder="e.g. 24.7136" />
         <Input label="Longitude" value={longitude} onChange={setLongitude} type="number" placeholder="e.g. 46.6753" />
