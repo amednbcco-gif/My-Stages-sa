@@ -17,8 +17,6 @@ export const STAGE_LABELS: Record<string, string> = {
 
 export const STAGE_ORDER = ["stage1", "stage2", "stage3", "stage4", "stage5", "stage6"] as const;
 
-// List Form-only status fields are intentionally independent from Card Layout status fields.
-// In particular, pcrSdnStatus is separate from the Stage 5 Card Layout pcrStatus.
 export const STAGE_FIELDS: Record<string, StageField[]> = {
   stage1: [
     { key: "surveyStatus", label: "Survey", type: "status" },
@@ -214,7 +212,6 @@ export const MILESTONES: Milestone[] = [
       { key: "permitSubmittedDate", label: "Submitted Date", type: "date" },
       { key: "permitIssuedDate", label: "Issued Date", type: "date" },
       { key: "permitClosedDate", label: "Closed Date", type: "date" },
-      { key: "closePermit", label: "Close Permit", type: "close-permit" },
       { key: "permitClearancedDate", label: "Clearanced Date", type: "date" },
       { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
     ],
@@ -293,7 +290,7 @@ export const MILESTONES: Milestone[] = [
     title: "PCR & SDN",
     stage: "stage5",
     statusType: "status",
-    statusField: { key: "pcrSdnStatus", label: "PCR & SDN Status", type: "status" },
+    statusField: { key: "pcrStatus", label: "PCR & SDN Status", type: "status" },
     fields: [
       { key: "pcrDate", label: "PCR Date", type: "date" },
       { key: "pcrRef", label: "PCR Ref", type: "text" },
