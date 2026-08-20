@@ -67,7 +67,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       site_id: siteId,
       region,
       city,
-      sector,
+      Owner,
       project_type: projectType,
       latitude: latitude ? Number(latitude) : null,
       longitude: longitude ? Number(longitude) : null,
