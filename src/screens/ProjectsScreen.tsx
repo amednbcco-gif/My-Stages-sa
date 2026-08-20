@@ -381,7 +381,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
                 const patStatus    = getVal(p, "stage4", "patStatus");
                 const crqHoStatus  = getVal(p, "stage4", "crqHoStatus");
                 const gisStatus    = getVal(p, "stage4", "gisStatus");
-                const pcrStatus    = getVal(p, "stage5", "pcrStatus");
+                const pcrStatus    = getVal(p, "stage5", "pcrSdnStatus");
                 const rfsStatus    = getVal(p, "stage5", "rfsStatus");
                 const repatStatus   = getVal(p, "stage4", "repatStatus");
                 const pacStatus    = getVal(p, "stage5", "pacStatus");
