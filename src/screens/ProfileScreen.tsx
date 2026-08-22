@@ -94,7 +94,7 @@ export function ProfileScreen() {
         </p>
       </div>
 
-      <div className="max-w-2xl space-y-5">
+      <div className="max-w-2xl mx-auto space-y-5">
         {/* Profile card */}
         <div className="rounded-2xl border border-ink-700 bg-ink-800 p-6">
           <h2 className="mb-5 text-base font-semibold text-white">Profile</h2>
