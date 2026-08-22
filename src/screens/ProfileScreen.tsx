@@ -94,7 +94,7 @@ export function ProfileScreen() {
         </p>
       </div>
 
-      <div className="max-w-2xl space-y-5">
+      <div className="--osc mx-auto justify-center flex flex-col items-center w-full">
         {/* Profile card */}
         <div className="rounded-2xl border border-ink-700 bg-ink-800 p-6">
           <h2 className="mb-5 text-base font-semibold text-white">Profile</h2>
@@ -120,7 +120,7 @@ export function ProfileScreen() {
             </div>
             <div>
               <label className="mb-2 block text-xs font-medium text-gray-400">Account Type</label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="--osc justify-center mx-auto">
                 <button
                   onClick={() => setRole("engineer")}
                   className={`flex flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${

@@ -144,7 +144,7 @@ export function AuthScreen() {
       </div>
 
       {/* Auth card */}
-      <div className="w-full max-w-md">
+      <div className="--osc mx-auto justify-center flex flex-col items-center w-full">
         <div className="rounded-3xl border border-ink-700/60 bg-ink-800/90 p-7 shadow-2xl">
 
           {otpStep ? (
@@ -291,7 +291,7 @@ export function AuthScreen() {
             {mode === "signup" && (
               <div className="pt-1">
                 <p className="mb-2 text-xs font-medium text-gray-400">Account Type</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="--osc justify-center mx-auto">
                   <button
                     type="button"
                     onClick={() => setRole("engineer")}
@@ -417,7 +417,7 @@ export function AuthScreen() {
       {/* Forgot Password Modal */}
       {showForgotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="w-full max-w-sm rounded-3xl border border-ink-700/60 bg-ink-800/90 p-7 shadow-2xl">
+          <div className="--osc mx-auto justify-center flex flex-col items-center w-full">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">Reset your password</h2>
               <button
