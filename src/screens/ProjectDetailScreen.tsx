@@ -835,8 +835,18 @@ export function ProjectDetailScreen() {
     if (!error) setNotes((prev) => prev.filter((n) => n.id !== noteId));
   }
 
+  const MAX_PROJECT_ATTACHMENTS_BYTES = 15 * 1024 * 1024; // 15 MB total per project
+
   async function handleUpload(stage: string, file: File, fieldKey = "_stage") {
     if (!project) return;
+
+    const currentTotal = attachments.reduce((sum, a) => sum + (a.file_size || 0), 0);
+    if (currentTotal + file.size > MAX_PROJECT_ATTACHMENTS_BYTES) {
+      const usedMB = (currentTotal / (1024 * 1024)).toFixed(1);
+      showToast(`Attachment limit reached (15MB per project). Used: ${usedMB}MB — delete a file first.`);
+      return;
+    }
+
     setUploading(`${stage}.${fieldKey}`);
     const filePath = `${project.id}/${stage}/${fieldKey}/${Date.now()}_${file.name}`;
     const { error: upErr } = await supabase.storage.from("stage-attachments").upload(filePath, file);
