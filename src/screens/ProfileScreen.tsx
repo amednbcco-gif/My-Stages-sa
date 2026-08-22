@@ -94,7 +94,7 @@ export function ProfileScreen() {
         </p>
       </div>
 
-      <div className="--osc mx-auto justify-center flex flex-col items-center w-full">
+      <div className="max-w-2xl space-y-5">
         {/* Profile card */}
         <div className="rounded-2xl border border-ink-700 bg-ink-800 p-6">
           <h2 className="mb-5 text-base font-semibold text-white">Profile</h2>
@@ -120,10 +120,10 @@ export function ProfileScreen() {
             </div>
             <div>
               <label className="mb-2 block text-xs font-medium text-gray-400">Account Type</label>
-              <div className="--osc justify-center mx-auto">
+              <div className="flex flex-row gap-3">
                 <button
                   onClick={() => setRole("engineer")}
-                  className={`flex flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
+                  className={`flex flex-1 flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
                     role === "engineer"
                       ? "border-gold bg-gold text-ink-900"
                       : "border-ink-600 bg-ink-900/40 text-gray-400 hover:border-ink-500 hover:text-white"
@@ -134,7 +134,7 @@ export function ProfileScreen() {
                 </button>
                 <button
                   onClick={() => setRole("manager")}
-                  className={`flex flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
+                  className={`flex flex-1 flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
                     role === "manager"
                       ? "border-gold bg-gold text-ink-900"
                       : "border-ink-600 bg-ink-900/40 text-gray-400 hover:border-ink-500 hover:text-white"
