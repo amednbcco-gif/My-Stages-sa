@@ -680,8 +680,8 @@ export function ProjectDetailScreen() {
     supabase
       .from("team_members")
       .select("id, can_edit_all")
-      .eq("owner_id", project.owner_id)
-      .eq("user_id", user.id)
+      
+      
       .maybeSingle()
       .then(({ data: tm }) => {
         if (!tm) {
