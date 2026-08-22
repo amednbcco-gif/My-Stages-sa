@@ -117,8 +117,8 @@ export function AppShell({ children }: AppShellProps) {
         setNotifOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
   }, []);
 
   async function handleSignOut() {
@@ -148,7 +148,7 @@ export function AppShell({ children }: AppShellProps) {
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-extrabold leading-none tracking-[0.18em] text-white">STAGES</p>
-            <p className="text-[9px] tracking-wide text-gold leading-tight">Infrastructure Projects Tracker</p>
+            <p className="text-[9px] tracking-wide text-gold leading-tight">Infrastructure Project Tracker</p>
           </div>
         </div>
 
@@ -240,7 +240,7 @@ export function AppShell({ children }: AppShellProps) {
             </button>
 
             {userMenuOpen && (
-              <div className="absolute right-0 top-full mt-1.5 w-60 rounded-xl border border-ink-700 bg-ink-800 shadow-xl overflow-hidden">
+              <div onClick={(e) => e.stopPropagation()} className="absolute right-0 top-full mt-1.5 w-60 rounded-xl border border-ink-700 bg-ink-800 shadow-xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-ink-700">
                   <p className="text-sm font-semibold text-white truncate">{displayName}</p>
                   <p className="text-xs text-gray-500 truncate">{isGuest ? "Guest mode — read-only demo" : user?.email}</p>
