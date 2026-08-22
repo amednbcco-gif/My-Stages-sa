@@ -41,11 +41,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // so it's a no-op for accounts that are already linked.
   async function linkPendingTeamMembership(u: User) {
     if (!u.email) return;
-    await supabase
+    const { error, count } = await supabase
       .from("team_members")
       .update({ user_id: u.id })
       .ilike("email", u.email)
-      .is("user_id", null);
+      .is("user_id", null)
+      .select("id", { count: "exact" });
+    if (error) {
+      console.error("[linkPendingTeamMembership] failed:", error.message, error);
+    } else {
+      console.log("[linkPendingTeamMembership] rows updated:", count);
+    }
   }
 
   useEffect(() => {
