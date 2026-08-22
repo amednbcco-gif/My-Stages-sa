@@ -35,6 +35,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setProfile(data as Profile | null);
   }
 
+  // Permanent fix: whenever a user is signed in, link any pending team_members
+  // invitation (matched by email, still missing user_id) to this real account.
+  // Safe to call every time — it only ever touches rows where user_id is null,
+  // so it's a no-op for accounts that are already linked.
+  async function linkPendingTeamMembership(u: User) {
+    if (!u.email) return;
+    await supabase
+      .from("team_members")
+      .update({ user_id: u.id })
+      .ilike("email", u.email)
+      .is("user_id", null);
+  }
+
   useEffect(() => {
     let mounted = true;
 
@@ -43,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
+        linkPendingTeamMembership(s.user);
         loadProfile(s.user.id).finally(() => mounted && setLoading(false));
       } else {
         setLoading(false);
@@ -54,6 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(s);
         setUser(s?.user ?? null);
         if (s?.user) {
+          await linkPendingTeamMembership(s.user);
           await loadProfile(s.user.id);
         } else {
           setProfile(null);
