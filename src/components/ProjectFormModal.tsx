@@ -2,16 +2,13 @@ import { useState, useEffect } from "react";
 import { Button, Input, Select } from "./ui";
 import { Modal } from "./Modal";
 import type { Project, ProjectStatus } from "../lib/types";
-
 interface ProjectFormModalProps {
   open: boolean;
   onClose: () => void;
   onSave: (data: Partial<Project>) => Promise<void>;
   initial?: Project | null;
 }
-
 const STATUS_VALUES: ProjectStatus[] = ["New", "Pending", "In Progress", "Submitted", "Completed"];
-
 export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectFormModalProps) {
   const [projectName, setProjectName] = useState("");
   const [poNumber, setPoNumber] = useState("");
@@ -19,14 +16,13 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [poValueSAR, setPoValueSAR] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
-  const [Owner, setOwner] = useState("");
+  const [sector, setSector] = useState("");
   const [projectType, setProjectType] = useState("");
   const [siteId, setSiteId] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [status, setStatus] = useState<ProjectStatus>("Pending");
   const [saving, setSaving] = useState(false);
-
   useEffect(() => {
     if (initial) {
       setProjectName(initial.project_name);
@@ -36,7 +32,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setSiteId(initial.site_id);
       setRegion(initial.region ?? "");
       setCity(initial.city ?? "");
-      setOwner(initial.owner ?? "");
+      setSector(initial.sector ?? "");
       setProjectType(initial.project_type ?? "");
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
@@ -48,7 +44,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setPoValueSAR("");
       setRegion("");
       setCity("");
-      setOwner("");
+      setSector("");
       setProjectType("");
       setSiteId("");
       setLatitude("");
@@ -56,7 +52,6 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setStatus("Pending");
     }
   }, [initial, open]);
-
   async function handleSave() {
     setSaving(true);
     await onSave({
@@ -67,7 +62,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       site_id: siteId,
       region,
       city,
-      Owner,
+      sector,
       project_type: projectType,
       latitude: latitude ? Number(latitude) : null,
       longitude: longitude ? Number(longitude) : null,
@@ -75,7 +70,6 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
     });
     setSaving(false);
   }
-
   return (
     <Modal
       open={open}
@@ -103,7 +97,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
         </div>
         <Input label="Region" value={region} onChange={setRegion} placeholder="Region" />
         <Input label="City" value={city} onChange={setCity} placeholder="City" />
-        <Input label="Owner" value={Owner} onChange={setOwner} placeholder="Owner" />
+        <Input label="Owner" value={sector} onChange={setSector} placeholder="Owner" />
         <Input label="Project Type" value={projectType} onChange={setProjectType} placeholder="Project Type" />
         <Input label="Latitude" value={latitude} onChange={setLatitude} type="number" placeholder="e.g. 24.7136" />
         <Input label="Longitude" value={longitude} onChange={setLongitude} type="number" placeholder="e.g. 46.6753" />
@@ -114,8 +108,6 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
           options={STATUS_VALUES.map((s) => ({ value: s, label: s }))}
         />
       </div>
-
-
     </Modal>
   );
 }
