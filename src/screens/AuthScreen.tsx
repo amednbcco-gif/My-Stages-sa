@@ -291,7 +291,7 @@ export function AuthScreen() {
             {mode === "signup" && (
               <div className="pt-1">
                 <p className="mb-2 text-xs font-medium text-gray-400">Account Type</p>
-                <div className="--osc justify-center mx-auto">
+                <div className="flex flex-row gap-3"">
                   <button
                     type="button"
                     onClick={() => setRole("engineer")}
