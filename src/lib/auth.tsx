@@ -98,16 +98,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signUp(email: string, password: string, fullName: string, role: string) {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName, role } },
+    });
     if (error) return { error: error.message };
-    const uid = data.user?.id;
-    if (uid) {
-      await supabase.from("profiles").insert({
-        id: uid,
-        full_name: fullName,
-        role,
-      });
-    }
     return { error: null };
   }
 
@@ -129,8 +125,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function verifySignupOtp(email: string, token: string) {
-    const { error } = await supabase.auth.verifyOtp({ email, token, type: "signup" });
-    return { error: error?.message ?? null };
+    const { data, error } = await supabase.auth.verifyOtp({ email, token, type: "signup" });
+    if (error) return { error: error.message };
+    const u = data.user;
+    if (u) {
+      const meta = (u.user_metadata ?? {}) as { full_name?: string; role?: string };
+      await supabase.from("profiles").upsert({
+        id: u.id,
+        full_name: meta.full_name ?? "",
+        role: meta.role ?? "engineer",
+      });
+    }
+    return { error: null };
   }
 
   async function resendSignupOtp(email: string) {
