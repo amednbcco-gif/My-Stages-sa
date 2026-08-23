@@ -130,7 +130,7 @@ export function ProfileScreen() {
                   }`}
                 >
                   <HardHat size={22} />
-                  Site Engineer
+                 Site Engineer
                 </button>
                 <button
                   onClick={() => setRole("manager")}
@@ -155,7 +155,7 @@ export function ProfileScreen() {
             </button>
           </div>
         </div>
-
+ 
         {/* Change Password card */}
         <div className="rounded-2xl border border-ink-700 bg-ink-800 p-6">
           <div className="mb-5 flex items-center gap-2">
