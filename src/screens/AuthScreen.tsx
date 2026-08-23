@@ -295,10 +295,10 @@ export function AuthScreen() {
                   <button
                     type="button"
                     onClick={() => setRole("engineer")}
-                    className={`flex flex-col items-center gap-2 rounded-2xl border py-4 text-sm font-bold transition-all duration-200 ${
-                      role === "engineer"
-                        ? "border-gold bg-gold text-ink-900 shadow-md"
-                        : "border-ink-700 bg-ink-900/40 text-gray-300 hover:border-gold/30 hover:text-white"
+                     className={`flex flex-1 flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
+                    role === "engineer"
+                      ? "border-gold bg-gold text-ink-900"
+                      : "border-ink-600 bg-ink-900/40 text-gray-400 hover:border-ink-500 hover:text-white"
                     }`}
                   >
                     <HardHat size={20} />
