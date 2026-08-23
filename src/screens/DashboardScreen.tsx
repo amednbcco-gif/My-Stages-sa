@@ -84,50 +84,159 @@ export function DashboardScreen() {
     stageDist[currentStage(p)]++;
   });
 
-  // ── Team Evaluate ──
-  // For each team member, gather their assigned projects (via permissions or
-  // can_view_all / can_edit_all = all projects), then evaluate every milestone
-  // status field across those projects. Approved/Rectified/Handed over/Done/Clearanced/Closed/PATTED
-  // = 100%, Submitted = 50%.
-  const teamEvals: TeamEval[] = members.map((m) => {
-    const memberPerms = permissions.filter((p) => p.team_member_id === m.id);
-    const permProjectIds = new Set(memberPerms.map((p) => p.project_id));
-    const assignedProjects = (m.can_view_all || m.can_edit_all)
-      ? projects
-      : projects.filter((p) => permProjectIds.has(p.id));
+  /// ── Team Evaluate ──
+//
+// Evaluate each team member based ONLY on the milestones assigned to them
+// through "Assign Milestones Access".
+//
+// Approved / Rectified / Handed Over / Done / Clearanced / Closed / PATTED
+// = 100%
+//
+// Submitted = 50%
+//
+// Example:
+// 20 Projects × 4 Assigned Milestones per Project = 80 Total Assigned Milestones
+//
+// Approved = 30
+// Submitted = 50
+//
+// Evaluation Score:
+// (Approved + (Submitted × 0.5)) / Total Assigned Milestones × 100
+//
+// (30 + (50 × 0.5)) / 80 × 100
+// = 68.75% ≈ 69%
 
-    let approvedCount = 0;
-    let submittedCount = 0;
-    let totalMilestones = 0;
+const teamEvals: TeamEval[] = members.map((m) => {
+  // Get all permissions assigned to this team member
+  const memberPerms = permissions.filter(
+    (p) => p.team_member_id === m.id
+  );
 
-    for (const p of assignedProjects) {
-      for (const ms of MILESTONES) {
-        const stage = ms.stage as keyof Project;
-        const sd = p[stage] as unknown as Record<string, unknown> | undefined;
-        if (!sd) continue;
-        const val = String(sd[ms.statusField.key] ?? "");
-        if (!val) continue;
-        totalMilestones++;
-        if (APPROVED_VALUES.includes(val)) approvedCount++;
-        else if (val === "submitted") submittedCount++;
+  // Members with full access can view/edit all projects
+  const hasFullAccess = m.can_view_all || m.can_edit_all;
+
+  // Determine which projects are assigned to this member
+  const assignedProjects = hasFullAccess
+    ? projects
+    : projects.filter((p) =>
+        memberPerms.some((perm) => perm.project_id === p.id)
+      );
+
+  let approvedCount = 0;
+  let submittedCount = 0;
+  let totalMilestones = 0;
+
+  for (const project of assignedProjects) {
+    // Get this member's permission record for the current project
+    const projectPerm = memberPerms.find(
+      (perm) => perm.project_id === project.id
+    );
+
+    // Determine which milestones are assigned to the member.
+    //
+    // If the member has full access, all milestones are included.
+    //
+    // Otherwise, include only the milestones assigned through
+    // "Assign Milestones Access".
+    const assignedMilestoneKeys = hasFullAccess
+      ? MILESTONES.map((ms) => ms.stage)
+      : (
+          projectPerm?.assigned_milestones ??
+          projectPerm?.milestones ??
+          projectPerm?.milestone_access ??
+          []
+        );
+
+    // Convert assigned milestones to a Set for easier matching
+    const assignedSet = new Set(
+      Array.isArray(assignedMilestoneKeys)
+        ? assignedMilestoneKeys.map(String)
+        : []
+    );
+
+    for (const ms of MILESTONES) {
+      const milestoneKey = String(ms.stage);
+
+      // If the member does not have access to this milestone,
+      // exclude it completely from the evaluation.
+      if (!hasFullAccess && !assignedSet.has(milestoneKey)) {
+        continue;
+      }
+
+      // This milestone is assigned to the member,
+      // so it must always be included in the total evaluation count.
+      totalMilestones++;
+
+      const stage = ms.stage as keyof Project;
+
+      const stageData = project[stage] as
+        | Record<string, unknown>
+        | undefined;
+
+      const status = String(
+        stageData?.[ms.statusField.key] ?? ""
+      ).toLowerCase();
+
+      // Completed statuses = 100%
+      if (
+        APPROVED_VALUES
+          .map(String)
+          .map((value) => value.toLowerCase())
+          .includes(status)
+      ) {
+        approvedCount++;
+      }
+
+      // Submitted = 50%
+      else if (status === "submitted") {
+        submittedCount++;
       }
     }
+  }
 
-    const pct = totalMilestones > 0
-      ? Math.round(((approvedCount * 100 + submittedCount * 50) / (totalMilestones * 100)) * 100)
+  // Evaluation Formula:
+  //
+  // (Approved + (Submitted × 0.5))
+  // -------------------------------- × 100
+  //     Total Assigned Milestones
+  //
+  // Example:
+  //
+  // Approved = 30
+  // Submitted = 50
+  // Total Assigned Milestones = 80
+  //
+  // (30 + (50 × 0.5)) / 80 × 100
+  // = 68.75% ≈ 69%
+
+  const pct =
+    totalMilestones > 0
+      ? Math.round(
+          (
+            (approvedCount + submittedCount * 0.5) /
+            totalMilestones
+          ) * 100
+        )
       : 0;
 
-    return {
-      memberId: m.id,
-      memberName: m.full_name || m.email,
-      approvedCount,
-      submittedCount,
-      totalMilestones,
-      pct,
-      projectCount: assignedProjects.length,
-    };
-  });
+  return {
+    memberId: m.id,
+    memberName: m.full_name || m.email,
 
+    approvedCount,
+    submittedCount,
+
+    // Total milestones assigned to this member only
+    totalMilestones,
+
+    // Final evaluation percentage
+    pct,
+
+    // Number of projects assigned to this member
+    projectCount: assignedProjects.length,
+  };
+});
+  
   function exportCSV() {
     const headers = ["SN", "Project Name", "Site ID", "Status", "Progress %", "Current Stage", "PO Value SAR"];
     const rows = projects.map((p) => [
