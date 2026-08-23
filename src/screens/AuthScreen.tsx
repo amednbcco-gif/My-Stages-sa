@@ -301,7 +301,7 @@ export function AuthScreen() {
                         : "border-ink-700 bg-ink-900/40 text-gray-300 hover:border-gold/30 hover:text-white"
                     }`}
                   >
-                    <HardHat size={30} />
+                    <HardHat size={20} />
                     Site Engineer
                   </button>
                   <button
@@ -313,7 +313,7 @@ export function AuthScreen() {
                         : "border-ink-700 bg-ink-900/40 text-gray-300 hover:border-gold/30 hover:text-white"
                     }`}
                   >
-                    <Briefcase size={30} />
+                    <Briefcase size={20} />
                     Manager
                   </button>
                 </div>
