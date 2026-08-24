@@ -22,6 +22,7 @@ import {
   PERMIT_OPTIONS,
   CLEARANCE_OPTIONS,
   REPAT_OPTIONS,
+  EXECUTION_STATUS_OPTIONS,
   MILESTONES,
   computeProgress,
   addDays,
@@ -48,11 +49,11 @@ function fmtDateTime(d: string | Date): string {
 
 function stageProgress(project: Project, stage: string): number {
   const fields = STAGE_FIELDS[stage].filter(
-    (f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "close-permit" || f.type === "permit" || f.type === "clearance"
+    (f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "close-permit" || f.type === "permit" || f.type === "clearance" || f.type === "execution"
   );
   if (!fields.length) return 0;
   const data = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
-  const approved = fields.filter((f) => data[f.key] === "approved" || data[f.key] === "closed").length;
+  const approved = fields.filter((f) => data[f.key] === "approved" || data[f.key] === "closed" || data[f.key] === "done").length;
   return Math.round((approved / fields.length) * 100);
 }
 
@@ -64,6 +65,11 @@ function statusColor(val: string) {
     case "submitted": return "border-sky-500/70 text-sky-300 bg-sky-500/15";
     case "closed": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
     case "clearanced": return "border-teal-500/70 text-teal-300 bg-teal-500/15";
+    case "civil_inprogress": return "border-sky-500/70 text-sky-300 bg-sky-500/15";
+    case "fiber_inprogress": return "border-amber-500/70 text-amber-300 bg-amber-500/15";
+    case "splicing_inprogress": return "border-violet-500/70 text-violet-300 bg-violet-500/15";
+    case "patching_inprogress": return "border-rose-500/70 text-rose-300 bg-rose-500/15";
+    case "done": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
     default: return "border-ink-600 text-gray-400 bg-ink-900/50";
   }
 }
@@ -78,6 +84,7 @@ function optionsFor(type: string) {
   if (type === "permit") return PERMIT_OPTIONS;
   if (type === "clearance") return CLEARANCE_OPTIONS;
   if (type === "done") return DONE_OPTIONS;
+  if (type === "execution") return EXECUTION_STATUS_OPTIONS;
   if (type === "repat-status") return REPAT_OPTIONS;
   return STATUS_OPTIONS;
 }
@@ -93,7 +100,7 @@ interface FieldInputProps {
   disabled?: boolean;
 }
 function FieldInput({ field, value, stage, onFieldChange, disabled }: FieldInputProps) {
-  const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","repat-status"].includes(field.type);
+  const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","repat-status","execution"].includes(field.type);
 
   if (disabled) {
     if (isStatus) {
@@ -328,7 +335,7 @@ interface MilestoneListProps {
 }
 
 function milestoneDone(statusVal: unknown): boolean {
-  return statusVal === "approved" || statusVal === "closed";
+  return statusVal === "approved" || statusVal === "closed" || statusVal === "done";
 }
 
 function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, canEdit }: {

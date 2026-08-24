@@ -47,7 +47,7 @@ export interface Stage3 {
   fiberSplicingStatus: StatusValue;
   patchingStatus: StatusValue;
   patchingDoneStatus: StatusValue;
-  civilStatus: StatusValue;
+  civilStatus: string;
   actualStartDate: string;
   actualEndDate: string;
   closePermit: StatusValue;

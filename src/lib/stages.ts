@@ -3,7 +3,7 @@ import type { StatusValue } from "./types";
 export interface StageField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status" | "execution";
 }
 
 export const STAGE_LABELS: Record<string, string> = {
@@ -34,6 +34,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "baselineEndDate", label: "Baseline End", type: "date" },
   ],
   stage3: [
+    { key: "civilStatus", label: "Execution Status", type: "execution" },
     { key: "permitsStatus", label: "Permits", type: "permit" },
     { key: "civilActualMeters", label: "Civil (m)", type: "number" },
     { key: "hddActualMeters", label: "HDD (m)", type: "number" },
@@ -154,11 +155,20 @@ export const DONE_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "approved", label: "Done" },
 ];
 
+export const EXECUTION_STATUS_OPTIONS: { value: string; label: string }[] = [
+  { value: "pending", label: "Pending" },
+  { value: "civil_inprogress", label: "CIVIL Inprogress" },
+  { value: "fiber_inprogress", label: "FIBER Inprogress" },
+  { value: "splicing_inprogress", label: "Splicing Inprogress" },
+  { value: "patching_inprogress", label: "Patching Inprogress" },
+  { value: "done", label: "Done" },
+];
+
 /* ─── Milestone definitions (List Form) ────────────────────── */
 export interface MilestoneField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution";
 }
 
 export interface Milestone {
@@ -167,7 +177,7 @@ export interface Milestone {
   stage: string;
   fields: MilestoneField[];
   statusField: MilestoneField;
-  statusType: "status" | "patsub" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status";
+  statusType: "status" | "patsub" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution";
 }
 
 export const MILESTONES: Milestone[] = [
@@ -221,8 +231,8 @@ export const MILESTONES: Milestone[] = [
     id: "civil",
     title: "The Execution",
     stage: "stage3",
-    statusType: "done",
-    statusField: { key: "civilStatus", label: "Execution Status", type: "done" },
+    statusType: "execution",
+    statusField: { key: "civilStatus", label: "Execution Status", type: "execution" },
     fields: [
       { key: "actualStartDate", label: "Actual Start Date", type: "date" },
       { key: "actualEndDate", label: "Actual End Date", type: "date" },
@@ -368,7 +378,7 @@ export function computeProgress(project: Record<string, unknown> | object): numb
   const proj = project as Record<string, Record<string, unknown>>;
   const statusKeys: { stage: keyof typeof STAGE_FIELDS; keys: string[] }[] = STAGE_ORDER.map((s) => ({
     stage: s,
-    keys: STAGE_FIELDS[s].filter((f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho").map((f) => f.key),
+    keys: STAGE_FIELDS[s].filter((f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "execution").map((f) => f.key),
   }));
 
   let total = 0;
@@ -378,7 +388,7 @@ export function computeProgress(project: Record<string, unknown> | object): numb
     const data = proj[stage] as Record<string, unknown>;
     for (const key of keys) {
       total++;
-      if (data[key] === "approved" || data[key] === "closed") approved++;
+      if (data[key] === "approved" || data[key] === "closed" || data[key] === "done") approved++;
     }
   }
 
@@ -389,9 +399,9 @@ export function computeProgress(project: Record<string, unknown> | object): numb
 export function currentStage(project: Record<string, unknown> | object): string {
   const proj = project as Record<string, Record<string, unknown>>;
   for (const stage of STAGE_ORDER) {
-    const fields = STAGE_FIELDS[stage].filter((f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho");
+    const fields = STAGE_FIELDS[stage].filter((f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "execution");
     const data = proj[stage] as Record<string, unknown>;
-    const allApproved = fields.every((f) => data[f.key] === "approved" || data[f.key] === "closed");
+    const allApproved = fields.every((f) => data[f.key] === "approved" || data[f.key] === "closed" || data[f.key] === "done");
     if (!allApproved) return stage;
   }
   return "stage6";
