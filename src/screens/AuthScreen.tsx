@@ -144,34 +144,17 @@ export function AuthScreen() {
       </div>
 
       {/* Auth card */}
-      <div className="--osc mx-auto justify-center flex flex-col items-center w-full">
+      <div className="w-full max-w-md">
         <div className="rounded-3xl border border-ink-700/60 bg-ink-800/90 p-7 shadow-2xl">
 
           {otpStep ? (
             <>
               <h2 className="mb-1 text-lg font-bold text-white">Verify your email</h2>
               <p className="mb-5 text-sm text-gray-400">
-                {email ? (
-                  <>Enter the verification code we sent to <span className="text-gold">{email}</span></>
-                ) : (
-                  <>Enter your email and the verification code your manager sent you.</>
-                )}
+                Enter the verification code we sent to <span className="text-gold">{email}</span>
               </p>
 
               <form onSubmit={handleVerifyOtp} className="space-y-3">
-                {!email && (
-                  <div className="flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 focus-within:border-gold/50 transition-colors">
-                    <Mail size={17} className="shrink-0 text-gray-500" />
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Your invited email address"
-                      required
-                      className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none"
-                    />
-                  </div>
-                )}
                 <input
                   type="text"
                   inputMode="numeric"
@@ -308,29 +291,29 @@ export function AuthScreen() {
             {mode === "signup" && (
               <div className="pt-1">
                 <p className="mb-2 text-xs font-medium text-gray-400">Account Type</p>
-                <div className="flex flex-row gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setRole("engineer")}
-                     className={`flex flex-1 flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
-                    role === "engineer"
-                      ? "border-gold bg-gold text-ink-900"
-                      : "border-ink-600 bg-ink-900/40 text-gray-400 hover:border-ink-500 hover:text-white"
+                    className={`flex flex-col items-center gap-2 rounded-2xl border py-4 text-sm font-bold transition-all duration-200 ${
+                      role === "engineer"
+                        ? "border-gold bg-gold text-ink-900 shadow-md"
+                        : "border-ink-700 bg-ink-900/40 text-gray-300 hover:border-gold/30 hover:text-white"
                     }`}
                   >
-                    <HardHat size={20} />
+                    <HardHat size={22} />
                     Site Engineer
                   </button>
                   <button
                     type="button"
                     onClick={() => setRole("manager")}
-                    className={`flex flex-1 flex-col items-center gap-2 rounded-xl border py-4 text-sm font-semibold transition-all ${
-                    role === "manager"
-                      ? "border-gold bg-gold text-ink-900"
-                      : "border-ink-600 bg-ink-900/40 text-gray-400 hover:border-ink-500 hover:text-white"
+                    className={`flex flex-col items-center gap-2 rounded-2xl border py-4 text-sm font-bold transition-all duration-200 ${
+                      role === "manager"
+                        ? "border-gold bg-gold text-ink-900 shadow-md"
+                        : "border-ink-700 bg-ink-900/40 text-gray-300 hover:border-gold/30 hover:text-white"
                     }`}
                   >
-                    <Briefcase size={20} />
+                    <Briefcase size={22} />
                     Manager
                   </button>
                 </div>
@@ -389,15 +372,6 @@ export function AuthScreen() {
           >
             Continue as Guest
           </button>
-
-          {/* Invited member verification link */}
-          <button
-            type="button"
-            onClick={() => { setOtpStep(true); setOtpCode(""); setOtpError(null); setOtpResendMsg(null); }}
-            className="w-full text-center text-xs font-semibold text-sky-400 hover:underline pt-1"
-          >
-            Have a verification code? Verify your invited account
-          </button>
           </>
           )}
         </div>
@@ -443,7 +417,7 @@ export function AuthScreen() {
       {/* Forgot Password Modal */}
       {showForgotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="--osc mx-auto justify-center flex flex-col items-center w-full">
+          <div className="w-full max-w-sm rounded-3xl border border-ink-700/60 bg-ink-800/90 p-7 shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">Reset your password</h2>
               <button
