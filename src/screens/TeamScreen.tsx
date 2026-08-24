@@ -13,8 +13,7 @@ function milestoneLabel(title: string): string {
 }
 
 export function TeamScreen() {
-  const { user, profile } = useAuth();
-  const isManager = profile?.role === "manager";
+  const { user } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [milestonePerms, setMilestonePerms] = useState<ProjectPermission[]>([]);
@@ -38,24 +37,14 @@ export function TeamScreen() {
 
   async function load() {
     setLoading(true);
-    if (isManager) {
-      const [membersRes, projectsRes, permsRes] = await Promise.all([
-        supabase.from("team_members").select("*").order("created_at", { ascending: false }),
-        supabase.from("projects").select("id,project_name,sn,site_id").order("created_at", { ascending: false }),
-        supabase.from("project_permissions").select("*").order("created_at", { ascending: false }),
-      ]);
-      setMembers((membersRes.data as TeamMember[]) ?? []);
-      setProjects((projectsRes.data as Project[]) ?? []);
-      setMilestonePerms((permsRes.data as ProjectPermission[]) ?? []);
-    } else {
-      // Engineers only see their own team member record
-      const { data } = await supabase
-        .from("team_members")
-        .select("*")
-        .eq("user_id", user?.id ?? "")
-        .maybeSingle();
-      setMembers(data ? [data as TeamMember] : []);
-    }
+    const [membersRes, projectsRes, permsRes] = await Promise.all([
+      supabase.from("team_members").select("*").order("created_at", { ascending: false }),
+      supabase.from("projects").select("id,project_name,sn,site_id").order("created_at", { ascending: false }),
+      supabase.from("project_permissions").select("*").order("created_at", { ascending: false }),
+    ]);
+    setMembers((membersRes.data as TeamMember[]) ?? []);
+    setProjects((projectsRes.data as Project[]) ?? []);
+    setMilestonePerms((permsRes.data as ProjectPermission[]) ?? []);
     setLoading(false);
   }
 
@@ -80,45 +69,22 @@ export function TeamScreen() {
   async function handleAddMember() {
     if (!email) return;
     setSaving(true);
-    const cleanEmail = email.toLowerCase().trim();
     const { error } = await supabase.from("team_members").insert({
       owner_id: user?.id,
-      email: cleanEmail,
+      email: email.toLowerCase().trim(),
       full_name: fullName,
       phone,
       can_add_projects: canAdd,
       can_view_all: true,
       can_edit_all: canEdit,
     });
-    if (error) {
-      setSaving(false);
-      return;
-    }
-
-    // Create auth account + send verification code
-    try {
-      const fnUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/invite-member`;
-      const res = await fetch(fnUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({ email: cleanEmail, full_name: fullName }),
-      });
-      const fnData = await res.json();
-      if (!res.ok) {
-        setToast(`Member added, but verification email may not have sent: ${fnData.error ?? "unknown error"}`);
-      } else {
-        setToast(`${fullName || cleanEmail} added — verification code sent to their email.`);
-      }
-    } catch {
-      setToast(`${fullName || cleanEmail} added to team, but verification email could not be sent.`);
-    }
     setSaving(false);
-    setShowAdd(false);
-    resetAddForm();
-    load();
+    if (!error) {
+      setToast(`${fullName || email} added to team.`);
+      setShowAdd(false);
+      resetAddForm();
+      load();
+    }
   }
 
   async function handleDeleteMember(m: TeamMember) {
@@ -200,38 +166,32 @@ export function TeamScreen() {
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-2 text-2xl font-bold text-white">
-            <Users size={22} className="text-gold" /> {isManager ? "My Team" : "My Profile"}
+            <Users size={22} className="text-gold" /> My Team
           </h1>
           <p className="mt-1 text-sm text-gray-400">
-            {isManager
-              ? "Add your engineers & staff, control who can view or edit your projects, and assign them to specific stages or fields."
-              : "View your team membership and assigned milestone permissions."}
+            Add your engineers &amp; staff, control who can view or edit your projects, and assign them to specific stages or fields.
           </p>
         </div>
-        {isManager && (
-          <Button variant="primary" onClick={() => { resetAddForm(); setShowAdd(true); }}>
-            <Plus size={16} className="mr-1.5" /> Add Member
-          </Button>
-        )}
+        <Button variant="primary" onClick={() => { resetAddForm(); setShowAdd(true); }}>
+          <Plus size={16} className="mr-1.5" /> Add Member
+        </Button>
       </div>
 
-      {/* Stat boxes — manager only */}
-      {isManager && (
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
-            <p className="text-sm text-gray-400">Can view all your projects</p>
-            <p className="mt-1 text-3xl font-bold text-white">{(members || []).filter(m => m.can_view_all || true).length}</p>
-          </div>
-          <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
-            <p className="text-sm text-gray-400">Can edit all your projects</p>
-            <p className="mt-1 text-3xl font-bold text-white">{canEditCount}</p>
-          </div>
-          <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
-            <p className="text-sm text-gray-400">Can add projects</p>
-            <p className="mt-1 text-3xl font-bold text-white">{canAddCount}</p>
-          </div>
+      {/* Stat boxes */}
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
+          <p className="text-sm text-gray-400">Can view all your projects</p>
+          <p className="mt-1 text-3xl font-bold text-white">{(members || []).filter(m => m.can_view_all || true).length}</p>
         </div>
-      )}
+        <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
+          <p className="text-sm text-gray-400">Can edit all your projects</p>
+          <p className="mt-1 text-3xl font-bold text-white">{canEditCount}</p>
+        </div>
+        <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
+          <p className="text-sm text-gray-400">Can add projects</p>
+          <p className="mt-1 text-3xl font-bold text-white">{canAddCount}</p>
+        </div>
+      </div>
 
       {loading ? (
         <div className="flex justify-center py-20">
@@ -239,7 +199,7 @@ export function TeamScreen() {
         </div>
       ) : members.length === 0 ? (
         <div className="rounded-xl border border-ink-700 bg-ink-800 py-16 text-center">
-          <p className="text-gray-400">{isManager ? "No team members yet. Add your first team member to get started." : "You are not linked to any team yet."}</p>
+          <p className="text-gray-400">No team members yet. Add your first team member to get started.</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -267,37 +227,12 @@ export function TeamScreen() {
                     <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-gray-400">
                       <span className="flex items-center gap-1"><Mail size={11} /> {m.email}</span>
                       {m.phone && <span className="flex items-center gap-1"><Phone size={11} /> {m.phone}</span>}
-                      {isPending && isManager && (
+                      {isPending && (
                         <button
                           onClick={() => openAssign(m.id)}
                           className="flex items-center gap-1 rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-[11px] font-medium text-gold hover:bg-gold/20 transition-colors"
                         >
                           <Lock size={10} /> Pending signup
-                        </button>
-                      )}
-                      {isPending && isManager && (
-                        <button
-                          onClick={async () => {
-                            try {
-                              const fnUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/invite-member`;
-                              const res = await fetch(fnUrl, {
-                                method: "POST",
-                                headers: {
-                                  "Content-Type": "application/json",
-                                  Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-                                },
-                                body: JSON.stringify({ email: m.email, full_name: m.full_name }),
-                              });
-                              const fnData = await res.json();
-                              if (res.ok) setToast("Verification code re-sent to " + m.email);
-                              else setToast("Could not resend: " + (fnData.error ?? "unknown error"));
-                            } catch {
-                              setToast("Could not resend verification code.");
-                            }
-                          }}
-                          className="flex items-center gap-1 rounded-full border border-sky-400/40 bg-sky-400/10 px-2.5 py-0.5 text-[11px] font-medium text-sky-300 hover:bg-sky-400/20 transition-colors"
-                        >
-                          <Mail size={10} /> Resend code
                         </button>
                       )}
                     </div>
@@ -318,15 +253,13 @@ export function TeamScreen() {
                     <p className="mt-2 text-xs text-gray-500">{perms.length} milestone edit permission{perms.length !== 1 ? "s" : ""}</p>
                   </div>
 
-                  {/* Delete — manager only */}
-                  {isManager && (
-                    <button
-                      onClick={() => handleDeleteMember(m)}
-                      className="flex-shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  )}
+                  {/* Delete */}
+                  <button
+                    onClick={() => handleDeleteMember(m)}
+                    className="flex-shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
+                  >
+                    <Trash2 size={15} />
+                  </button>
                 </div>
 
                 {/* Expanded body */}
@@ -349,7 +282,7 @@ export function TeamScreen() {
                       </div>
                     )}
 
-                    {/* Assign milestones access panel — manager only */}
+                    {/* Assign milestones access panel */}
                     {isAssigning ? (
                       <div className="rounded-xl border border-ink-600 bg-ink-900/60 p-4 space-y-4">
                         <p className="text-sm font-semibold text-white">Assign milestones access</p>
@@ -381,14 +314,14 @@ export function TeamScreen() {
                           <Button variant="ghost" onClick={cancelAssign}>Cancel</Button>
                         </div>
                       </div>
-                    ) : isManager ? (
+                    ) : (
                       <button
                         onClick={() => openAssign(m.id)}
                         className="flex items-center gap-1.5 text-xs text-gold hover:text-gold/80 transition-colors"
                       >
                         <Plus size={13} /> Assign milestones access
                       </button>
-                    ) : null}
+                    )}
                   </div>
                 )}
               </div>
@@ -397,8 +330,7 @@ export function TeamScreen() {
         </div>
       )}
 
-      {/* Add Member Modal — manager only */}
-      {isManager && (
+      {/* Add Member Modal */}
       <Modal
         open={showAdd}
         onClose={() => setShowAdd(false)}
@@ -433,7 +365,6 @@ export function TeamScreen() {
           </div>
         </div>
       </Modal>
-      )}
 
       {/* Toast */}
       {toast && (

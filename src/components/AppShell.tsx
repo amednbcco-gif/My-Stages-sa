@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FolderKanban, LayoutDashboard, Users, CircleUser as UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell, Trash2 } from "lucide-react";
+import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 
@@ -89,14 +89,6 @@ export function AppShell({ children }: AppShellProps) {
 
     return () => { supabase.removeChannel(channel); };
   }, [isGuest, user]);
-
-  async function clearNotifications() {
-    const ids = notifications.map((n) => n.id);
-    if (ids.length === 0) return;
-    await supabase.from("notifications").delete().in("id", ids);
-    setNotifications([]);
-    setUnreadCount(0);
-  }
 
   function openNotifications() {
     setNotifOpen((v) => !v);
@@ -202,18 +194,8 @@ export function AppShell({ children }: AppShellProps) {
 
               {notifOpen && (
                 <div className="absolute right-0 top-full mt-1.5 w-80 max-h-96 overflow-y-auto rounded-xl border border-ink-700 bg-ink-800 shadow-xl">
-                  <div className="sticky top-0 z-10 flex items-center justify-between border-b border-ink-700 bg-ink-800 px-4 py-3">
+                  <div className="sticky top-0 border-b border-ink-700 bg-ink-800 px-4 py-3">
                     <p className="text-sm font-semibold text-white">Notifications</p>
-                    {notifications.length > 0 && (
-                      <button
-                        onClick={clearNotifications}
-                        title="Clear all notifications"
-                        className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-gray-400 transition-colors hover:bg-rose-500/10 hover:text-rose-300"
-                      >
-                        <Trash2 size={14} />
-                        Clear
-                      </button>
-                    )}
                   </div>
                   {notifications.length === 0 ? (
                     <p className="px-4 py-6 text-center text-xs text-gray-500">No notifications yet.</p>

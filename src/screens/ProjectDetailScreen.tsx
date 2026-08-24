@@ -22,7 +22,6 @@ import {
   PERMIT_OPTIONS,
   CLEARANCE_OPTIONS,
   REPAT_OPTIONS,
-  EXECUTION_STATUS_OPTIONS,
   MILESTONES,
   computeProgress,
   addDays,
@@ -49,11 +48,11 @@ function fmtDateTime(d: string | Date): string {
 
 function stageProgress(project: Project, stage: string): number {
   const fields = STAGE_FIELDS[stage].filter(
-    (f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "close-permit" || f.type === "permit" || f.type === "clearance" || f.type === "execution"
+    (f) => f.type === "status" || f.type === "patsub" || f.type === "pat-status" || f.type === "crq-ho" || f.type === "close-permit" || f.type === "permit" || f.type === "clearance"
   );
   if (!fields.length) return 0;
   const data = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
-  const approved = fields.filter((f) => data[f.key] === "approved" || data[f.key] === "closed" || data[f.key] === "done").length;
+  const approved = fields.filter((f) => data[f.key] === "approved" || data[f.key] === "closed").length;
   return Math.round((approved / fields.length) * 100);
 }
 
@@ -65,11 +64,6 @@ function statusColor(val: string) {
     case "submitted": return "border-sky-500/70 text-sky-300 bg-sky-500/15";
     case "closed": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
     case "clearanced": return "border-teal-500/70 text-teal-300 bg-teal-500/15";
-    case "civil_inprogress": return "border-sky-500/70 text-sky-300 bg-sky-500/15";
-    case "fiber_inprogress": return "border-amber-500/70 text-amber-300 bg-amber-500/15";
-    case "splicing_inprogress": return "border-violet-500/70 text-violet-300 bg-violet-500/15";
-    case "patching_inprogress": return "border-rose-500/70 text-rose-300 bg-rose-500/15";
-    case "done": return "border-emerald-500/70 text-emerald-300 bg-emerald-500/15";
     default: return "border-ink-600 text-gray-400 bg-ink-900/50";
   }
 }
@@ -84,7 +78,6 @@ function optionsFor(type: string) {
   if (type === "permit") return PERMIT_OPTIONS;
   if (type === "clearance") return CLEARANCE_OPTIONS;
   if (type === "done") return DONE_OPTIONS;
-  if (type === "execution") return EXECUTION_STATUS_OPTIONS;
   if (type === "repat-status") return REPAT_OPTIONS;
   return STATUS_OPTIONS;
 }
@@ -100,7 +93,7 @@ interface FieldInputProps {
   disabled?: boolean;
 }
 function FieldInput({ field, value, stage, onFieldChange, disabled }: FieldInputProps) {
-  const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","repat-status","execution"].includes(field.type);
+  const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done"].includes(field.type);
 
   if (disabled) {
     if (isStatus) {
@@ -335,7 +328,7 @@ interface MilestoneListProps {
 }
 
 function milestoneDone(statusVal: unknown): boolean {
-  return statusVal === "approved" || statusVal === "closed" || statusVal === "done";
+  return statusVal === "approved" || statusVal === "closed";
 }
 
 function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, canEdit }: {
@@ -439,7 +432,7 @@ function MilestoneCard({
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[milestone.stage] ?? {};
   const statusVal = String(stageData[milestone.statusField.key] ?? "pending");
   const done = milestoneDone(statusVal);
-  const msAtts = attachments.filter((a) => a.stage === milestone.stage && (a.field === milestone.id || (milestone.id === "survey" && a.field === "_stage")));
+  const msAtts = attachments.filter((a) => a.stage === milestone.stage && a.field === milestone.id);
   const isUploading = uploading === `${milestone.stage}.${milestone.id}`;
 
   // count filled data fields
@@ -700,43 +693,11 @@ export function ProjectDetailScreen() {
       .eq("user_id", user.id)
       .eq("owner_id", project.owner_id)
       .maybeSingle()
-      .then(({ data: tm, error: tmErr }) => {
-        if (tmErr) console.error("[perms] team_members query error:", tmErr);
+      .then(({ data: tm }) => {
         if (!tm) {
-          if (!user.email) {
-            setCanEditAll(false);
-            setEditableMilestoneIds([]);
-            setPermsLoaded(true);
-            return;
-          }
-          supabase
-            .from("team_members")
-            .select("id, can_edit_all")
-            .ilike("email", user.email)
-            .eq("owner_id", project.owner_id)
-            .maybeSingle()
-            .then(({ data: tmByEmail, error: tmEmailErr }) => {
-              if (tmEmailErr) console.error("[perms] team_members email fallback error:", tmEmailErr);
-              if (!tmByEmail || tmByEmail.can_edit_all) {
-                setCanEditAll(tmByEmail?.can_edit_all ?? false);
-                setEditableMilestoneIds([]);
-                setPermsLoaded(true);
-                return;
-              }
-              setCanEditAll(false);
-              supabase
-                .from("project_permissions")
-                .select("field")
-                .eq("project_id", project.id)
-                .eq("team_member_id", tmByEmail.id)
-                .eq("scope", "field")
-                .eq("can_edit", true)
-                .then(({ data: perms, error: permErr }) => {
-                  if (permErr) console.error("[perms] project_permissions query error (email fallback):", permErr);
-                  setEditableMilestoneIds((perms ?? []).map((p) => p.field));
-                  setPermsLoaded(true);
-                });
-            });
+          setCanEditAll(false);
+          setEditableMilestoneIds([]);
+          setPermsLoaded(true);
           return;
         }
         if (tm.can_edit_all) {
@@ -753,13 +714,12 @@ export function ProjectDetailScreen() {
           .eq("team_member_id", tm.id)
           .eq("scope", "field")
           .eq("can_edit", true)
-          .then(({ data: perms, error: permErr }) => {
-            if (permErr) console.error("[perms] project_permissions query error:", permErr);
+          .then(({ data: perms }) => {
             setEditableMilestoneIds((perms ?? []).map((p) => p.field));
             setPermsLoaded(true);
           });
       });
-  }, [project?.id, project?.owner_id, user?.id, user?.email]);
+  }, [project?.id, project?.owner_id, user?.id]);
 
   function canEditMilestone(milestoneId: string): boolean {
     if (canEditAll) return true;
@@ -798,6 +758,10 @@ export function ProjectDetailScreen() {
     else if (key === "pacStatus") linked.pacCrqStatus = value;
     else if (key === "facCrqStatus") linked.facStatus = value;
     else if (key === "facStatus") linked.facCrqStatus = value;
+    else if (key === "permitsStatus") linked.closePermit = value;
+    else if (key === "closePermit") linked.permitsStatus = value;
+    else if (key === "fiberSplicingStatus") linked.patchingStatus = value;
+    else if (key === "patchingStatus") linked.fiberSplicingStatus = value;
     else if (key === "finalClearanceStatus") linked.clearancePermit = value;
     else if (key === "clearancePermit") linked.finalClearanceStatus = value;
     const updated = { ...stageData, ...linked };
@@ -832,7 +796,6 @@ export function ProjectDetailScreen() {
 
     const { error } = await supabase.from("projects").update(updateObj).eq("id", project.id);
     if (error) {
-      console.error("[updateStageField] RLS update error:", error.message, error.code, "stage:", stage, "key:", key);
       showToast("Save failed");
     }
   }

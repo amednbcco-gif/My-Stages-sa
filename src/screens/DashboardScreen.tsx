@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FolderKanban, CircleCheck as CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users } from "lucide-react";
+import { FolderKanban, CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
@@ -12,6 +12,7 @@ function fmtSAR(n: number) {
   return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
+const APPROVED_VALUES = ["approved", "closed", "clearanced"];
 
 interface TeamEval {
   memberId: string;
@@ -24,8 +25,7 @@ interface TeamEval {
 }
 
 export function DashboardScreen() {
-  const { user, profile, isGuest } = useAuth();
-  const isManager = profile?.role === "manager";
+  const { user, isGuest } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [permissions, setPermissions] = useState<ProjectPermission[]>([]);
@@ -46,9 +46,7 @@ export function DashboardScreen() {
         supabase.from("project_permissions").select("*").order("created_at", { ascending: false }),
       ]);
       setProjects((projRes.data as Project[]) ?? []);
-      const allMembers = (memRes.data as TeamMember[]) ?? [];
-      // Engineers only see their own team member record; managers see all.
-      setMembers(isManager ? allMembers : allMembers.filter((m) => m.user_id === user?.id));
+      setMembers((memRes.data as TeamMember[]) ?? []);
       setPermissions((permRes.data as ProjectPermission[]) ?? []);
       setLoading(false);
     }
@@ -185,7 +183,7 @@ const teamEvals: TeamEval[] = members.map((m) => {
       // Get the stage that belongs to this main milestone.
       const stage = ms.stage as keyof Project;
 
-      const stageData = project[stage] as unknown as
+      const stageData = project[stage] as
         | Record<string, unknown>
         | undefined;
 
