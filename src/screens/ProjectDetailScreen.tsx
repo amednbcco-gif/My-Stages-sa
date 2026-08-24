@@ -439,7 +439,7 @@ function MilestoneCard({
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[milestone.stage] ?? {};
   const statusVal = String(stageData[milestone.statusField.key] ?? "pending");
   const done = milestoneDone(statusVal);
-  const msAtts = attachments.filter((a) => a.stage === milestone.stage && a.field === milestone.id);
+  const msAtts = attachments.filter((a) => a.stage === milestone.stage && (a.field === milestone.id || (milestone.id === "survey" && a.field === "_stage")));
   const isUploading = uploading === `${milestone.stage}.${milestone.id}`;
 
   // count filled data fields
