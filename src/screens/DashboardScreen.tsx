@@ -24,7 +24,8 @@ interface TeamEval {
 }
 
 export function DashboardScreen() {
-  const { user, isGuest } = useAuth();
+  const { user, profile, isGuest } = useAuth();
+  const isManager = profile?.role === "manager";
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [permissions, setPermissions] = useState<ProjectPermission[]>([]);
@@ -45,7 +46,9 @@ export function DashboardScreen() {
         supabase.from("project_permissions").select("*").order("created_at", { ascending: false }),
       ]);
       setProjects((projRes.data as Project[]) ?? []);
-      setMembers((memRes.data as TeamMember[]) ?? []);
+      const allMembers = (memRes.data as TeamMember[]) ?? [];
+      // Engineers only see their own team member record; managers see all.
+      setMembers(isManager ? allMembers : allMembers.filter((m) => m.user_id === user?.id));
       setPermissions((permRes.data as ProjectPermission[]) ?? []);
       setLoading(false);
     }
