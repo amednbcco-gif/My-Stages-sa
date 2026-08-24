@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FolderKanban, LayoutDashboard, Users, UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell } from "lucide-react";
+import { FolderKanban, LayoutDashboard, Users, CircleUser as UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 
@@ -47,7 +47,7 @@ function StagesLogo({ size = 32 }: { size?: number }) {
 const centerNav = [
   { to: "/theprojects", label: "The Projects", icon: FolderKanban },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/team", label: "Team", icon: Users },
+  { to: "/team", label: "Team", icon: Users, managerOnly: true },
 ];
 
 export function AppShell({ children }: AppShellProps) {
@@ -136,6 +136,9 @@ export function AppShell({ children }: AppShellProps) {
     .join("")
     .toUpperCase();
 
+  const isManager = profile?.role === "manager";
+  const visibleNav = centerNav.filter((item) => !item.managerOnly || isManager);
+
   return (
     <div className="flex min-h-screen flex-col bg-ink-900">
       {/* ── Top header ── */}
@@ -154,7 +157,7 @@ export function AppShell({ children }: AppShellProps) {
 
         {/* Center: Nav (desktop) */}
         <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 rounded-full bg-ink-900/60 p-1">
-          {centerNav.map((item) => {
+          {visibleNav.map((item) => {
             const Icon = item.icon;
             return (
               <NavLink
@@ -287,7 +290,7 @@ export function AppShell({ children }: AppShellProps) {
               </button>
             </div>
             <nav className="flex-1 space-y-1 px-3 py-4">
-              {centerNav.map((item) => {
+              {visibleNav.map((item) => {
                 const Icon = item.icon;
                 return (
                   <NavLink
