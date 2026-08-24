@@ -331,13 +331,15 @@ function milestoneDone(statusVal: unknown): boolean {
   return statusVal === "approved" || statusVal === "closed";
 }
 
-function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
+function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, canEdit }: {
   permits: PermitRow[];
   onPermitAdd: () => void;
   onPermitUpdate: (id: string, patch: Partial<PermitRow>) => void;
   onPermitDelete: (id: string) => void;
+  canEdit: boolean;
 }) {
   const inputCls = "w-full rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 transition-colors";
+  const roCls = "w-full rounded-lg border border-ink-700 bg-ink-900/40 px-2 py-1.5 text-xs text-gray-300";
   return (
     <div className="px-5 py-4">
       <div className="overflow-x-auto -mx-2 px-2">
@@ -356,35 +358,41 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
           </thead>
           <tbody>
             {permits.length === 0 ? (
-              <tr><td colSpan={8} className="py-4 text-center text-gray-600">No permits yet. Click + to add one.</td></tr>
+              <tr><td colSpan={8} className="py-4 text-center text-gray-600">No permits yet.{canEdit ? " Click + to add one." : ""}</td></tr>
             ) : (
               permits.map((p) => (
                 <tr key={p.id} className="border-b border-ink-700/40 hover:bg-ink-800/40 transition-colors">
                   <td className="py-1.5 px-2">
-                    <input type="number" className={inputCls + " w-12"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} />
+                    {canEdit ? <input type="number" className={inputCls + " w-12"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} /> : <span className={roCls + " w-12 block"}>{p.sn}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="text" className={inputCls} value={p.permit_no} onChange={(e) => onPermitUpdate(p.id, { permit_no: e.target.value })} />
+                    {canEdit ? <input type="text" className={inputCls} value={p.permit_no} onChange={(e) => onPermitUpdate(p.id, { permit_no: e.target.value })} /> : <span className={roCls + " block"}>{p.permit_no || "—"}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="date" className={inputCls} value={p.issued_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { issued_date: e.target.value || null })} />
+                    {canEdit ? <input type="date" className={inputCls} value={p.issued_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { issued_date: e.target.value || null })} /> : <span className={roCls + " block"}>{p.issued_date ? fmtDate(p.issued_date) : "—"}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="date" className={inputCls} value={p.start_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { start_date: e.target.value || null })} />
+                    {canEdit ? <input type="date" className={inputCls} value={p.start_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { start_date: e.target.value || null })} /> : <span className={roCls + " block"}>{p.start_date ? fmtDate(p.start_date) : "—"}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="date" className={inputCls} value={p.end_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { end_date: e.target.value || null })} />
+                    {canEdit ? <input type="date" className={inputCls} value={p.end_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { end_date: e.target.value || null })} /> : <span className={roCls + " block"}>{p.end_date ? fmtDate(p.end_date) : "—"}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <input type="number" className={inputCls + " w-16"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} />
+                    {canEdit ? <input type="number" className={inputCls + " w-16"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} /> : <span className={roCls + " w-16 block"}>{p.cw_meters}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    <select value={p.permit_status} onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })} className={inputCls + " cursor-pointer"}>
-                      {PERMIT_OPTIONS.map((o) => (<option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>))}
-                    </select>
+                    {canEdit ? (
+                      <select value={p.permit_status} onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })} className={inputCls + " cursor-pointer"}>
+                        {PERMIT_OPTIONS.map((o) => (<option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>))}
+                      </select>
+                    ) : (
+                      <span className={`rounded-lg border px-2 py-1 text-xs font-semibold ${statusColor(p.permit_status)}`}>
+                        {PERMIT_OPTIONS.find((o) => o.value === p.permit_status)?.label ?? p.permit_status}
+                      </span>
+                    )}
                   </td>
                   <td className="py-1.5 px-2 text-center">
-                    <button onClick={() => onPermitDelete(p.id)} className="text-gray-600 hover:text-rose-300 transition-colors"><Trash2 size={12} /></button>
+                    {canEdit && <button onClick={() => onPermitDelete(p.id)} className="text-gray-600 hover:text-rose-300 transition-colors"><Trash2 size={12} /></button>}
                   </td>
                 </tr>
               ))
@@ -392,9 +400,11 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete }: {
           </tbody>
         </table>
       </div>
-      <button onClick={onPermitAdd} className="mt-3 flex items-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 px-3 py-1.5 text-xs font-semibold text-gray-300 hover:border-gold/50 hover:text-gold transition-colors">
-        <Plus size={12} /> Add Permit
-      </button>
+      {canEdit && (
+        <button onClick={onPermitAdd} className="mt-3 flex items-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 px-3 py-1.5 text-xs font-semibold text-gray-300 hover:border-gold/50 hover:text-gold transition-colors">
+          <Plus size={12} /> Add Permit
+        </button>
+      )}
     </div>
   );
 }
@@ -474,7 +484,7 @@ function MilestoneCard({
 
       {/* Fields grid OR permit table */}
       {milestone.id === "permit" ? (
-        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} />
+        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={canEdit} />
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
           {milestone.fields.map((field) => {
@@ -641,7 +651,7 @@ export function ProjectDetailScreen() {
   const [permits, setPermits] = useState<PermitRow[]>([]);
   const [canEditAll, setCanEditAll] = useState(false);
   const [editableMilestoneIds, setEditableMilestoneIds] = useState<string[]>([]);
-  const [permsLoaded, setPermsLoaded] = useState(false);
+  const [, setPermsLoaded] = useState(false);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -680,8 +690,8 @@ export function ProjectDetailScreen() {
     supabase
       .from("team_members")
       .select("id, can_edit_all")
-      
-      
+      .eq("user_id", user.id)
+      .eq("owner_id", project.owner_id)
       .maybeSingle()
       .then(({ data: tm }) => {
         if (!tm) {
@@ -879,7 +889,7 @@ export function ProjectDetailScreen() {
     const nextSn = permits.length > 0 ? Math.max(...permits.map((p) => p.sn)) + 1 : 1;
     const { data, error } = await supabase
       .from("project_permits")
-      .insert({ project_id: project.id, sn: nextSn, permit_no: "", permit_status: "pending" })
+      .insert({ project_id: project.id, owner_id: project.owner_id, sn: nextSn, permit_no: "", permit_status: "pending" })
       .select()
       .single();
     if (!error && data) setPermits((prev) => [...prev, data as PermitRow]);

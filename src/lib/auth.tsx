@@ -8,6 +8,7 @@ interface AuthContextValue {
   user: User | null;
   profile: Profile | null;
   loading: boolean;
+  isGuest: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName: string, role: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -25,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isGuest] = useState(false);
 
   async function loadProfile(uid: string) {
     const { data } = await supabase
@@ -45,8 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .from("team_members")
       .update({ user_id: u.id })
       .ilike("email", u.email)
-      .is("user_id", null)
-      .select("id", { count: "exact" });
+      .is("user_id", null);
     if (error) {
       console.error("[linkPendingTeamMembership] failed:", error.message, error);
     } else {
@@ -98,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signUp(email: string, password: string, fullName: string, role: string) {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName, role } },
@@ -146,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ session, user, profile, loading, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, verifySignupOtp, resendSignupOtp }}
+      value={{ session, user, profile, loading, isGuest, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, verifySignupOtp, resendSignupOtp }}
     >
       {children}
     </AuthContext.Provider>
