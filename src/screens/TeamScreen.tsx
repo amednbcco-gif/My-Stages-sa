@@ -69,22 +69,45 @@ export function TeamScreen() {
   async function handleAddMember() {
     if (!email) return;
     setSaving(true);
+    const cleanEmail = email.toLowerCase().trim();
     const { error } = await supabase.from("team_members").insert({
       owner_id: user?.id,
-      email: email.toLowerCase().trim(),
+      email: cleanEmail,
       full_name: fullName,
       phone,
       can_add_projects: canAdd,
       can_view_all: true,
       can_edit_all: canEdit,
     });
-    setSaving(false);
-    if (!error) {
-      setToast(`${fullName || email} added to team.`);
-      setShowAdd(false);
-      resetAddForm();
-      load();
+    if (error) {
+      setSaving(false);
+      return;
     }
+
+    // Create auth account + send verification code
+    try {
+      const fnUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/invite-member`;
+      const res = await fetch(fnUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ email: cleanEmail, full_name: fullName }),
+      });
+      const fnData = await res.json();
+      if (!res.ok) {
+        setToast(`Member added, but verification email may not have sent: ${fnData.error ?? "unknown error"}`);
+      } else {
+        setToast(`${fullName || cleanEmail} added — verification code sent to their email.`);
+      }
+    } catch {
+      setToast(`${fullName || cleanEmail} added to team, but verification email could not be sent.`);
+    }
+    setSaving(false);
+    setShowAdd(false);
+    resetAddForm();
+    load();
   }
 
   async function handleDeleteMember(m: TeamMember) {
@@ -233,6 +256,31 @@ export function TeamScreen() {
                           className="flex items-center gap-1 rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 text-[11px] font-medium text-gold hover:bg-gold/20 transition-colors"
                         >
                           <Lock size={10} /> Pending signup
+                        </button>
+                      )}
+                      {isPending && (
+                        <button
+                          onClick={async () => {
+                            try {
+                              const fnUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/invite-member`;
+                              const res = await fetch(fnUrl, {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                                },
+                                body: JSON.stringify({ email: m.email, full_name: m.full_name }),
+                              });
+                              const fnData = await res.json();
+                              if (res.ok) setToast("Verification code re-sent to " + m.email);
+                              else setToast("Could not resend: " + (fnData.error ?? "unknown error"));
+                            } catch {
+                              setToast("Could not resend verification code.");
+                            }
+                          }}
+                          className="flex items-center gap-1 rounded-full border border-sky-400/40 bg-sky-400/10 px-2.5 py-0.5 text-[11px] font-medium text-sky-300 hover:bg-sky-400/20 transition-colors"
+                        >
+                          <Mail size={10} /> Resend code
                         </button>
                       )}
                     </div>

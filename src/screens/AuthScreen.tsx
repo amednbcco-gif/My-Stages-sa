@@ -151,10 +151,27 @@ export function AuthScreen() {
             <>
               <h2 className="mb-1 text-lg font-bold text-white">Verify your email</h2>
               <p className="mb-5 text-sm text-gray-400">
-                Enter the verification code we sent to <span className="text-gold">{email}</span>
+                {email ? (
+                  <>Enter the verification code we sent to <span className="text-gold">{email}</span></>
+                ) : (
+                  <>Enter your email and the verification code your manager sent you.</>
+                )}
               </p>
 
               <form onSubmit={handleVerifyOtp} className="space-y-3">
+                {!email && (
+                  <div className="flex items-center gap-3 rounded-2xl border border-ink-700 bg-ink-900/60 px-4 py-3.5 focus-within:border-gold/50 transition-colors">
+                    <Mail size={17} className="shrink-0 text-gray-500" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Your invited email address"
+                      required
+                      className="flex-1 bg-transparent text-sm text-white placeholder-gray-500 outline-none"
+                    />
+                  </div>
+                )}
                 <input
                   type="text"
                   inputMode="numeric"
@@ -371,6 +388,15 @@ export function AuthScreen() {
             className="w-full rounded-2xl border border-ink-700 bg-ink-900/40 py-3.5 text-sm font-bold text-gray-300 transition-all hover:border-gold/30 hover:text-white"
           >
             Continue as Guest
+          </button>
+
+          {/* Invited member verification link */}
+          <button
+            type="button"
+            onClick={() => { setOtpStep(true); setOtpCode(""); setOtpError(null); setOtpResendMsg(null); }}
+            className="w-full text-center text-xs font-semibold text-sky-400 hover:underline pt-1"
+          >
+            Have a verification code? Verify your invited account
           </button>
           </>
           )}
