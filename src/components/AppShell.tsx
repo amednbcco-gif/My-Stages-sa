@@ -47,7 +47,7 @@ function StagesLogo({ size = 32 }: { size?: number }) {
 const centerNav = [
   { to: "/theprojects", label: "The Projects", icon: FolderKanban },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/team", label: "Team", icon: Users, managerOnly: true },
+  { to: "/team", label: "Team", icon: Users },
 ];
 
 export function AppShell({ children }: AppShellProps) {
@@ -136,9 +136,6 @@ export function AppShell({ children }: AppShellProps) {
     .join("")
     .toUpperCase();
 
-  const isManager = profile?.role === "manager";
-  const visibleNav = centerNav.filter((item) => !item.managerOnly || isManager);
-
   return (
     <div className="flex min-h-screen flex-col bg-ink-900">
       {/* ── Top header ── */}
@@ -157,7 +154,7 @@ export function AppShell({ children }: AppShellProps) {
 
         {/* Center: Nav (desktop) */}
         <nav className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-1 rounded-full bg-ink-900/60 p-1">
-          {visibleNav.map((item) => {
+          {centerNav.map((item) => {
             const Icon = item.icon;
             return (
               <NavLink
@@ -290,7 +287,7 @@ export function AppShell({ children }: AppShellProps) {
               </button>
             </div>
             <nav className="flex-1 space-y-1 px-3 py-4">
-              {visibleNav.map((item) => {
+              {centerNav.map((item) => {
                 const Icon = item.icon;
                 return (
                   <NavLink
