@@ -693,11 +693,43 @@ export function ProjectDetailScreen() {
       .eq("user_id", user.id)
       .eq("owner_id", project.owner_id)
       .maybeSingle()
-      .then(({ data: tm }) => {
+      .then(({ data: tm, error: tmErr }) => {
+        if (tmErr) console.error("[perms] team_members query error:", tmErr);
         if (!tm) {
-          setCanEditAll(false);
-          setEditableMilestoneIds([]);
-          setPermsLoaded(true);
+          if (!user.email) {
+            setCanEditAll(false);
+            setEditableMilestoneIds([]);
+            setPermsLoaded(true);
+            return;
+          }
+          supabase
+            .from("team_members")
+            .select("id, can_edit_all")
+            .ilike("email", user.email)
+            .eq("owner_id", project.owner_id)
+            .maybeSingle()
+            .then(({ data: tmByEmail, error: tmEmailErr }) => {
+              if (tmEmailErr) console.error("[perms] team_members email fallback error:", tmEmailErr);
+              if (!tmByEmail || tmByEmail.can_edit_all) {
+                setCanEditAll(tmByEmail?.can_edit_all ?? false);
+                setEditableMilestoneIds([]);
+                setPermsLoaded(true);
+                return;
+              }
+              setCanEditAll(false);
+              supabase
+                .from("project_permissions")
+                .select("field")
+                .eq("project_id", project.id)
+                .eq("team_member_id", tmByEmail.id)
+                .eq("scope", "field")
+                .eq("can_edit", true)
+                .then(({ data: perms, error: permErr }) => {
+                  if (permErr) console.error("[perms] project_permissions query error (email fallback):", permErr);
+                  setEditableMilestoneIds((perms ?? []).map((p) => p.field));
+                  setPermsLoaded(true);
+                });
+            });
           return;
         }
         if (tm.can_edit_all) {
@@ -714,12 +746,13 @@ export function ProjectDetailScreen() {
           .eq("team_member_id", tm.id)
           .eq("scope", "field")
           .eq("can_edit", true)
-          .then(({ data: perms }) => {
+          .then(({ data: perms, error: permErr }) => {
+            if (permErr) console.error("[perms] project_permissions query error:", permErr);
             setEditableMilestoneIds((perms ?? []).map((p) => p.field));
             setPermsLoaded(true);
           });
       });
-  }, [project?.id, project?.owner_id, user?.id]);
+  }, [project?.id, project?.owner_id, user?.id, user?.email]);
 
   function canEditMilestone(milestoneId: string): boolean {
     if (canEditAll) return true;
@@ -796,6 +829,7 @@ export function ProjectDetailScreen() {
 
     const { error } = await supabase.from("projects").update(updateObj).eq("id", project.id);
     if (error) {
+      console.error("[updateStageField] RLS update error:", error.message, error.code, "stage:", stage, "key:", key);
       showToast("Save failed");
     }
   }
