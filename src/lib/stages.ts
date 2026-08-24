@@ -137,6 +137,7 @@ export const CRQ_HO_OPTIONS: { value: StatusValue; label: string }[] = [
 export const REPAT_OPTIONS: { value: string; label: string }[] = [
   { value: "", label: "Pending" },
   { value: "inprogress", label: "In Progress" },
+  { value: "submitted", label: "Submitted" },
   { value: "rectified", label: "Rectified" },
 ];
 

@@ -793,8 +793,6 @@ export function ProjectDetailScreen() {
     else if (key === "facStatus") linked.facCrqStatus = value;
     else if (key === "permitsStatus") linked.closePermit = value;
     else if (key === "closePermit") linked.permitsStatus = value;
-    else if (key === "fiberSplicingStatus") linked.patchingStatus = value;
-    else if (key === "patchingStatus") linked.fiberSplicingStatus = value;
     else if (key === "finalClearanceStatus") linked.clearancePermit = value;
     else if (key === "clearancePermit") linked.finalClearanceStatus = value;
     const updated = { ...stageData, ...linked };
