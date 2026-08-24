@@ -23,52 +23,56 @@ Deno.serve(async (req: Request) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Admin client for checking/creating users
+    const admin = createClient(supabaseUrl, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const cleanEmail = email.toLowerCase().trim();
-    const origin = req.headers.get("origin") ?? "";
-    const redirectTo = origin ? `${origin}/auth` : undefined;
+    // Anon client for triggering OTP email (same flow as signUp)
+    const anon = createClient(supabaseUrl, anonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
 
     // Check if user already exists
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const exists = (existingUsers?.users ?? []).some(
+    const { data: existingUsers } = await admin.auth.admin.listUsers();
+    const existing = (existingUsers?.users ?? []).find(
       (u) => u.email?.toLowerCase() === cleanEmail,
     );
 
-    if (!exists) {
-      // inviteUserByEmail creates the auth account AND sends the OTP email
-      const { error: inviteError } = await supabase.auth.admin.inviteUserByEmail(
-        cleanEmail,
-        redirectTo ? { redirectTo } : undefined,
-      );
+    if (!existing) {
+      // Create the auth account (no email sent by createUser)
+      const { error: createError } = await admin.auth.admin.createUser({
+        email: cleanEmail,
+        password: crypto.randomUUID(),
+        email_confirm: false,
+        user_metadata: { full_name: full_name ?? "" },
+      });
 
-      if (inviteError) {
+      if (createError) {
         return new Response(
-          JSON.stringify({ error: inviteError.message }),
+          JSON.stringify({ error: createError.message }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
       }
 
-      // If full_name was provided, update the user metadata
-      if (full_name) {
-        const { data: updatedUsers } = await supabase.auth.admin.listUsers();
-        const createdUser = (updatedUsers?.users ?? []).find(
-          (u) => u.email?.toLowerCase() === cleanEmail,
-        );
-        if (createdUser) {
-          await supabase.auth.admin.updateUserById(createdUser.id, {
-            user_metadata: { full_name },
-          });
-        }
-      }
-    } else {
-      // User already exists — resend the OTP
-      const { error: resendError } = await supabase.auth.admin.resend({
+      // Send OTP code (same 6-digit code email the app already uses)
+      const { error: resendError } = await anon.auth.resend({
         type: "signup",
         email: cleanEmail,
-        ...(redirectTo ? { options: { emailRedirectTo: redirectTo } } : {}),
+      });
+
+      if (resendError) {
+        console.error("[invite-member] OTP send error:", resendError.message);
+      }
+    } else if (!existing.email_confirmed_at) {
+      // User exists but not confirmed — resend the OTP code
+      const { error: resendError } = await anon.auth.resend({
+        type: "signup",
+        email: cleanEmail,
       });
 
       if (resendError) {
