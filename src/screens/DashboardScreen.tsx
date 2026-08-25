@@ -515,12 +515,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     </div>
   );
 }
-declare global {
-  interface Window {
-    Chart: any;
-  }
 }
-
 function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
