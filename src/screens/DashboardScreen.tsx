@@ -443,11 +443,14 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
           </div>
         </div>
 
-        <RfsPacFacPie rfs={totals.rfs} pac={totals.pac} fac={totals.fac} />
+                <RfsPacFacPie rfs={totals.rfs} pac={totals.pac} fac={totals.fac} />
       </>
     );
   })()}
 </div>
+</div>
+
+      {/* Team Evaluate */}
 
       {/* Team Evaluate */}
       <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
