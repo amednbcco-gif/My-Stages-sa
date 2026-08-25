@@ -515,3 +515,55 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     </div>
   );
 }
+declare global {
+  interface Window {
+    Chart: any;
+  }
+}
+
+function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number }) {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const chartRef = React.useRef<any>(null);
+
+  React.useEffect(() => {
+    if (!canvasRef.current || !window.Chart) return;
+    if (chartRef.current) chartRef.current.destroy();
+
+    chartRef.current = new window.Chart(canvasRef.current, {
+      type: "pie",
+      data: {
+        labels: ["RFS", "PAC", "FAC"],
+        datasets: [{
+          data: [rfs, pac, fac],
+          backgroundColor: ["#2a78d6", "#eb6834", "#1baf7a"],
+          borderColor: "#1a1a19",
+          borderWidth: 2,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => {
+                const total = ctx.dataset.data.reduce((a: number, b: number) => a + b, 0);
+                const p = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : "0";
+                return `${ctx.label}: ${ctx.parsed.toLocaleString()} (${p}%)`;
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return () => chartRef.current?.destroy();
+  }, [rfs, pac, fac]);
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: 260 }}>
+      <canvas ref={canvasRef} />
+    </div>
+  );
+}
