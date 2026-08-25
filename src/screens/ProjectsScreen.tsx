@@ -329,11 +329,11 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">The Projects List</h1>
+          <h1 className="text-2xl font-bold text-white">Projects</h1>
           <p className="text-sm text-gray-400">
             {isGuest
               ? "Guest mode — exploring a demo project. Sign up to create and manage your own projects."
-              : "Managers can add and edit projects and assign specific work stages and tasks to their engineers based on their responsibilities, while engineers manage their own&assigned projects and track their task progress."}
+              : "Managers can add and edit projects and assign specific work stages and tasks to their engineers based on their responsibilities, while engineers manage their own & assigned projects and track their task progress."}
           </p>
         </div>
         <div className="flex gap-2">
