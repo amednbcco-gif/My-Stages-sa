@@ -522,16 +522,14 @@ declare global {
 }
 
 function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number }) {
- const canvasRef = useRef<HTMLCanvasElement>(null);
-const chartRef = useRef<any>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<any>(null);
 
-useEffect(() => {
-
-  React.useEffect(() => {
-    if (!canvasRef.current || !window.Chart) return;
+  useEffect(() => {
+    if (!canvasRef.current || !(window as any).Chart) return;
     if (chartRef.current) chartRef.current.destroy();
 
-    chartRef.current = new window.Chart(canvasRef.current, {
+    chartRef.current = new (window as any).Chart(canvasRef.current, {
       type: "pie",
       data: {
         labels: ["RFS", "PAC", "FAC"],
