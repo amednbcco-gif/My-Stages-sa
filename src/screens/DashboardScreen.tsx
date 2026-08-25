@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FolderKanban, CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users } from "lucide-react";
+import { FolderKanban, CircleCheck as CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
@@ -12,7 +12,6 @@ function fmtSAR(n: number) {
   return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
 }
 
-const APPROVED_VALUES = ["approved", "closed", "clearanced"];
 
 interface TeamEval {
   memberId: string;
@@ -183,7 +182,7 @@ const teamEvals: TeamEval[] = members.map((m) => {
       // Get the stage that belongs to this main milestone.
       const stage = ms.stage as keyof Project;
 
-      const stageData = project[stage] as
+      const stageData = project[stage] as unknown as
         | Record<string, unknown>
         | undefined;
 

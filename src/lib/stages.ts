@@ -3,7 +3,7 @@ import type { StatusValue } from "./types";
 export interface StageField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status" | "done";
 }
 
 export const STAGE_LABELS: Record<string, string> = {
@@ -23,6 +23,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "designStatus", label: "Design", type: "status" },
     { key: "dboqStatus", label: "DBOQ", type: "status" },
     { key: "dboqAmount", label: "DBOQ Amount", type: "number" },
+    { key: "planNo", label: "Plan No.", type: "text" },
     { key: "sendDocsDate", label: "Docs Sent", type: "date" },
     { key: "receiveDocsDate", label: "Docs Received", type: "date" },
   ],
@@ -40,11 +41,18 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "mhHh", label: "MH/HH", type: "number" },
     { key: "odbOdf", label: "ODB/ODF", type: "number" },
     { key: "closures", label: "Closures", type: "number" },
+    { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
     { key: "fiberSplicingStatus", label: "Fiber Splicing", type: "status" },
     { key: "patchingStatus", label: "Patching", type: "status" },
+    { key: "patchingDoneStatus", label: "Patching Done", type: "done" },
     { key: "actualStartDate", label: "Actual Start", type: "date" },
     { key: "actualEndDate", label: "Actual End", type: "date" },
     { key: "closePermit", label: "Close Permit", type: "close-permit" },
+    { key: "clearancePermit", label: "Clearance Permit", type: "clearance" },
+    { key: "finalClearanceStatus", label: "Final Clearance", type: "clearance" },
+    { key: "permitSubmittedDate", label: "Permit Submitted", type: "date" },
+    { key: "permitIssuedDate", label: "Permit Issued", type: "date" },
+    { key: "civilStatus", label: "Execution Status", type: "done" },
   ],
   stage4: [
     { key: "patStatus", label: "PAT Status", type: "pat-status" },

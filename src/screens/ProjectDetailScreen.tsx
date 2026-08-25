@@ -432,7 +432,7 @@ function MilestoneCard({
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[milestone.stage] ?? {};
   const statusVal = String(stageData[milestone.statusField.key] ?? "pending");
   const done = milestoneDone(statusVal);
-  const msAtts = attachments.filter((a) => a.stage === milestone.stage && a.field === milestone.id);
+  const msAtts = attachments.filter((a) => a.stage === milestone.stage && (a.field === milestone.id || a.field === "_stage"));
   const isUploading = uploading === `${milestone.stage}.${milestone.id}`;
 
   // count filled data fields
@@ -610,7 +610,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">Card Layout</p>
-            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row, it works as a dashboard for important information, Collected and distributedd in stages, Any Attachment uploaded here will not appear in List Form </p>
+            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row, it works as a dashboard for important information, Collected and distributed in stages. Attachments sync with List Form automatically.</p>
           </div>
         </button>
 
@@ -624,7 +624,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">List Form</p>
-            <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields, also it's filled with more information, To act as the premimary interface, Filled the field here is automatically reflected in Card Layout, Any Attachment uploaded here will appear automatically in Card Layout</p>
+            <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields, also it's filled with more information, To act as the primary interface, Filled the field here is automatically reflected in Card Layout, Attachments sync with Card Layout automatically</p>
           </div>
         </button>
       </div>
