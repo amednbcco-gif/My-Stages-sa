@@ -15,6 +15,7 @@ import {
   CLOSE_PERMIT_OPTIONS,
   CLEARANCE_OPTIONS,
   DONE_OPTIONS,
+  EXECUTION_OPTIONS,
   REPAT_OPTIONS,
 } from "../lib/stages";
 import type { Project } from "../lib/types";
@@ -28,6 +29,11 @@ function statusColor(value: string): string {
     case "submitted": return "border-amber-500/60 text-amber-300 bg-amber-500/10";
     case "closed": return "border-emerald-500/60 text-emerald-300 bg-emerald-500/10";
     case "clearanced": return "border-teal-500/60 text-teal-300 bg-teal-500/10";
+    case "civil_inprogress":
+    case "fiber_inprogress":
+    case "splicing_inprogress":
+    case "patching_inprogress":
+      return "border-sky-500/60 text-sky-300 bg-sky-500/10";
     default: return "border-ink-600 text-gray-500 bg-ink-900/40";
   }
 }
@@ -45,6 +51,7 @@ function StatusPill({ type, value }: { type: string; value: string }) {
     "close-permit": CLOSE_PERMIT_OPTIONS,
     clearance: CLEARANCE_OPTIONS,
     done: DONE_OPTIONS,
+    execution: EXECUTION_OPTIONS,
     "repat-status": REPAT_OPTIONS,
   };
   const label = (opts[type] ?? STATUS_OPTIONS).find((o) => o.value === value)?.label ?? value;
@@ -235,7 +242,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage2", "poIssuanceDate"),
       // Stage 3 — Execution
       labelOf(PERMIT_OPTIONS, getVal(p, "stage3", "permitsStatus")),
-      labelOf(STATUS_OPTIONS, getVal(p, "stage3", "civilStatus")),
+      labelOf(EXECUTION_OPTIONS, getVal(p, "stage3", "civilStatus")),
       getVal(p, "stage3", "actualStartDate"),
       getVal(p, "stage3", "actualEndDate"),
       getVal(p, "stage3", "civilActualMeters"),
@@ -424,7 +431,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
                     <td className="px-3 py-3"><StatusPill type="permit" value={permitStatus} /></td>
 
                     {/* The Execution */}
-                    <td className="px-3 py-3"><StatusPill type="status" value={executionStatus} /></td>
+                    <td className="px-3 py-3"><StatusPill type="execution" value={executionStatus} /></td>
 
                                       
                     {/* PAT Status */}
