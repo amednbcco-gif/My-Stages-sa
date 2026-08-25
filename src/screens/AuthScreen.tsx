@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Lock, ArrowRight, Phone, User, HardHat, Briefcase, X } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { Spinner } from "../components/ui";
@@ -53,6 +53,27 @@ export function AuthScreen() {
   const [otpError, setOtpError] = useState<string | null>(null);
   const [otpBusy, setOtpBusy] = useState(false);
   const [otpResendMsg, setOtpResendMsg] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
+
+  function startCooldown(seconds = 60) {
+    setResendCooldown(seconds);
+  }
+
+  function parseRateLimitError(msg: string): string {
+    const match = msg.match(/after (\d+) seconds/i);
+    if (match) {
+      const secs = parseInt(match[1], 10);
+      startCooldown(secs);
+      return `Please wait ${secs} seconds before requesting a new code.`;
+    }
+    return msg;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -69,6 +90,7 @@ export function AuthScreen() {
         setOtpStep(true);
         setOtpCode("");
         setOtpError(null);
+        startCooldown(60);
       }
     }
     setBusy(false);
@@ -117,11 +139,16 @@ export function AuthScreen() {
   }
 
   async function handleResendOtp() {
+    if (resendCooldown > 0) return;
     setOtpError(null);
     setOtpResendMsg(null);
     const { error } = await resendSignupOtp(email);
-    if (error) setOtpError(error);
-    else setOtpResendMsg("A new code has been sent.");
+    if (error) {
+      setOtpError(parseRateLimitError(error));
+    } else {
+      setOtpResendMsg("A new code has been sent.");
+      startCooldown(60);
+    }
   }
 
   return (
@@ -189,9 +216,12 @@ export function AuthScreen() {
                 <button
                   type="button"
                   onClick={handleResendOtp}
-                  className="w-full text-center text-xs font-semibold text-gold hover:underline"
+                  disabled={resendCooldown > 0}
+                  className="w-full text-center text-xs font-semibold text-gold hover:underline disabled:text-gray-600 disabled:no-underline"
                 >
-                  Didn't get a code? Resend
+                  {resendCooldown > 0
+                    ? `Resend available in ${resendCooldown}s`
+                    : "Didn't get a code? Resend"}
                 </button>
 
                 <button
