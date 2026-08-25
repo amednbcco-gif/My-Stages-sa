@@ -24,7 +24,7 @@ interface TeamEval {
 }
 
 export function DashboardScreen() {
-  const { user, isGuest } = useAuth();
+  const { user, isGuest, profile } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [permissions, setPermissions] = useState<ProjectPermission[]>([]);
@@ -128,7 +128,8 @@ const completedValues = [
   "issued",
 ].map((value) => value.toLowerCase());
 
-const teamEvals: TeamEval[] = members.map((m) => {
+const visibleMembers = profile?.role === "manager" ? members : members.filter((m) => m.user_id === user?.id);
+const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   // Get ONLY milestone permissions assigned through
   // "Assign Milestones Access".
   //

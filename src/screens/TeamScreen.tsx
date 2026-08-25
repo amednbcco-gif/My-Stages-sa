@@ -13,7 +13,7 @@ function milestoneLabel(title: string): string {
 }
 
 export function TeamScreen() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [milestonePerms, setMilestonePerms] = useState<ProjectPermission[]>([]);
@@ -157,8 +157,10 @@ export function TeamScreen() {
       return true;
     });
   }
-  const canEditCount = members.filter((m) => m.can_edit_all).length;
-  const canAddCount  = members.filter((m) => m.can_add_projects).length;
+  const isManager = profile?.role === "manager";
+  const visibleMembers = isManager ? members : members.filter((m) => m.user_id === user?.id);
+  const canEditCount = visibleMembers.filter((m) => m.can_edit_all).length;
+  const canAddCount  = visibleMembers.filter((m) => m.can_add_projects).length;
 
   return (
     <div className="p-4 md:p-8">
@@ -172,38 +174,42 @@ export function TeamScreen() {
             Add your engineers &amp; staff, control who can view or edit your projects, and assign them to specific stages or fields.
           </p>
         </div>
-        <Button variant="primary" onClick={() => { resetAddForm(); setShowAdd(true); }}>
-          <Plus size={16} className="mr-1.5" /> Add Member
-        </Button>
+        {isManager && (
+          <Button variant="primary" onClick={() => { resetAddForm(); setShowAdd(true); }}>
+            <Plus size={16} className="mr-1.5" /> Add Member
+          </Button>
+        )}
       </div>
 
       {/* Stat boxes */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
-          <p className="text-sm text-gray-400">Can view all your projects</p>
-          <p className="mt-1 text-3xl font-bold text-white">{(members || []).filter(m => m.can_view_all || true).length}</p>
+      {isManager && (
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
+            <p className="text-sm text-gray-400">Can view all your projects</p>
+            <p className="mt-1 text-3xl font-bold text-white">{(members || []).filter(m => m.can_view_all || true).length}</p>
+          </div>
+          <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
+            <p className="text-sm text-gray-400">Can edit all your projects</p>
+            <p className="mt-1 text-3xl font-bold text-white">{canEditCount}</p>
+          </div>
+          <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
+            <p className="text-sm text-gray-400">Can add projects</p>
+            <p className="mt-1 text-3xl font-bold text-white">{canAddCount}</p>
+          </div>
         </div>
-        <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
-          <p className="text-sm text-gray-400">Can edit all your projects</p>
-          <p className="mt-1 text-3xl font-bold text-white">{canEditCount}</p>
-        </div>
-        <div className="rounded-xl border border-ink-700 bg-ink-800 px-5 py-4">
-          <p className="text-sm text-gray-400">Can add projects</p>
-          <p className="mt-1 text-3xl font-bold text-white">{canAddCount}</p>
-        </div>
-      </div>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-20">
           <Spinner size={32} />
         </div>
-      ) : members.length === 0 ? (
+      ) : visibleMembers.length === 0 ? (
         <div className="rounded-xl border border-ink-700 bg-ink-800 py-16 text-center">
           <p className="text-gray-400">No team members yet. Add your first team member to get started.</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {members.map((m) => {
+          {visibleMembers.map((m) => {
             const isOpen = expanded === m.id;
             const perms = memberMilestonePerms(m.id);
             const isAssigning = assignMemberId === m.id;
@@ -254,12 +260,14 @@ export function TeamScreen() {
                   </div>
 
                   {/* Delete */}
-                  <button
-                    onClick={() => handleDeleteMember(m)}
-                    className="flex-shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
-                  >
-                    <Trash2 size={15} />
-                  </button>
+                  {isManager && (
+                    <button
+                      onClick={() => handleDeleteMember(m)}
+                      className="flex-shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  )}
                 </div>
 
                 {/* Expanded body */}
@@ -314,14 +322,14 @@ export function TeamScreen() {
                           <Button variant="ghost" onClick={cancelAssign}>Cancel</Button>
                         </div>
                       </div>
-                    ) : (
+                    ) : isManager ? (
                       <button
                         onClick={() => openAssign(m.id)}
                         className="flex items-center gap-1.5 text-xs text-gold hover:text-gold/80 transition-colors"
                       >
                         <Plus size={13} /> Assign milestones access
                       </button>
-                    )}
+                    ) : null}
                   </div>
                 )}
               </div>
