@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FolderKanban, CircleCheck as CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
