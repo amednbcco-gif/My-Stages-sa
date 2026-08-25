@@ -333,7 +333,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
           <p className="text-sm text-gray-400">
             {isGuest
               ? "Guest mode — exploring a demo project. Sign up to create and manage your own projects."
-              : "Engineers manage their own projects and task progress."}
+              : "Managers can add and edit projects and assign specific work stages and tasks to their engineers based on their responsibilities, while engineers manage their own&assigned projects and track their task progress."}
           </p>
         </div>
         <div className="flex gap-2">
