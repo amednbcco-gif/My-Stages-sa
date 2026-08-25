@@ -398,26 +398,56 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
           </div>
         </div>
 
-        {/* Stage distribution */}
-        <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
-          <h3 className="mb-4 text-sm font-semibold text-white">Stage Distribution</h3>
-          <div className="space-y-2">
-            {Object.entries(STAGE_LABELS).map(([key]) => {
-              const count = stageDist[key] ?? 0;
-              const pct = total > 0 ? (count / total) * 100 : 0;
-              return (
-                <div key={key} className="flex items-center gap-2">
-                  <span className="w-28 shrink-0 text-xs text-gray-400">{stageShortLabel(key)}</span>
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink-700">
-                    <div className="h-full rounded-full bg-gold/70" style={{ width: `${pct}%` }} />
-                  </div>
-                  <span className="w-6 text-right text-xs text-gray-400">{count}</span>
-                </div>
-              );
-            })}
+       {/* RFS / PAC / FAC totals from ABOQ Amount */}
+<div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+  <h3 className="mb-4 text-sm font-semibold text-white">
+    RFS / PAC / FAC Amounts (All Projects)
+  </h3>
+
+  {(() => {
+    const totals = projects.reduce(
+      (acc, p) => {
+        acc.aboq += Number(p.stage2?.aboqAmount) || 0;
+        acc.rfs += Number(p.stage5?.rfsAmount) || 0;
+        acc.pac += Number(p.stage5?.pacAmount) || 0;
+        acc.fac += Number(p.stage6?.facAmount) || 0;
+        return acc;
+      },
+      { aboq: 0, rfs: 0, pac: 0, fac: 0 }
+    );
+
+    const pct = (val: number) =>
+      totals.aboq > 0 ? ((val / totals.aboq) * 100).toFixed(1) : "0.0";
+
+    return (
+      <>
+        <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-lg bg-ink-900 p-3">
+            <p className="text-xs text-gray-400">Total ABOQ</p>
+            <p className="text-lg font-semibold text-white">{totals.aboq.toLocaleString()}</p>
+          </div>
+          <div className="rounded-lg bg-ink-900 p-3">
+            <p className="text-xs text-gray-400">Total RFS</p>
+            <p className="text-lg font-semibold text-white">{totals.rfs.toLocaleString()}</p>
+            <p className="text-xs text-gray-500">{pct(totals.rfs)}% of ABOQ</p>
+          </div>
+          <div className="rounded-lg bg-ink-900 p-3">
+            <p className="text-xs text-gray-400">Total PAC</p>
+            <p className="text-lg font-semibold text-white">{totals.pac.toLocaleString()}</p>
+            <p className="text-xs text-gray-500">{pct(totals.pac)}% of ABOQ</p>
+          </div>
+          <div className="rounded-lg bg-ink-900 p-3">
+            <p className="text-xs text-gray-400">Total FAC</p>
+            <p className="text-lg font-semibold text-white">{totals.fac.toLocaleString()}</p>
+            <p className="text-xs text-gray-500">{pct(totals.fac)}% of ABOQ</p>
           </div>
         </div>
-      </div>
+
+        <RfsPacFacPie rfs={totals.rfs} pac={totals.pac} fac={totals.fac} />
+      </>
+    );
+  })()}
+</div>
 
       {/* Team Evaluate */}
       <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
