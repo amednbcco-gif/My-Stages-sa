@@ -100,7 +100,7 @@ interface FieldInputProps {
   disabled?: boolean;
 }
 function FieldInput({ field, value, stage, onFieldChange, disabled }: FieldInputProps) {
-  const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","execution"].includes(field.type);
+  const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","execution","repat-status"].includes(field.type);
 
   if (disabled) {
     if (isStatus) {
@@ -765,10 +765,6 @@ export function ProjectDetailScreen() {
     else if (key === "pacStatus") linked.pacCrqStatus = value;
     else if (key === "facCrqStatus") linked.facStatus = value;
     else if (key === "facStatus") linked.facCrqStatus = value;
-    else if (key === "fiberSplicingStatus") linked.patchingStatus = value;
-    else if (key === "patchingStatus") linked.fiberSplicingStatus = value;
-    else if (key === "finalClearanceStatus") linked.clearancePermit = value;
-    else if (key === "clearancePermit") linked.finalClearanceStatus = value;
     const updated = { ...stageData, ...linked };
     const updateObj: Record<string, unknown> = { [stage]: updated };
 
