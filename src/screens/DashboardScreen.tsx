@@ -398,7 +398,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
           </div>
         </div>
 
-       {/* RFS / PAC / FAC totals from ABOQ Amount */}
+      {/* RFS / PAC / FAC totals from ABOQ Amount */}
 <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
   <h3 className="mb-4 text-sm font-semibold text-white">
     RFS / PAC / FAC Amounts (All Projects)
