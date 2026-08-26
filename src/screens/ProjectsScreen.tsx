@@ -208,7 +208,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       "SN", "Project Name",
       "PO No.", "PO Value SAR", "Region", "Sector (Owner)", "PLAN No.", "City", "Project Type", "Latitude", "Longitude",
       "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status",
-      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date",
+      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount",
       "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Splicing Status", "Patching Status", "Close Permit",
       "OWS/PAT Request", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status",
       "GIS Docs Sent", "GIS Received", "GIS Status",
@@ -240,6 +240,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage2", "aboqSubmittedDate"),
       getVal(p, "stage2", "aboqApprovedDate"),
       getVal(p, "stage2", "poIssuanceDate"),
+      getVal(p, "stage2", "aboqAmount"),
       // Stage 3 — Execution
       labelOf(PERMIT_OPTIONS, getVal(p, "stage3", "permitsStatus")),
       labelOf(EXECUTION_OPTIONS, getVal(p, "stage3", "civilStatus")),
