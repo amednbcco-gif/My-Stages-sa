@@ -369,7 +369,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
           <p className="text-gray-400">No projects yet. Click "Add Project" to get started.</p>
         </div>
       ) : (
-      <div className="overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
+      <div className="overflow-auto rounded-xl border border-ink-700 bg-ink-800" style={{ maxHeight: "calc(100vh - 260px)" }}>
           <table className="w-full min-w-[1560px] text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-ink-800">
               <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
