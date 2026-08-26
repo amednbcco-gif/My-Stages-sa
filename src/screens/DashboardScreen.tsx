@@ -363,23 +363,22 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
         })}
       </div>
 
-            {/* Invoice overview */}
-      <div className="mb-6 rounded-xl border border-ink-700 bg-ink-800 p-5">
-        <h3 className="mb-4 text-sm font-semibold text-white">Invoice Overview</h3>
-        <InvoiceOverviewChart
-          aboqTotal={aboqTotalAll}
-          aboqApproved={aboq}
-          rfsTotal={rfsTotalAll}
-          rfsApproved={rfs}
-          pacTotal={pacTotalAll}
-          pacApproved={pac}
-          facTotal={facTotalAll}
-          facApproved={fac}
-        />
-      </div>
-      
-      {/* Progress overview */}
-      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {/* Overview row: Invoice / Pie / Progress */}
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+          <h3 className="mb-4 text-sm font-semibold text-white">Invoice Overview</h3>
+          <InvoiceOverviewChart
+            aboqTotal={aboqTotalAll}
+            aboqApproved={aboq}
+            rfsTotal={rfsTotalAll}
+            rfsApproved={rfs}
+            pacTotal={pacTotalAll}
+            pacApproved={pac}
+            facTotal={facTotalAll}
+            facApproved={fac}
+          />
+        </div>
+
         <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white">Average Progress</h3>
