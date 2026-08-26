@@ -72,10 +72,10 @@ export function DashboardScreen() {
   const pacApproved = projects.filter((p) => p.stage5?.pacStatus === "approved");
   const facApproved = projects.filter((p) => p.stage6?.facStatus === "approved");
 
-  const aboq = aboqApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || p.po_value_sar || 0), 0);
-  const rfs = rfsApproved.reduce((sum, p) => sum + Number(p.stage5?.rfsAmount || Number(p.stage2?.aboqAmount || p.po_value_sar || 0) * 0.8), 0);
-  const pac = pacApproved.reduce((sum, p) => sum + Number(p.stage5?.pacAmount || Number(p.stage2?.aboqAmount || p.po_value_sar || 0) * 0.1), 0);
-  const fac = facApproved.reduce((sum, p) => sum + Number(p.stage6?.facAmount || Number(p.stage2?.aboqAmount || p.po_value_sar || 0) * 0.1), 0);
+  const aboq = aboqApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0), 0);
+  const rfs = rfsApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0) * 0.8, 0);
+  const pac = pacApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0) * 0.1, 0);
+  const fac = facApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0) * 0.1, 0);
 
   const stageDist: Record<string, number> = {};
   for (const s of Object.keys(STAGE_LABELS)) stageDist[s] = 0;
@@ -265,7 +265,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   const finCards = [
     {
       label: "ABOQ",
-      sub: `${aboqApproved.length} project${aboqApproved.length === 1 ? "" : "s"} approved · 100% of PO value`,
+      sub: `${aboqApproved.length} project${aboqApproved.length === 1 ? "" : "s"} approved · manually entered`,
       value: aboq,
       icon: Landmark,
       color: "text-sky-300",
@@ -274,7 +274,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     },
     {
       label: "RFS",
-      sub: `${rfsApproved.length} project${rfsApproved.length === 1 ? "" : "s"} approved · 80% of PO value`,
+      sub: `${rfsApproved.length} project${rfsApproved.length === 1 ? "" : "s"} approved · 80% of ABOQ`,
       value: rfs,
       icon: Receipt,
       color: "text-emerald-300",
@@ -283,7 +283,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     },
     {
       label: "PAC",
-      sub: `${pacApproved.length} project${pacApproved.length === 1 ? "" : "s"} approved · 10% of PO value`,
+      sub: `${pacApproved.length} project${pacApproved.length === 1 ? "" : "s"} approved · 10% of ABOQ`,
       value: pac,
       icon: FileCheck2,
       color: "text-amber-300",
@@ -292,7 +292,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     },
     {
       label: "FAC",
-      sub: `${facApproved.length} project${facApproved.length === 1 ? "" : "s"} approved · 10% of PO value`,
+      sub: `${facApproved.length} project${facApproved.length === 1 ? "" : "s"} approved · 10% of ABOQ`,
       value: fac,
       icon: Wallet,
       color: "text-gold",
@@ -337,7 +337,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
         <h2 className="text-sm font-semibold text-white">Financial Milestones (SAR)</h2>
       </div>
       <p className="mb-4 text-xs text-gray-500">
-        ABOQ is the approved bill of quantities. RFS, PAC, and FAC are derived from the approved amount.
+        ABOQ is the manually entered approved bill of quantities. RFS = 80% of ABOQ, PAC = 10% of ABOQ, FAC = 10% of ABOQ.
       </p>
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {finCards.map((c) => {
@@ -407,10 +407,11 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   {(() => {
     const totals = projects.reduce(
       (acc, p) => {
-        acc.aboq += Number(p.stage2?.aboqAmount) || 0;
-        acc.rfs += Number(p.stage5?.rfsAmount) || 0;
-        acc.pac += Number(p.stage5?.pacAmount) || 0;
-        acc.fac += Number(p.stage6?.facAmount) || 0;
+        const aboqVal = Number(p.stage2?.aboqAmount) || 0;
+        acc.aboq += aboqVal;
+        acc.rfs += aboqVal * 0.8;
+        acc.pac += aboqVal * 0.1;
+        acc.fac += aboqVal * 0.1;
         return acc;
       },
       { aboq: 0, rfs: 0, pac: 0, fac: 0 }
