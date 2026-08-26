@@ -371,7 +371,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       ) : (
       <div className="overflow-auto rounded-xl border border-ink-700 bg-ink-800 max-h-[70vh]">
           <table className="w-full min-w-[1560px] text-sm border-collapse">
-            <<thead className="sticky top-0 z-10 bg-ink-800">>
+            <thead className="sticky top-0 z-10 bg-ink-800">
               <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
                 {COLS.map((c, i) => (
                   <th key={i} className={`px-3 py-3 font-semibold whitespace-nowrap ${i === COLS.length - 1 ? "text-right" : ""}`}>
