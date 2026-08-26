@@ -76,6 +76,10 @@ export function DashboardScreen() {
   const rfs = rfsApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0) * 0.8, 0);
   const pac = pacApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0) * 0.1, 0);
   const fac = facApproved.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || 0) * 0.1, 0);
+    const aboqTotalAll = projects.reduce((sum, p) => sum + Number(p.stage2?.aboqAmount || p.po_value_sar || 0), 0);
+  const rfsTotalAll = projects.reduce((sum, p) => sum + Number(p.stage5?.rfsAmount || Number(p.stage2?.aboqAmount || p.po_value_sar || 0) * 0.8), 0);
+  const pacTotalAll = projects.reduce((sum, p) => sum + Number(p.stage5?.pacAmount || Number(p.stage2?.aboqAmount || p.po_value_sar || 0) * 0.1), 0);
+  const facTotalAll = projects.reduce((sum, p) => sum + Number(p.stage6?.facAmount || Number(p.stage2?.aboqAmount || p.po_value_sar || 0) * 0.1), 0);
 
   const stageDist: Record<string, number> = {};
   for (const s of Object.keys(STAGE_LABELS)) stageDist[s] = 0;
