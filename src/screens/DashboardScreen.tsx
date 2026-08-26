@@ -378,9 +378,6 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
             facApproved={fac}
           />
         </div>
-<div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Average Progress</h3>
         
             <TrendingUp size={16} className="text-gold" />
           </div>
@@ -421,6 +418,9 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   <h3 className="mb-4 text-sm font-semibold text-white">
     RFS / PAC / FAC Amounts (All Projects)
   </h3>
+  <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-white">Average Progress</h3>
             
   {(() => {
     const totals = projects.reduce(
