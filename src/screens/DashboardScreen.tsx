@@ -363,8 +363,9 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
         })}
       </div>
 
-                {/* Overview row: Invoice / Pie / Progress */}
+                     {/* Overview row: Invoice / Pie / Progress */}
       <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* Invoice Overview */}
         <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
           <h3 className="mb-4 text-sm font-semibold text-white">Invoice Overview</h3>
           <InvoiceOverviewChart
@@ -378,7 +379,63 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
             facApproved={fac}
           />
         </div>
-        
+
+        {/* RFS / PAC / FAC totals from ABOQ Amount */}
+        <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+          <h3 className="mb-4 text-sm font-semibold text-white">
+            RFS / PAC / FAC Amounts (All Projects)
+          </h3>
+
+          {(() => {
+            const totals = projects.reduce(
+              (acc, p) => {
+                const aboqVal = Number(p.stage2?.aboqAmount) || 0;
+                acc.aboq += aboqVal;
+                acc.rfs += aboqVal * 0.8;
+                acc.pac += aboqVal * 0.1;
+                acc.fac += aboqVal * 0.1;
+                return acc;
+              },
+              { aboq: 0, rfs: 0, pac: 0, fac: 0 }
+            );
+
+            const pct = (val: number) =>
+              totals.aboq > 0 ? ((val / totals.aboq) * 100).toFixed(1) : "0.0";
+
+            return (
+              <>
+                <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  <div className="rounded-lg bg-ink-900 p-3">
+                    <p className="text-xs text-gray-400">Total ABOQ</p>
+                    <p className="text-lg font-semibold text-white">{totals.aboq.toLocaleString()}</p>
+                  </div>
+                  <div className="rounded-lg bg-ink-900 p-3">
+                    <p className="text-xs text-gray-400">Total RFS</p>
+                    <p className="text-lg font-semibold text-white">{totals.rfs.toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">{pct(totals.rfs)}% of ABOQ</p>
+                  </div>
+                  <div className="rounded-lg bg-ink-900 p-3">
+                    <p className="text-xs text-gray-400">Total PAC</p>
+                    <p className="text-lg font-semibold text-white">{totals.pac.toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">{pct(totals.pac)}% of ABOQ</p>
+                  </div>
+                  <div className="rounded-lg bg-ink-900 p-3">
+                    <p className="text-xs text-gray-400">Total FAC</p>
+                    <p className="text-lg font-semibold text-white">{totals.fac.toLocaleString()}</p>
+                    <p className="text-xs text-gray-500">{pct(totals.fac)}% of ABOQ</p>
+                  </div>
+                </div>
+
+                <RfsPacFacPie rfs={totals.rfs} pac={totals.pac} fac={totals.fac} />
+              </>
+            );
+          })()}
+        </div>
+
+        {/* Average Progress */}
+        <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-white">Average Progress</h3>
             <TrendingUp size={16} className="text-gold" />
           </div>
           <div className="flex items-center gap-4">
@@ -412,63 +469,8 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
             </div>
           </div>
         </div>
-
-      {/* RFS / PAC / FAC totals from ABOQ Amount */}
-<div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
-  <h3 className="mb-4 text-sm font-semibold text-white">
-    RFS / PAC / FAC Amounts (All Projects)
-  </h3>
-  <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Average Progress</h3>
-            
-  {(() => {
-    const totals = projects.reduce(
-      (acc, p) => {
-        const aboqVal = Number(p.stage2?.aboqAmount) || 0;
-        acc.aboq += aboqVal;
-        acc.rfs += aboqVal * 0.8;
-        acc.pac += aboqVal * 0.1;
-        acc.fac += aboqVal * 0.1;
-        return acc;
-      },
-      { aboq: 0, rfs: 0, pac: 0, fac: 0 }
-    );
-
-    const pct = (val: number) =>
-      totals.aboq > 0 ? ((val / totals.aboq) * 100).toFixed(1) : "0.0";
-
-    return (
-      <>
-        <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-lg bg-ink-900 p-3">
-            <p className="text-xs text-gray-400">Total ABOQ</p>
-            <p className="text-lg font-semibold text-white">{totals.aboq.toLocaleString()}</p>
-          </div>
-          <div className="rounded-lg bg-ink-900 p-3">
-            <p className="text-xs text-gray-400">Total RFS</p>
-            <p className="text-lg font-semibold text-white">{totals.rfs.toLocaleString()}</p>
-            <p className="text-xs text-gray-500">{pct(totals.rfs)}% of ABOQ</p>
-          </div>
-          <div className="rounded-lg bg-ink-900 p-3">
-            <p className="text-xs text-gray-400">Total PAC</p>
-            <p className="text-lg font-semibold text-white">{totals.pac.toLocaleString()}</p>
-            <p className="text-xs text-gray-500">{pct(totals.pac)}% of ABOQ</p>
-          </div>
-          <div className="rounded-lg bg-ink-900 p-3">
-            <p className="text-xs text-gray-400">Total FAC</p>
-            <p className="text-lg font-semibold text-white">{totals.fac.toLocaleString()}</p>
-            <p className="text-xs text-gray-500">{pct(totals.fac)}% of ABOQ</p>
-          </div>
-        </div>
-
-                <RfsPacFacPie rfs={totals.rfs} pac={totals.pac} fac={totals.fac} />
-      </>
-    );
-  })()}
-</div>
-</div>
-
+      </div>
+      
       {/* Team Evaluate */}
 
       {/* Team Evaluate */}
