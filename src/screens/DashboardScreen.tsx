@@ -585,3 +585,79 @@ function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number
     </div>
   );
 }
+function InvoiceOverviewChart({
+  aboqTotal, aboqApproved,
+  rfsTotal, rfsApproved,
+  pacTotal, pacApproved,
+  facTotal, facApproved,
+}: {
+  aboqTotal: number; aboqApproved: number;
+  rfsTotal: number; rfsApproved: number;
+  pacTotal: number; pacApproved: number;
+  facTotal: number; facApproved: number;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current || !(window as any).Chart) return;
+    if (chartRef.current) chartRef.current.destroy();
+
+    const datalabelsPlugin = {
+      id: "datalabels",
+      afterDatasetsDraw(chart: any) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset: any, datasetIndex: number) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+          meta.data.forEach((bar: any, index: number) => {
+            const value = dataset.data[index];
+            if (!value) return;
+            ctx.save();
+            ctx.fillStyle = "#e5e7eb";
+            ctx.font = "600 10px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(Number(value).toLocaleString(), bar.x, bar.y - 6);
+            ctx.restore();
+          });
+        });
+      },
+    };
+
+    chartRef.current = new (window as any).Chart(canvasRef.current, {
+      type: "bar",
+      plugins: [datalabelsPlugin],
+      data: {
+        labels: ["ABOQ", "RFS", "PAC", "FAC"],
+        datasets: [
+          { label: "Total", data: [aboqTotal, rfsTotal, pacTotal, facTotal], backgroundColor: "#5b8fd6" },
+          { label: "Approved", data: [aboqApproved, rfsApproved, pacApproved, facApproved], backgroundColor: "#d4af37" },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 20 } },
+        plugins: {
+          legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => `${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString()} SAR`,
+            },
+          },
+        },
+        scales: {
+          x: { ticks: { color: "#9ca3af" }, grid: { color: "#1f2937" } },
+          y: { ticks: { color: "#9ca3af" }, grid: { color: "#1f2937" } },
+        },
+      },
+    });
+
+    return () => chartRef.current?.destroy();
+  }, [aboqTotal, aboqApproved, rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved]);
+
+  return (
+    <div style={{ position: "relative", width: "100%", height: 320 }}>
+      <canvas ref={canvasRef} />
+    </div>
+  );
+}
