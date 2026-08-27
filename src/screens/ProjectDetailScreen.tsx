@@ -1125,34 +1125,110 @@ export function ProjectDetailScreen() {
             </div>
           </div>
 
-          {notes.length === 0 ? (
+                  {notes.filter((n) => !n.parent_note_id).length === 0 ? (
             <p className="text-xs text-gray-600">No notes yet.</p>
           ) : (
             <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-              {notes.map((note) => (
-                <div key={note.id} className="flex items-start justify-between gap-3 rounded-xl border border-ink-700/50 bg-ink-900/40 px-4 py-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${
-                        note.category === "risk" ? "bg-rose-500/15 text-rose-300" :
-                        note.category === "billing" ? "bg-amber-500/15 text-amber-300" :
-                        note.category === "field" ? "bg-sky-500/15 text-sky-300" :
-                        "bg-ink-700 text-gray-400"
-                      }`}>{note.category ?? "general"}</span>
-                      <span className="text-[11px] font-semibold text-gold">{note.author_name ?? "Unknown"}</span>
-                      <span className="text-[10px] text-gray-600">{fmtDateTime(note.created_at)}</span>
+              {notes.filter((n) => !n.parent_note_id).map((note) => {
+                const noteReplies = notes.filter((n) => n.parent_note_id === note.id);
+                return (
+                  <div key={note.id} className="rounded-xl border border-ink-700/50 bg-ink-900/40 px-4 py-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${
+                            note.category === "risk" ? "bg-rose-500/15 text-rose-300" :
+                            note.category === "billing" ? "bg-amber-500/15 text-amber-300" :
+                            note.category === "field" ? "bg-sky-500/15 text-sky-300" :
+                            "bg-ink-700 text-gray-400"
+                          }`}>{note.category ?? "general"}</span>
+                          <span className="text-[11px] font-semibold text-gold">{note.author_name ?? "Unknown"}</span>
+                          <span className="text-[10px] text-gray-600">{fmtDateTime(note.created_at)}</span>
+                        </div>
+                        <p className="text-sm text-gray-300 leading-relaxed break-words">{note.body}</p>
+                      </div>
+                      <button onClick={() => deleteNote(note.id)} className="shrink-0 mt-0.5 text-gray-600 hover:text-rose-300 transition-colors">
+                        <X size={14} />
+                      </button>
                     </div>
-                    <p className="text-sm text-gray-300 leading-relaxed break-words">{note.body}</p>
+
+                    <div className="mt-2 flex items-center gap-1.5 flex-wrap">
+                      {reactionCounts(note.id).map((r) => (
+                        <button
+                          key={r.emoji}
+                          onClick={() => toggleReaction(note.id, r.emoji)}
+                          title={r.label}
+                          className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors ${r.mine ? "border-gold/60 bg-gold/10 text-gold" : "border-ink-700 text-gray-400 hover:border-gold/40 hover:text-gold"}`}
+                        >
+                          <span>{r.emoji}</span>
+                          {r.count > 0 && <span>{r.count}</span>}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => setReplyOpenFor(replyOpenFor === note.id ? null : note.id)}
+                        className="ml-1 text-xs font-semibold text-sky-300 hover:underline"
+                      >
+                        Reply
+                      </button>
+                    </div>
+
+                    {replyOpenFor === note.id && (
+                      <div className="mt-2 flex gap-2">
+                        <input
+                          value={replyBody}
+                          onChange={(e) => setReplyBody(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === "Enter" && replyBody.trim()) addReply(note.id); }}
+                          placeholder="Write a reply…"
+                          className="flex-1 rounded-lg border border-ink-600 bg-ink-900/70 px-3 py-2 text-xs text-white placeholder-gray-600 outline-none focus:border-gold/50"
+                        />
+                        <button
+                          onClick={() => addReply(note.id)}
+                          disabled={!replyBody.trim()}
+                          className="shrink-0 flex items-center rounded-lg bg-gold px-3 py-2 text-xs font-semibold text-ink-950 disabled:opacity-40 hover:opacity-90 transition-opacity"
+                        >
+                          <Send size={12} />
+                        </button>
+                      </div>
+                    )}
+
+                    {noteReplies.length > 0 && (
+                      <div className="mt-3 space-y-2 border-l-2 border-ink-700/50 pl-3">
+                        {noteReplies.map((reply) => (
+                          <div key={reply.id} className="rounded-lg border border-ink-700/40 bg-ink-900/30 px-3 py-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <div className="flex items-center gap-2 mb-0.5">
+                                  <span className="text-[11px] font-semibold text-gold">{reply.author_name ?? "Unknown"}</span>
+                                  <span className="text-[10px] text-gray-600">{fmtDateTime(reply.created_at)}</span>
+                                </div>
+                                <p className="text-xs text-gray-300 leading-relaxed break-words">{reply.body}</p>
+                              </div>
+                              <button onClick={() => deleteNote(reply.id)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
+                                <X size={12} />
+                              </button>
+                            </div>
+                            <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+                              {reactionCounts(reply.id).map((r) => (
+                                <button
+                                  key={r.emoji}
+                                  onClick={() => toggleReaction(reply.id, r.emoji)}
+                                  title={r.label}
+                                  className={`flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[11px] transition-colors ${r.mine ? "border-gold/60 bg-gold/10 text-gold" : "border-ink-700 text-gray-500 hover:border-gold/40 hover:text-gold"}`}
+                                >
+                                  <span>{r.emoji}</span>
+                                  {r.count > 0 && <span>{r.count}</span>}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <button onClick={() => deleteNote(note.id)} className="shrink-0 mt-0.5 text-gray-600 hover:text-rose-300 transition-colors">
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
-        </div>
-      )}
 
       <ProjectFormModal
         open={editOpen}
