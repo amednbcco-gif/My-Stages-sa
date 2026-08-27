@@ -1191,7 +1191,7 @@ export function ProjectDetailScreen() {
                       </div>
                     )}
 
-                    {noteReplies.length > 0 && (
+{noteReplies.length > 0 && (
                       <div className="mt-3 space-y-2 border-l-2 border-ink-700/50 pl-3">
                         {noteReplies.map((reply) => (
                           <div key={reply.id} className="rounded-lg border border-ink-700/40 bg-ink-900/30 px-3 py-2">
