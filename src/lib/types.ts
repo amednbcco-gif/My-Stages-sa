@@ -145,6 +145,15 @@ export interface ProjectNote {
   body: string;
   category: string;
   created_at: string;
+  parent_note_id: string | null;
+}
+
+export interface NoteReaction {
+  id: string;
+  note_id: string;
+  user_id: string;
+  emoji: string;
+  created_at: string;
 }
 
 export interface StageAttachment {
