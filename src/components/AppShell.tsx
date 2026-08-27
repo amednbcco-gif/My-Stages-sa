@@ -131,8 +131,8 @@ export function AppShell({ children }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const [bgTheme, setBgTheme] = useState<"dark" | "fiber">(() => {
-    if (typeof window === "undefined") return "dark";
-    return (localStorage.getItem("stages_bg_theme") as "dark" | "fiber") || "dark";
+    if (typeof window === "undefined") return "fiber";
+    return (localStorage.getItem("stages_bg_theme") as "dark" | "fiber") || "fiber";
   });
 
   function toggleBgTheme() {
