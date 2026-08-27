@@ -490,10 +490,10 @@ function MilestoneCard({
       </div>
 
       {/* Fields grid OR permit table */}
-      {milestone.id === "permit" ? (
+            {milestone.id === "permit" ? (
         <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={canEdit} />
       ) : (
-              <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
+        <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
           {milestone.fields.map((field) => {
             const value = stageData[field.key] ?? "";
             return (
@@ -506,7 +506,7 @@ function MilestoneCard({
             );
           })}
         </div>
-
+      )}
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
         <div className="flex items-center gap-2 flex-1 min-w-0">
