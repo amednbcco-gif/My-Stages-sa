@@ -28,7 +28,7 @@ import {
   addDays,
 } from "../lib/stages";
 import { getAbbreviation } from "../lib/demoProject";
-import type { Project, ProjectNote as BaseProjectNote, StageAttachment, PermitRow } from "../lib/types";
+import type { Project, ProjectNote as BaseProjectNote, StageAttachment, PermitRow, NoteReaction } from "../lib/types";
 type ProjectNote = BaseProjectNote & { author_name?: string };
 
 /* ─── Helpers ────────────────────────────────────────────── */
