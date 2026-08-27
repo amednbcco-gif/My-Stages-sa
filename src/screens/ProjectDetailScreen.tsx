@@ -493,15 +493,13 @@ function MilestoneCard({
       {milestone.id === "permit" ? (
         <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={canEdit} />
       ) : (
-                <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
+                 <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-3">
           {milestone.fields.map((field) => {
             const value = stageData[field.key] ?? "";
             return (
-              <div key={field.key} className="flex items-center gap-3">
-                <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-                <div className="flex-1 min-w-0">
-                  <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
-                </div>
+              <div key={field.key} className="flex flex-col gap-1">
+                <label className="text-[11px] font-semibold text-white">{field.label}</label>
+                <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
               </div>
             );
           })}
