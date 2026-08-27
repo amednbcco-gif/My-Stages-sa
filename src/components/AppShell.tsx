@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FolderKanban, LayoutDashboard, Users, CircleUser as UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell, Trash2 } from "lucide-react";
+import { FolderKanban, LayoutDashboard, Users, CircleUser as UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell, Trash2, Waves } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 
@@ -44,6 +44,81 @@ function StagesLogo({ size = 32 }: { size?: number }) {
   );
 }
 
+function FiberBackground() {
+  return (
+    <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 40%, #1a4fa8 0%, #0d2a6b 35%, #071640 68%, #030a24 100%)",
+        }}
+      />
+      <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" viewBox="0 0 1600 900">
+        <defs>
+          <radialGradient id="fiberGlow" cx="50%" cy="42%" r="50%">
+            <stop offset="0%" stopColor="#bfe8ff" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#bfe8ff" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <ellipse cx="800" cy="380" rx="420" ry="300" fill="url(#fiberGlow)" />
+
+        <g stroke="#7fd0ff" strokeLinecap="round" opacity="0.55">
+          <line x1="800" y1="380" x2="100" y2="20" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="300" y2="-60" strokeWidth="1" />
+          <line x1="800" y1="380" x2="550" y2="-90" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="800" y2="-100" strokeWidth="1" />
+          <line x1="800" y1="380" x2="1050" y2="-90" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="1300" y2="-60" strokeWidth="1" />
+          <line x1="800" y1="380" x2="1500" y2="20" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="-80" y2="250" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="-80" y2="550" strokeWidth="1" />
+          <line x1="800" y1="380" x2="50" y2="850" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="350" y2="920" strokeWidth="1" />
+          <line x1="800" y1="380" x2="800" y2="950" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="1250" y2="920" strokeWidth="1" />
+          <line x1="800" y1="380" x2="1550" y2="850" strokeWidth="1.5" />
+          <line x1="800" y1="380" x2="1680" y2="550" strokeWidth="1" />
+          <line x1="800" y1="380" x2="1680" y2="250" strokeWidth="1.5" />
+        </g>
+
+        <g stroke="#f0803c" strokeLinecap="round" opacity="0.4">
+          <line x1="800" y1="380" x2="200" y2="140" strokeWidth="1.2" />
+          <line x1="800" y1="380" x2="900" y2="-80" strokeWidth="1" />
+          <line x1="800" y1="380" x2="1400" y2="180" strokeWidth="1.2" />
+          <line x1="800" y1="380" x2="1300" y2="780" strokeWidth="1" />
+          <line x1="800" y1="380" x2="500" y2="880" strokeWidth="1.2" />
+          <line x1="800" y1="380" x2="60" y2="620" strokeWidth="1" />
+        </g>
+
+        <g fill="#ffffff">
+          <circle cx="250" cy="120" r="2.4" className="fiber-dot fiber-dot-1" />
+          <circle cx="1300" cy="180" r="2" className="fiber-dot fiber-dot-2" />
+          <circle cx="1420" cy="520" r="2.6" className="fiber-dot fiber-dot-3" />
+          <circle cx="380" cy="660" r="2.2" className="fiber-dot fiber-dot-4" />
+          <circle cx="960" cy="760" r="2.4" className="fiber-dot fiber-dot-1" />
+          <circle cx="120" cy="400" r="2" className="fiber-dot fiber-dot-2" />
+          <circle cx="1520" cy="300" r="2.4" className="fiber-dot fiber-dot-3" />
+        </g>
+        <g fill="#ffb27a">
+          <circle cx="700" cy="60" r="2" className="fiber-dot fiber-dot-2" />
+          <circle cx="1100" cy="700" r="2.2" className="fiber-dot fiber-dot-4" />
+        </g>
+      </svg>
+      <style>{`
+        @keyframes fiberTwinkle {
+          0%, 100% { opacity: 0.25; }
+          50% { opacity: 1; }
+        }
+        .fiber-dot { animation: fiberTwinkle 2.2s ease-in-out infinite; }
+        .fiber-dot-2 { animation-duration: 2.6s; animation-delay: 0.4s; }
+        .fiber-dot-3 { animation-duration: 1.9s; animation-delay: 0.8s; }
+        .fiber-dot-4 { animation-duration: 2.4s; animation-delay: 1.2s; }
+      `}</style>
+    </div>
+  );
+}
+
 const centerNav = [
   { to: "/theprojects", label: "The Projects", icon: FolderKanban },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -54,6 +129,20 @@ export function AppShell({ children }: AppShellProps) {
   const { user, profile, isGuest, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const [bgTheme, setBgTheme] = useState<"dark" | "fiber">(() => {
+    if (typeof window === "undefined") return "dark";
+    return (localStorage.getItem("stages_bg_theme") as "dark" | "fiber") || "dark";
+  });
+
+  function toggleBgTheme() {
+    setBgTheme((prev) => {
+      const next = prev === "dark" ? "fiber" : "dark";
+      localStorage.setItem("stages_bg_theme", next);
+      return next;
+    });
+  }
+
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -145,7 +234,8 @@ export function AppShell({ children }: AppShellProps) {
     .toUpperCase();
 
   return (
-    <div className="flex min-h-screen flex-col bg-ink-900">
+    <div className={`relative flex min-h-screen flex-col ${bgTheme === "fiber" ? "" : "bg-ink-900"}`}>
+      {bgTheme === "fiber" && <FiberBackground />}
       {/* ── Top header ── */}
       <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-ink-700 bg-ink-800 px-4 md:px-6">
 
@@ -185,6 +275,15 @@ export function AppShell({ children }: AppShellProps) {
 
         {/* Right: Notifications + User */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Background theme toggle */}
+          <button
+            onClick={toggleBgTheme}
+            title={bgTheme === "fiber" ? "Switch to classic background" : "Switch to fiber background"}
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-ink-700 bg-ink-900/60 text-gray-300 transition-all hover:border-gold/30 hover:text-white"
+          >
+            <Waves size={14} />
+          </button>
+
           {/* Notifications bell */}
           {!isGuest && (
             <div ref={notifRef} className="relative">
@@ -349,12 +448,12 @@ export function AppShell({ children }: AppShellProps) {
       )}
 
       {/* ── Page content ── */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="relative z-10 flex-1 overflow-y-auto">
         {children}
       </main>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-ink-700/50 bg-ink-800/40 py-6 text-center">
+      <footer className="relative z-10 border-t border-ink-700/50 bg-ink-800/40 py-6 text-center">
         <div className="mb-3 flex flex-col items-center gap-1">
           <div className="flex flex-col items-center justify-center rounded-xl bg-[#0d1f3c] px-3 py-2 shadow">
             <StagesLogo size={28} />
