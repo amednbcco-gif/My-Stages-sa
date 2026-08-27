@@ -730,7 +730,12 @@ export function ProjectDetailScreen() {
       setProject(proj as Project | null);
       setNotes(notesData as ProjectNote[] ?? []);
       setAttachments(attachData as StageAttachment[] ?? []);
-      setPermits(permitsData as PermitRow[] ?? []);
+            setPermits(permitsData as PermitRow[] ?? []);
+      const loadedNotes = (notesData as ProjectNote[]) ?? [];
+      if (loadedNotes.length > 0) {
+        supabase.from("note_reactions").select("*").in("note_id", loadedNotes.map((n) => n.id))
+          .then(({ data: reactData }) => setReactions((reactData as NoteReaction[]) ?? []));
+      }
       setLoading(false);
     });
   }, [id]);
