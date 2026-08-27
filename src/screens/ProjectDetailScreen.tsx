@@ -1229,6 +1229,8 @@ export function ProjectDetailScreen() {
               })}
             </div>
           )}
+      </div>
+      )}
 
       <ProjectFormModal
         open={editOpen}

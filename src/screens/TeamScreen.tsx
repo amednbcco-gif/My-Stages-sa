@@ -20,6 +20,7 @@ export function TeamScreen() {
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [toastError, setToastError] = useState(false);
 
   // Add member modal
   const [showAdd, setShowAdd] = useState(false);
@@ -54,7 +55,7 @@ export function TeamScreen() {
 
   useEffect(() => {
     if (!toast) return;
-    const t = setTimeout(() => setToast(null), 3000);
+    const t = setTimeout(() => { setToast(null); setToastError(false); }, 3000);
     return () => clearTimeout(t);
   }, [toast]);
 
@@ -79,18 +80,28 @@ export function TeamScreen() {
       can_edit_all: canEdit,
     });
     setSaving(false);
-    if (!error) {
-      setToast(`${fullName || email} added to team.`);
-      setShowAdd(false);
-      resetAddForm();
-      load();
+    if (error) {
+      setToastError(true);
+      setToast(error.message || "Failed to add team member.");
+      return;
     }
+    setToastError(false);
+    setToast(`${fullName || email} added to team.`);
+    setShowAdd(false);
+    resetAddForm();
+    load();
   }
 
   async function handleDeleteMember(m: TeamMember) {
     if (!confirm(`Remove ${m.full_name || m.email} from your team?`)) return;
+    const { error: delErr } = await supabase.from("team_members").delete().eq("id", m.id);
+    if (delErr) {
+      setToastError(true);
+      setToast(delErr.message || "Failed to remove team member.");
+      return;
+    }
     await supabase.from("project_permissions").delete().eq("team_member_id", m.id);
-    await supabase.from("team_members").delete().eq("id", m.id);
+    setToastError(false);
     setToast("Team member removed.");
     if (expanded === m.id) setExpanded(null);
     load();
@@ -376,7 +387,7 @@ export function TeamScreen() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-[60] rounded-xl border border-emerald-500/30 bg-emerald-500/15 px-4 py-3 text-sm font-medium text-emerald-300 animate-slide-in">
+        <div className={`fixed bottom-6 right-6 z-[60] rounded-xl border px-4 py-3 text-sm font-medium animate-slide-in ${toastError ? "border-rose-500/30 bg-rose-500/15 text-rose-300" : "border-emerald-500/30 bg-emerald-500/15 text-emerald-300"}`}>
           {toast}
         </div>
       )}
