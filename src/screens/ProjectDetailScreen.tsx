@@ -660,7 +660,59 @@ export function ProjectDetailScreen() {
   const [canEditAll, setCanEditAll] = useState(false);
   const [editableMilestoneIds, setEditableMilestoneIds] = useState<string[]>([]);
   const [, setPermsLoaded] = useState(false);
+  const [reactions, setReactions] = useState<NoteReaction[]>([]);
+  const [replyOpenFor, setReplyOpenFor] = useState<string | null>(null);
+  const [replyBody, setReplyBody] = useState("");
 
+  const REACTION_EMOJIS: { emoji: string; label: string }[] = [
+    { emoji: "👍", label: "أعجبني" },
+    { emoji: "😠", label: "أغضبني" },
+    { emoji: "👏", label: "أحسنت" },
+  ];
+
+  function reactionCounts(noteId: string) {
+    return REACTION_EMOJIS.map((r) => ({
+      ...r,
+      count: reactions.filter((x) => x.note_id === noteId && x.emoji === r.emoji).length,
+      mine: reactions.some((x) => x.note_id === noteId && x.emoji === r.emoji && x.user_id === user?.id),
+    }));
+  }
+
+  async function toggleReaction(noteId: string, emoji: string) {
+    if (!user) return;
+    const existing = reactions.find((r) => r.note_id === noteId && r.user_id === user.id);
+    if (existing && existing.emoji === emoji) {
+      await supabase.from("note_reactions").delete().eq("id", existing.id);
+      setReactions((prev) => prev.filter((r) => r.id !== existing.id));
+    } else if (existing) {
+      await supabase.from("note_reactions").update({ emoji }).eq("id", existing.id);
+      setReactions((prev) => prev.map((r) => (r.id === existing.id ? { ...r, emoji } : r)));
+    } else {
+      const { data, error } = await supabase
+        .from("note_reactions")
+        .insert({ note_id: noteId, user_id: user.id, emoji })
+        .select()
+        .single();
+      if (!error && data) setReactions((prev) => [...prev, data as NoteReaction]);
+    }
+  }
+
+  async function addReply(parentId: string) {
+    if (!project || !replyBody.trim()) return;
+    const authorName = profile?.full_name?.trim() || user?.email || "Unknown";
+    const { data, error } = await supabase
+      .from("project_notes")
+      .insert({ project_id: project.id, author_id: user?.id, author_name: authorName, body: replyBody, category: "general", parent_note_id: parentId })
+      .select()
+      .single();
+    if (!error && data) {
+      setNotes((prev) => [data as ProjectNote, ...prev]);
+      setReplyBody("");
+      setReplyOpenFor(null);
+      showToast("Reply added");
+      notifyChange("replied to a note");
+    }
+  }
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
