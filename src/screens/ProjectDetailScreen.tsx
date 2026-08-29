@@ -504,8 +504,8 @@ function MilestoneCard({
                   <div className="flex-1 min-w-0">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
-                                   {showTeleowsLink && (   
-                              
+  {showTeleowsLink && (
+                    
                       href="https://100s-sg.teleows.com"
                       target="_blank"
                       rel="noopener noreferrer"
