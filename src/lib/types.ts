@@ -129,6 +129,7 @@ export interface Project {
   project_type: string;
   latitude: number | null;
   longitude: number | null;
+  project_manager: string;
   sn: string;
   status: ProjectStatus;
   stage1: Stage1;
