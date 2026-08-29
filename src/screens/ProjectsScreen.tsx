@@ -305,12 +305,15 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       labelOf(PATSUB_OPTIONS, getVal(p, "stage5", "pacCrqStatus")),
       // Stage 6 — FAC & Clearance
       getVal(p, "stage6", "facDate"),
-      getVal(p, "stage6", "facSubmitFilesDate"),
+       getVal(p, "stage6", "facSubmitFilesDate"),
       getVal(p, "stage6", "facCrqNo"),
+      getVal(p, "stage6", "facCrqErqNo"),
+      labelOf(CLEARANCE_OPTIONS, getVal(p, "stage6", "clearancePermit")),
       getVal(p, "stage6", "facAmount"),
       getVal(p, "stage6", "facReqNo"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage6", "finalClearanceStatus")),
       labelOf(PATSUB_OPTIONS, getVal(p, "stage6", "facStatus")),
+      labelOf(PATSUB_OPTIONS, getVal(p, "stage6", "facCrqStatus")),
       // Notes
       notesMap[p.id] ?? "",
     ]);
