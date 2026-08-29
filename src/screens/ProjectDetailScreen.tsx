@@ -501,10 +501,10 @@ function MilestoneCard({
               <div key={field.key} className="flex items-center gap-3">
                 <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
                 <div className="flex flex-1 min-w-0 items-center gap-1.5">
-                  <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
-{showTeleowsLink && (
+                  {showTeleowsLink && (
                     
                       href="https://100s-sg.teleows.com"
                       target="_blank"
@@ -515,6 +515,11 @@ function MilestoneCard({
                       <ExternalLink size={12} />
                     </a>
                   )}
+                                </div>
+              </div>
+            );
+          })}
+        </div>
     
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
