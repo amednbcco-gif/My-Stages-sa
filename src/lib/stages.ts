@@ -278,7 +278,7 @@ export const MILESTONES: Milestone[] = [
     { key: "owsPatRequestDate", label: "PAT OWS Request Date", type: "date" },
     { key: "patReqNo", label: "PAT Req No.", type: "text" },
     { key: "patStartDate", label: "PAT Start Date", type: "date" },
-    { key: "patStage", label: "PAT Stages", type: "team" },
+    { key: "patStage", label: "PAT Stage", type: "team" },
     { key: "connectScanStatus", label: "Connect Scan Status", type: "connect-scan" },
   ],
 },
