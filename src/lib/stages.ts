@@ -263,7 +263,7 @@ export const MILESTONES: Milestone[] = [
       { key: "odbOdf", label: "ODB/ODF", type: "number" },
       { key: "closures", label: "Closures", type: "number" },
       { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
-      { key: "cable Pulling Status", label: "cable pulling Status", type: "done" },
+      { key: "Cable Pulling Status", label: "Cable Pulling Status", type: "done" },
       { key: "fiberSplicingStatus", label: "Splicing Status", type: "done" },
       { key: "patchingStatus", label: "Patching Status", type: "done" },
     ],
