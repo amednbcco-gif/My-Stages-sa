@@ -208,8 +208,8 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     const headers = [
       "SN", "Project Name",
       "PO No.", "PO Value SAR", "Region", "Owner", "PLAN No.", "City", "Project Type", "Latitude", "Longitude", "Project Manager",
-      "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status", "Stage1 Plan No.", "Design Status", "DBOQ Status",
-      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount", "PO Amount",
+      "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status", "Design Status", "DBOQ Status",
+      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount",
       "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Fiber Cable (m)", "Splicing Status", "Patching Status", "Cable Pulling Status", "Close Permit", "Permit Submitted Date", "Permit Issued Date", "Permit Closed Date", "Permit Clearanced Date", "Permit Final Clearance Status",
       "OWS/PAT Request", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status", "Connect Scan Status",
       "GIS Docs Sent", "GIS Received", "GIS Status",
