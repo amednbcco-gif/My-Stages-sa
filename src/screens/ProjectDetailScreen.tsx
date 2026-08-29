@@ -503,12 +503,21 @@ const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             return (
               <div key={field.key} className="flex items-center gap-3">
                 <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-                <div className="flex flex-1 min-w-0 items-center gap-1.5">
-                  <div className="flex-1 min-w-0">
+                <div className="flex flex-1 min-w-0 items-center gap-2">
+                  <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
-                  {showTeleowsLink && (<a href="https://100s-sg.teleows.com" target="_blank" rel="noopener noreferrer" title="Open TeleOWS to get the OSSPA number" className="shrink-0 flex h-6 w-6 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"><ExternalLink size={12} /></a>)}
-                  {showConnectScanLink && (<a href="https://10.64.239.95/ConnectScan/login" target="_blank" rel="noopener noreferrer" title="Open ConnectScan login" className="shrink-0 flex h-6 w-6 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"><ExternalLink size={12} /></a>)}
+                  {(showTeleowsLink || showConnectScanLink) && (
+                    
+                      href={showTeleowsLink ? "https://100s-sg.teleows.com" : "https://10.64.239.95/ConnectScan/login"}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={showTeleowsLink ? "Open TeleOWS to get the OSSPA number" : "Open ConnectScan login"}
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
+                    >
+                      <ExternalLink size={13} />
+                    </a>
+                  )}
                 </div>
               </div>
             );
