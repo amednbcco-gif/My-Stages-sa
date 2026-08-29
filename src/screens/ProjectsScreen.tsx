@@ -232,7 +232,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage1", "receiveDocsDate"),
       getVal(p, "stage1", "dboqAmount"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "surveyStatus")),
-      getVal(p, "stage1", "planNo"),
+      getVal(p, "planNo"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "designStatus")),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "dboqStatus")),
       // Stage 2 — PO & ABOQ
