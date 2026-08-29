@@ -507,7 +507,7 @@ const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
                   <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
-                  {(showTeleowsLink || showConnectScanLink) && (<a href={showTeleowsLink ? "https://100s-sg.teleows.com" : "https://10.64.239.95/ConnectScan/login"} target="_blank" rel="noopener noreferrer" title={showTeleowsLink ? "Open TeleOWS to get the OSSPA number" : "Open ConnectScan login"} className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"><ExternalLink size={13} /></a>)}
+ {(showTeleowsLink || showConnectScanLink) && (<a href={showTeleowsLink ? "https://100s-sg.teleows.com" : "https://10.64.239.95/ConnectScan/login"} target="_blank" rel="noopener noreferrer" title={showTeleowsLink ? "Open TeleOWS to get the OSSPA number" : "Open ConnectScan login"} className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"><ExternalLink size={13} /></a>)}
                 </div>
               </div>
             );
