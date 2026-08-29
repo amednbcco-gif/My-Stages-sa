@@ -10,7 +10,7 @@ export const STAGE_LABELS: Record<string, string> = {
   stage1: "Stage 1 — Survey & Design المسح والتصميم",
   stage2: "Stage 2 — PO & ABOQ",
   stage3: "Stage 3 — The Execution التنفيذ",
-  stage4: "Stage 4 — PAT & CRQ",
+  stage4: "Stage 4 — PAT & CRQ HO",
   stage5: "Stage 5 — RFS & Billing",
   stage6: "Stage 6 — FAC & Clearance",
 };
@@ -359,7 +359,7 @@ export const MILESTONES: Milestone[] = [
       { key: "facDate", label: "FAC Due Date", type: "date" },
       { key: "facSubmitFilesDate", label: "FAC Submit Files Date", type: "date" },
       { key: "facAmount", label: "FAC Amount", type: "number" },
-      { key: "facCrqErqNo", label: "FAC CRQ/REQ No.", type: "text" },
+      { key: "facCrqErqNo", label: "FAC CRQ No.", type: "text" },
       { key: "facReqNo", label: "FAC REQ No.", type: "text" },
       { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
     ],
