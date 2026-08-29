@@ -189,7 +189,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     .map((p, idx) => ({ ...p, displaySn: String(idx + 1).padStart(2, "0") }));
 }
 
-  async function exportCSV() {
+   async function exportCSV() {
     const projectIds = withSequentialSn(filtered).map((p) => p.id);
     let notesMap: Record<string, string> = {};
     if (projectIds.length > 0) {
@@ -207,18 +207,18 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
 
     const headers = [
       "SN", "Project Name",
-      "PO No.", "PO Value SAR", "Region", "Sector (Owner)", "PLAN No.", "City", "Project Type", "Latitude", "Longitude",
-      "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status",
-      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount",
-      "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Splicing Status", "Patching Status", "Close Permit",
-      "OWS/PAT Request", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status",
+      "PO No.", "PO Value SAR", "Region", "Owner", "PLAN No.", "City", "Project Type", "Latitude", "Longitude", "Project Manager",
+      "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status", "Stage1 Plan No.", "Design Status", "DBOQ Status",
+      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount", "PO Amount",
+      "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Fiber Cable (m)", "Splicing Status", "Patching Status", "Cable Pulling Status", "Close Permit", "Permit Submitted Date", "Permit Issued Date", "Permit Closed Date", "Permit Clearanced Date", "Permit Final Clearance Status",
+      "OWS/PAT Request", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status", "Connect Scan Status",
       "GIS Docs Sent", "GIS Received", "GIS Status",
       "CRQ HO Submitted Files Date", "CRQ HO No.", "HO REQ No.", "CRQ HO Status",
-      "Re-PAT Submitted Files Date", "Re-PAT REQ No", "Re-PAT Stages", "Re-PAT Date", "Re-PAT Status",
+      "Re-PAT Submitted Files Date", "Re-PAT REQ No", "Re-PAT Stage", "Re-PAT Date", "Re-PAT Status",
       "PCR Ref", "PCR", "PCR Date", "SDN Status", "SDN Ref", "SDN Date",
       "RFS Submitted Files Date", "RFS Amount", "RFS Approved Date", "RFS Status",
       "PAC Due Date", "PAC Submit Files Date", "PAC CRQ No", "PAC REQ No.", "PAC Amount", "PAC Status",
-      "FAC Due Date", "FAC Submit Files Date", "FAC CRQ No.", "Clearance Permit", "FAC Amount", "FAC REQ No.", "Final Clearance Status", "FAC Status",
+      "FAC Due Date", "FAC Submit Files Date", "FAC CRQ No.", "FAC REQ No.", "FAC Amount", "Final Clearance Status", "FAC Status",
       "Notes",
     ];
 
@@ -226,12 +226,15 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       p.displaySn,
       p.project_name,
       // Project info
-      p.po_number, p.po_value_sar, p.region, p.sector, p.plan_no, p.city, p.project_type, p.latitude, p.longitude,
+      p.po_number, p.po_value_sar, p.region, p.sector, p.plan_no, p.city, p.project_type, p.latitude, p.longitude, p.project_manager,
       // Stage 1 — Survey & Design
       getVal(p, "stage1", "sendDocsDate"),
       getVal(p, "stage1", "receiveDocsDate"),
       getVal(p, "stage1", "dboqAmount"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "surveyStatus")),
+      getVal(p, "stage1", "planNo"),
+      labelOf(STATUS_OPTIONS, getVal(p, "stage1", "designStatus")),
+      labelOf(STATUS_OPTIONS, getVal(p, "stage1", "dboqStatus")),
       // Stage 2 — PO & ABOQ
       labelOf(STATUS_OPTIONS, getVal(p, "stage2", "poReceiveStatus")),
       getVal(p, "stage2", "receiveDocsDate"),
@@ -242,6 +245,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage2", "aboqApprovedDate"),
       getVal(p, "stage2", "poIssuanceDate"),
       getVal(p, "stage2", "aboqAmount"),
+      getVal(p, "stage2", "poAmount"),
       // Stage 3 — Execution
       labelOf(PERMIT_OPTIONS, getVal(p, "stage3", "permitsStatus")),
       labelOf(EXECUTION_OPTIONS, getVal(p, "stage3", "civilStatus")),
@@ -252,15 +256,23 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage3", "odbOdf"),
       getVal(p, "stage3", "closures"),
       getVal(p, "stage3", "hddActualMeters"),
+      getVal(p, "stage3", "fiberCableMeters"),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "fiberSplicingStatus")),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "patchingStatus")),
+      labelOf(DONE_OPTIONS, getVal(p, "stage3", "patchingDoneStatus")),
       labelOf(CLOSE_PERMIT_OPTIONS, getVal(p, "stage3", "closePermit")),
+      getVal(p, "stage3", "permitSubmittedDate"),
+      getVal(p, "stage3", "permitIssuedDate"),
+      getVal(p, "stage3", "permitClosedDate"),
+      getVal(p, "stage3", "permitClearancedDate"),
+      labelOf(CLEARANCE_OPTIONS, getVal(p, "stage3", "finalClearanceStatus")),
       // Stage 4 — PAT, GIS, CRQ HO, Re-PAT
       getVal(p, "stage4", "owsPatRequestDate"),
       getVal(p, "stage4", "patReqNo"),
       getVal(p, "stage4", "patStartDate"),
       getVal(p, "stage4", "patStage"),
       labelOf(PAT_STATUS_OPTIONS, getVal(p, "stage4", "patStatus")),
+      getVal(p, "stage4", "connectScanStatus"),
       getVal(p, "stage4", "gisDocsSentDate"),
       getVal(p, "stage4", "gisReceivedDate"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage4", "gisStatus")),
@@ -287,18 +299,21 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage5", "pacDate"),
       getVal(p, "stage5", "pacSubmitFilesDate"),
       getVal(p, "stage5", "pacCrqNo"),
-      getVal(p, "stage5", "pacErqNo"),
+      getVal(p, "stage5", "pacREQNo"),
       getVal(p, "stage5", "pacAmount"),
       labelOf(PATSUB_OPTIONS, getVal(p, "stage5", "pacStatus")),
+      labelOf(PATSUB_OPTIONS, getVal(p, "stage5", "pacCrqStatus")),
       // Stage 6 — FAC & Clearance
       getVal(p, "stage6", "facDate"),
       getVal(p, "stage6", "facSubmitFilesDate"),
       getVal(p, "stage6", "facCrqNo"),
+      getVal(p, "stage6", "facREQNo"),
       labelOf(CLEARANCE_OPTIONS, getVal(p, "stage6", "clearancePermit")),
       getVal(p, "stage6", "facAmount"),
       getVal(p, "stage6", "facReqNo"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage6", "finalClearanceStatus")),
       labelOf(PATSUB_OPTIONS, getVal(p, "stage6", "facStatus")),
+      labelOf(PATSUB_OPTIONS, getVal(p, "stage6", "facCrqStatus")),
       // Notes
       notesMap[p.id] ?? "",
     ]);
