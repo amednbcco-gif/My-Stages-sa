@@ -258,13 +258,13 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
         </div>
       </div>
 
-      <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
+            <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
         {fields.map((field) => {
           const value = stageData[field.key] ?? "";
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
               <span className="shrink-0 text-sm font-semibold text-white">{field.label}</span>
-              <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} disabled={!canEdit} />
+              <FieldInput field={field} value={value} stage={stage} onFieldChange={onFieldChange} disabled={true} />
             </div>
           );
         })}
