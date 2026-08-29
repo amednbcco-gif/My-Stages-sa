@@ -257,7 +257,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage3", "fiberCableMeters"),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "fiberSplicingStatus")),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "patchingStatus")),
-      labelOf(DONE_OPTIONS, getVal(p, "stage3", "CablePullingStatus")),
+      labelOf(DONE_OPTIONS, getVal(p, "stage3", "cablePullingStatus")),
       labelOf(CLOSE_PERMIT_OPTIONS, getVal(p, "stage3", "closePermit")),
       getVal(p, "stage3", "permitSubmittedDate"),
       getVal(p, "stage3", "permitIssuedDate"),
