@@ -265,7 +265,7 @@ export const MILESTONES: Milestone[] = [
       { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
       { key: "fiberSplicingStatus", label: "Splicing Status", type: "done" },
       { key: "patchingStatus", label: "Patching Status", type: "done" },
-      { key: "patchingDoneStatus", label: "Patching Done Status", type: "done" },
+      { key: "cable Pulling Status", label: "cable pulling Status", type: "done" },
     ],
   },
   {
