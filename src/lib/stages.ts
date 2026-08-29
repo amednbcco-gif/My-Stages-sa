@@ -57,7 +57,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "patStatus", label: "PAT Status", type: "pat-status" },
     { key: "patReqNo", label: "PAT Req. No", type: "text" },
     { key: "owsPatRequestDate", label: "OWS/PAT Request Date", type: "date" },
-    { key: "patStartDate", label: "PAT Start", type: "date" },
+    { key: "patStartDate", label: "PAT Start Date", type: "date" },
     { key: "patStage", label: "PAT Stage", type: "team" },
     { key: "connectScanStatus", label: "Connect Scan Status", type: "connect-scan" },
     { key: "gisStatus", label: "GIS", type: "status" },
