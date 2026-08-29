@@ -46,7 +46,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "odbOdf", label: "ODB/ODF", type: "number" },
     { key: "closures", label: "Closures", type: "number" },
     { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
-    { key: "cable pulling Status", label: "Cable Pulling Status", type: "done" },
+    { key: "cablePullingStatus", label: "Cable Pulling Status", type: "done" },
     { key: "fiberSplicingStatus", label: "Fiber Splicing", type: "done" },
     { key: "patchingStatus", label: "Patching", type: "done" },
     { key: "actualStartDate", label: "Actual Start", type: "date" },
@@ -189,7 +189,7 @@ export const EXECUTION_OPTIONS: { value: string; label: string }[] = [
 export interface MilestoneField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution" | "connect-scan";
 }
 
 export interface Milestone {
@@ -198,7 +198,7 @@ export interface Milestone {
   stage: string;
   fields: MilestoneField[];
   statusField: MilestoneField;
-  statusType: "status" | "patsub" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution";
+  statusType: "status" | "patsub" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution" | "connect-scan";
 }
 
 export const MILESTONES: Milestone[] = [
@@ -263,7 +263,7 @@ export const MILESTONES: Milestone[] = [
       { key: "odbOdf", label: "ODB/ODF", type: "number" },
       { key: "closures", label: "Closures", type: "number" },
       { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
-      { key: "Cable Pulling Status", label: "Cable Pulling Status", type: "done" },
+      { key: "cablePullingStatus", label: "Cable Pulling Status", type: "done" },
       { key: "fiberSplicingStatus", label: "Splicing Status", type: "done" },
       { key: "patchingStatus", label: "Patching Status", type: "done" },
     ],

@@ -44,6 +44,7 @@ export interface Stage3 {
   odbOdf: number;
   closures: number;
   fiberCableMeters: number;
+  cablePullingStatus: StatusValue;
   fiberSplicingStatus: StatusValue;
   patchingStatus: StatusValue;
   patchingDoneStatus: StatusValue;
