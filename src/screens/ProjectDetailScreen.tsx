@@ -626,7 +626,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">Card Layout</p>
-            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row, it works as a dashboard for important information, Collected and distributed in stages. Attachments sync with List Form automatically.</p>
+            <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row, it works as a (Dashboard Read Only)) for List Form, Collected and distributed in stages.Attachments sync with List Form automatically.</p>
           </div>
         </button>
 
