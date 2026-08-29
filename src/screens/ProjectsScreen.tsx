@@ -207,18 +207,18 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
 
     const headers = [
       "SN", "Project Name",
-      "PO No.", "PO Value SAR", "Region", "Owner", "PLAN No.", "City", "Project Type", "Latitude", "Longitude", "Project Manager",
-      "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status", "Design Status", "DBOQ Status", 'Plan No.',
-      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount",
-      "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Fiber Cable (m)", "Splicing Status", "Patching Status", "Cable Pulling Status", "Close Permit", "Permit Submitted Date", "Permit Issued Date", "Permit Closed Date", "Permit Clearanced Date", "Permit Final Clearance Status",
+      "PO No.", "PO Value SAR", "Region", "Sector (Owner)", "PLAN No.", "City", "Project Type", "Latitude", "Longitude", "Project Manager",
+      "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status", "Stage1 Plan No.", "Design Status", "DBOQ Status",
+      "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount", "PO Amount",
+      "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Fiber Cable (m)", "Splicing Status", "Patching Status", "Patching Done Status", "Close Permit", "Permit Submitted Date", "Permit Issued Date", "Permit Closed Date", "Permit Clearanced Date", "Permit Final Clearance Status",
       "OWS/PAT Request", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status", "Connect Scan Status",
       "GIS Docs Sent", "GIS Received", "GIS Status",
       "CRQ HO Submitted Files Date", "CRQ HO No.", "HO REQ No.", "CRQ HO Status",
-      "Re-PAT Submitted Files Date", "Re-PAT REQ No", "Re-PAT Stage", "Re-PAT Date", "Re-PAT Status",
+      "Re-PAT Submitted Files Date", "Re-PAT REQ No", "Re-PAT Stages", "Re-PAT Date", "Re-PAT Status",
       "PCR Ref", "PCR", "PCR Date", "SDN Status", "SDN Ref", "SDN Date",
       "RFS Submitted Files Date", "RFS Amount", "RFS Approved Date", "RFS Status",
-      "PAC Due Date", "PAC Submit Files Date", "PAC CRQ No", "PAC REQ No.", "PAC Amount", "PAC Status",
-      "FAC Due Date", "FAC Submit Files Date", "FAC CRQ No.", "FAC REQ No.", "FAC Amount", "Final Clearance Status", "FAC Status",
+      "PAC Due Date", "PAC Submit Files Date", "PAC CRQ No", "PAC REQ No.", "PAC Amount", "PAC Status", "PAC CRQ Status",
+      "FAC Due Date", "FAC Submit Files Date", "FAC CRQ No.", "FAC CRQ/REQ No.", "Clearance Permit", "FAC Amount", "FAC REQ No.", "Final Clearance Status", "FAC Status", "FAC CRQ Status",
       "Notes",
     ];
 
