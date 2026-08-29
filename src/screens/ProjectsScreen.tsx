@@ -189,7 +189,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     .map((p, idx) => ({ ...p, displaySn: String(idx + 1).padStart(2, "0") }));
 }
 
-   async function exportCSV() {
+     async function exportCSV() {
     const projectIds = withSequentialSn(filtered).map((p) => p.id);
     let notesMap: Record<string, string> = {};
     if (projectIds.length > 0) {
@@ -232,6 +232,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage1", "receiveDocsDate"),
       getVal(p, "stage1", "dboqAmount"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "surveyStatus")),
+      getVal(p, "stage1", "planNo"),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "designStatus")),
       labelOf(STATUS_OPTIONS, getVal(p, "stage1", "dboqStatus")),
       // Stage 2 — PO & ABOQ
@@ -298,7 +299,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage5", "pacDate"),
       getVal(p, "stage5", "pacSubmitFilesDate"),
       getVal(p, "stage5", "pacCrqNo"),
-      getVal(p, "stage5", "pacREQNo"),
+      getVal(p, "stage5", "pacErqNo"),
       getVal(p, "stage5", "pacAmount"),
       labelOf(PATSUB_OPTIONS, getVal(p, "stage5", "pacStatus")),
       labelOf(PATSUB_OPTIONS, getVal(p, "stage5", "pacCrqStatus")),
@@ -306,7 +307,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage6", "facDate"),
       getVal(p, "stage6", "facSubmitFilesDate"),
       getVal(p, "stage6", "facCrqNo"),
-      getVal(p, "stage6", "facREQNo"),
+      getVal(p, "stage6", "facCrqErqNo"),
       labelOf(CLEARANCE_OPTIONS, getVal(p, "stage6", "clearancePermit")),
       getVal(p, "stage6", "facAmount"),
       getVal(p, "stage6", "facReqNo"),
