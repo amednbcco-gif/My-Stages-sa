@@ -56,7 +56,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
   stage4: [
     { key: "patStatus", label: "PAT Status", type: "pat-status" },
     { key: "patReqNo", label: "PAT Req. No", type: "text" },
-    { key: "owsPatRequestDate", label: "OWS/PAT Request", type: "date" },
+    { key: "owsPatRequestDate", label: "OWS/PAT Request Date", type: "date" },
     { key: "patStartDate", label: "PAT Start", type: "date" },
     { key: "patStage", label: "PAT Stage", type: "team" },
     { key: "connectScanStatus", label: "Connect Scan Status", type: "connect-scan" },
@@ -70,7 +70,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "repatStatus", label: "Re-PAT Status", type: "repat-status" },
     { key: "repatSubmittedFilesDate", label: "Re-PAT Submitted Files Date", type: "date" },
     { key: "repatReqNo", label: "Re-PAT REQ No", type: "text" },
-    { key: "repatStage", label: "Re-PAT Stages", type: "team" },
+    { key: "repatStage", label: "Re-PAT Stage", type: "team" },
     { key: "repatDate", label: "Re-PAT Date", type: "date" },
   ],
   stage5: [
