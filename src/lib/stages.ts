@@ -48,7 +48,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "fiberCableMeters", label: "Fiber Cable (m)", type: "number" },
     { key: "fiberSplicingStatus", label: "Fiber Splicing", type: "done" },
     { key: "patchingStatus", label: "Patching", type: "done" },
-    { key: "patchingDoneStatus", label: "Patching Done", type: "done" },
+    { key: "cable pulling Status", label: "Cable Pulling Status", type: "done" },
     { key: "actualStartDate", label: "Actual Start", type: "date" },
     { key: "actualEndDate", label: "Actual End", type: "date" },
     { key: "civilStatus", label: "Execution Status", type: "execution" },
