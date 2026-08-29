@@ -23,6 +23,7 @@ import {
   PERMIT_OPTIONS,
   CLEARANCE_OPTIONS,
   REPAT_OPTIONS,
+  CONNECT_SCAN_OPTIONS,
   MILESTONES,
   computeProgress,
   addDays,
