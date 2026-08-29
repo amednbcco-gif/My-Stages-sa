@@ -506,6 +506,7 @@ function MilestoneCard({
                   </div>
                                    {showTeleowsLink && (
                     
+                              
                       href="https://100s-sg.teleows.com"
                       target="_blank"
                       rel="noopener noreferrer"
