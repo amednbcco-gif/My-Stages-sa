@@ -503,7 +503,7 @@ const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             return (
               <div key={field.key} className="flex items-center gap-3">
                 <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-                              <div className="flex flex-1 min-w-0 items-center gap-2">
+ <div className="flex flex-1 min-w-0 items-center gap-3">
                   <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
