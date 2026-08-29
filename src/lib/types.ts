@@ -65,6 +65,7 @@ export interface Stage4 {
   owsPatRequestDate: string;
   patStartDate: string;
   patStage: string;
+  connectScanStatus: string;
   gisStatus: StatusValue;
   gisDocsSentDate: string;
   gisReceivedDate: string;
