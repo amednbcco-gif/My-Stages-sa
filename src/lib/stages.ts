@@ -127,6 +127,11 @@ export const PATSUB_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "submitted", label: "Submitted" },
   { value: "approved", label: "Approved" },
 ];
+export const CONNECT_SCAN_OPTIONS: { value: string; label: string }[] = [
+  { value: "inprogress", label: "In-Progress" },
+  { value: "submitted", label: "Submitted" },
+  { value: "approved", label: "Approved" },
+];
 
 export const PAT_STATUS_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "pending", label: "Pending" },
