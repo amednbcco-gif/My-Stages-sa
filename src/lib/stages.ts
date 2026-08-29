@@ -291,7 +291,7 @@ export const MILESTONES: Milestone[] = [
     fields: [
       { key: "repatSubmittedFilesDate", label: "Re-PAT Submitted Files Date", type: "date" },
       { key: "repatReqNo", label: "Re-PAT REQ No", type: "text" },
-      { key: "repatStage", label: "Re-PAT Stages", type: "team" },
+      { key: "repatStage", label: "Re-PAT Stage", type: "team" },
       { key: "repatDate", label: "Re-PAT Date", type: "date" },
     ],
   },
