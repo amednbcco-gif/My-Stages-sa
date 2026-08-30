@@ -32,7 +32,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setSiteId(initial.site_id);
       setRegion(initial.region ?? "");
       setCity(initial.city ?? "");
-      setSector(initial.owner ?? "");
+      setOwner(initial.owner ?? "");
       setProjectType(initial.project_type ?? "");
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
