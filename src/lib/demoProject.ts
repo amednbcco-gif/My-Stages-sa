@@ -32,6 +32,7 @@ export const DEMO_PROJECT: Project = {
   project_type: "FTTH",
   latitude: 24.7136,
   longitude: 46.6753,
+  project_manager: "Eng. Ahmed Al-Saud",
   sn: "DEMO-001",
   status: "In Progress",
   created_at: new Date().toISOString(),

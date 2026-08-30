@@ -16,11 +16,12 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [poValueSAR, setPoValueSAR] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
-  const [owner, setowner] = useState("");
+  const [sector, setSector] = useState("");
   const [projectType, setProjectType] = useState("");
   const [siteId, setSiteId] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [projectManager, setProjectManager] = useState("");
   const [status, setStatus] = useState<ProjectStatus>("Pending");
   const [saving, setSaving] = useState(false);
   useEffect(() => {
@@ -32,10 +33,11 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setSiteId(initial.site_id);
       setRegion(initial.region ?? "");
       setCity(initial.city ?? "");
-      setOwner(initial.owner ?? "");
+      setSector(initial.sector ?? "");
       setProjectType(initial.project_type ?? "");
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
+      setProjectManager(initial.project_manager ?? "");
       setStatus(initial.status);
     } else {
       setProjectName("");
@@ -44,11 +46,12 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setPoValueSAR("");
       setRegion("");
       setCity("");
-      setOwner("");
+      setSector("");
       setProjectType("");
       setSiteId("");
       setLatitude("");
       setLongitude("");
+      setProjectManager("");
       setStatus("Pending");
     }
   }, [initial, open]);
@@ -62,10 +65,11 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       site_id: siteId,
       region,
       city,
-      owner,
+      sector,
       project_type: projectType,
       latitude: latitude ? Number(latitude) : null,
       longitude: longitude ? Number(longitude) : null,
+      project_manager: projectManager,
       status,
     });
     setSaving(false);
@@ -101,6 +105,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
         <Input label="Project Type" value={projectType} onChange={setProjectType} placeholder="Project Type" />
         <Input label="Latitude" value={latitude} onChange={setLatitude} type="number" placeholder="e.g. 24.7136" />
         <Input label="Longitude" value={longitude} onChange={setLongitude} type="number" placeholder="e.g. 46.6753" />
+        <Input label="Project Manager" value={projectManager} onChange={setProjectManager} placeholder="Project Manager" />
         <Select
           label="Status"
           value={status}
