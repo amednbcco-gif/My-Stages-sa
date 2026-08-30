@@ -16,7 +16,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [poValueSAR, setPoValueSAR] = useState("");
   const [region, setRegion] = useState("");
   const [city, setCity] = useState("");
-  const [sector, setSector] = useState("");
+  const [owner, setowner] = useState("");
   const [projectType, setProjectType] = useState("");
   const [siteId, setSiteId] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -32,7 +32,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setSiteId(initial.site_id);
       setRegion(initial.region ?? "");
       setCity(initial.city ?? "");
-      setSector(initial.sector ?? "");
+      setSector(initial.owner ?? "");
       setProjectType(initial.project_type ?? "");
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
@@ -44,7 +44,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setPoValueSAR("");
       setRegion("");
       setCity("");
-      setSector("");
+      setOwner("");
       setProjectType("");
       setSiteId("");
       setLatitude("");
