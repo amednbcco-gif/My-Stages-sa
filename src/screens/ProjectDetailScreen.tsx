@@ -206,7 +206,7 @@ interface StageCardProps {
 // Stage 6 FAC Status now shown as first field inside the card body (before FAC Due Date)
 const TOP_STATUS_FIELD: Record<string, { key: string; label: string }> = {};
 
-function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage, canEdit }: StageCardProps) {
+function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage, canEdit, permits }: StageCardProps) {
   const fields = STAGE_FIELDS[stage];
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
   const pct = stageProgress(project, stage);
