@@ -245,7 +245,6 @@ export const MILESTONES: Milestone[] = [
     stage: "stage3",
     statusType: "permit",
     statusField: { key: "permitsStatus", label: "Permit Status", type: "permit" },
-
   {
     id: "civil",
     title: "The Execution",
