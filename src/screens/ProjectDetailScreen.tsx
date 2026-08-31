@@ -200,6 +200,7 @@ interface StageCardProps {
   onDownloadAttachment: (att: StageAttachment) => void;
   onSaveStage: (stage: string) => void;
   canEdit: boolean;
+  permits: PermitRow[];
 }
 
 // Stage 6 FAC Status now shown as first field inside the card body (before FAC Due Date)
