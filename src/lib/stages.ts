@@ -52,13 +52,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "patchingStatus", label: "Patching", type: "done" },
     { key: "actualStartDate", label: "Actual Start", type: "date" },
     { key: "actualEndDate", label: "Actual End", type: "date" },
-     { key: "closePermit", label: "Close Permit", type: "close-permit" },
-    { key: "finalClearanceStatus", label: "Final Clearance", type: "clearance"},
-    { key: "permitSubmittedDate", label: "Permit Submitted", type: "date" },
-    { key: "permitIssuedDate", label: "Permit Issued", type: "date" },
-    { key: "permitClosedDate", label: "Permit Closed", type: "date" },
-    { key: "permitClearancedDate", label: "Permit Clearanced", type: "date" },
-     ],
+  ],
    
   stage4: [
     { key: "patStatus", label: "PAT Status", type: "pat-status" },
