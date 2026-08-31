@@ -40,6 +40,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
   ],
   stage3: [
     { key: "permitsStatus", label: "Permits", type: "permit" },
+    { key: "civilStatus", label: "Execution Status", type: "execution" },
     { key: "civilActualMeters", label: "Civil (m)", type: "number" },
     { key: "hddActualMeters", label: "HDD (m)", type: "number" },
     { key: "mhHh", label: "MH/HH", type: "number" },
@@ -51,7 +52,13 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "patchingStatus", label: "Patching", type: "done" },
     { key: "actualStartDate", label: "Actual Start", type: "date" },
     { key: "actualEndDate", label: "Actual End", type: "date" },
-    { key: "civilStatus", label: "Execution Status", type: "execution" },
+    { key: "closePermit", label: "Close Permit", type: "close-permit" },
+    { key: "finalClearanceStatus", label: "Final Clearance", type: "clearance" },
+    { key: "permitSubmittedDate", label: "Permit Submitted", type: "date" },
+    { key: "permitIssuedDate", label: "Permit Issued", type: "date" },
+    { key: "permitClosedDate", label: "Permit Closed", type: "date" },
+    { key: "permitClearancedDate", label: "Permit Clearanced", type: "date" },
+   
   ],
   stage4: [
     { key: "patStatus", label: "PAT Status", type: "pat-status" },
