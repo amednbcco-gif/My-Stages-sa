@@ -245,12 +245,7 @@ export const MILESTONES: Milestone[] = [
     stage: "stage3",
     statusType: "permit",
     statusField: { key: "permitsStatus", label: "Permit Status", type: "permit" },
-       fields: [
-      { key: "permitSubmittedDate", label: "Submitted Date", type: "date" },
-      { key: "permitIssuedDate", label: "Issued Date", type: "date" },
-      { key: "permitClosedDate", label: "Closed Date", type: "date" },
-      { key: "permitClearancedDate", label: "Clearanced Date", type: "date" },
-      { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
+      
     ],
   }, 
 
