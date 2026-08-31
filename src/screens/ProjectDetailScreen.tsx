@@ -292,9 +292,9 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
                 <tbody>
                   {permits.map((p) => (
                     <tr key={p.id} className="border-b border-ink-700/40">
-                      <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
-                      <td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
-                      <td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
+ <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
+<td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
+ <td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
                       <td className="py-1.5 px-2 text-gray-300">{p.end_date ? fmtDate(p.end_date) : "—"}</td>
                       <td className="py-1.5 px-2 text-gray-300">{p.cw_meters}</td>
                       <td className="py-1.5 px-2">
@@ -412,8 +412,8 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
             ) : (
               permits.map((p) => (
                 <tr key={p.id} className="border-b border-ink-700/40 hover:bg-ink-800/40 transition-colors">
-                  <td className="py-1.5 px-2">
-                    {canEdit ? <input type="number" className={inputCls + " w-12"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} /> : <span className={roCls + " w-12 block"}>{p.sn}</span>}
+       <td className="py-1.5 px-2">
+{canEdit ? <input type="number" className={inputCls + " w-12"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} /> : <span className={roCls + " w-12 block"}>{p.sn}</span>}
                   </td>
                   <td className="py-1.5 px-2">
                     {canEdit ? <input type="text" className={inputCls} value={p.permit_no} onChange={(e) => onPermitUpdate(p.id, { permit_no: e.target.value })} /> : <span className={roCls + " block"}>{p.permit_no || "—"}</span>}
@@ -430,9 +430,14 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
                   <td className="py-1.5 px-2">
                     {canEdit ? <input type="number" className={inputCls + " w-16"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} /> : <span className={roCls + " w-16 block"}>{p.cw_meters}</span>}
                   </td>
-                  <td className="py-1.5 px-2">
+                                    <td className="py-1.5 px-2">
                     {canEdit ? (
-                      <select value={p.permit_status} onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })} className={inputCls + " cursor-pointer"}>
+                      <select
+                        value={p.permit_status}
+                        onChange={(e) => onPermitUpdate(p.id, { permit_status: e.target.value })}
+                        className={`rounded-lg border px-2 py-1.5 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-6 ${statusColor(p.permit_status)}`}
+                        style={{ backgroundImage: chevronBg, backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center" }}
+                      >
                         {PERMIT_OPTIONS.map((o) => (<option key={o.value} value={o.value} className="bg-ink-800 text-white">{o.label}</option>))}
                       </select>
                     ) : (
