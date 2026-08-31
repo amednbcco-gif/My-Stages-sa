@@ -51,14 +51,7 @@ export interface Stage3 {
   civilStatus: StatusValue;
   actualStartDate: string;
   actualEndDate: string;
-  closePermit: StatusValue;
-  clearancePermit: StatusValue;
-  permitSubmittedDate: string;
-  permitIssuedDate: string;
-  permitClosedDate: string;
-  permitClearancedDate: string;
-  finalClearanceStatus: StatusValue;
-}
+  }
 
 export interface Stage4 {
   patStatus: StatusValue;
