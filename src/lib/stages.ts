@@ -116,13 +116,18 @@ export const PERMIT_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "submitted", label: "Submitted" },
   { value: "approved", label: "Issued" },
   { value: "closed", label: "Closed" },
-  { value: "clearanced", label: "Clearanced" },
+  { value: "clearanced", label: "Cleared" },
 ];
+export const PERMIT_STATUS_OPTIONS: { value: string; label: string }[] = [
+  ...PERMIT_OPTIONS,
+  { value: "na", label: "N/A" },
+];
+
 export const CLEARANCE_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "pending", label: "Pending" },
   { value: "inprogress", label: "In Progress" },
   { value: "submitted", label: "Submitted" },
-  { value: "approved", label: "Clearanced" },
+  { value: "approved", label: "Cleared" },
 ];
 
 export const CLOSE_PERMIT_OPTIONS: { value: StatusValue; label: string }[] = [
