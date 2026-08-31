@@ -259,7 +259,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
         </div>
       </div>
 
-            <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
+                  <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
         {fields.map((field) => {
           const value = stageData[field.key] ?? "";
           return (
@@ -270,6 +270,38 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
           );
         })}
       </div>
+
+      {stage === "stage3" && (
+        <div className="border-t border-ink-700/50 px-5 py-3">
+          <p className="mb-2 text-xs font-semibold text-gray-400">Permits</p>
+          {permits.length === 0 ? (
+            <p className="text-xs text-gray-600">No permits yet.</p>
+          ) : (
+            <div className="overflow-x-auto -mx-1 px-1">
+              <table className="w-full min-w-[420px] border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-ink-700 text-gray-500">
+                    <th className="py-1.5 px-2 text-left font-semibold">Permit No</th>
+                    <th className="py-1.5 px-2 text-left font-semibold">Issued Date</th>
+                    <th className="py-1.5 px-2 text-left font-semibold">Start Date</th>
+                    <th className="py-1.5 px-2 text-left font-semibold">End Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {permits.map((p) => (
+                    <tr key={p.id} className="border-b border-ink-700/40">
+                      <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
+                      <td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
+                      <td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
+                      <td className="py-1.5 px-2 text-gray-300">{p.end_date ? fmtDate(p.end_date) : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="border-t border-ink-700/50 px-5 py-3">
         <div className="flex items-center justify-between mb-1.5">
