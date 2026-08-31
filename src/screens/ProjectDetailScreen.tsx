@@ -281,19 +281,19 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
               <table className="w-full min-w-[420px] border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-ink-700 text-gray-500">
-                    <th className="py-1.5 px-2 text-left font-semibold">Permit No</th>
-                    <th className="py-1.5 px-2 text-left font-semibold">Issued Date</th>
-                    <th className="py-1.5 px-2 text-left font-semibold">Start Date</th>
-                    <th className="py-1.5 px-2 text-left font-semibold">End Date</th>
+          <th className="py-1.5 px-2 text-left font-semibold">Permit No</th>
+          <th className="py-1.5 px-2 text-left font-semibold">Issued Date</th>
+           <th className="py-1.5 px-2 text-left font-semibold">Start Date</th>
+            <th className="py-1.5 px-2 text-left font-semibold">End Date</th>
                   </tr>
                 </thead>
                 <tbody>
                   {permits.map((p) => (
-                    <tr key={p.id} className="border-b border-ink-700/40">
-                      <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
-                      <td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
-                      <td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
-                      <td className="py-1.5 px-2 text-gray-300">{p.end_date ? fmtDate(p.end_date) : "—"}</td>
+   <tr key={p.id} className="border-b border-ink-700/40">
+   <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
+<td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
+<td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
+<td className="py-1.5 px-2 text-gray-300">{p.end_date ? fmtDate(p.end_date) : "—"}</td>
                     </tr>
                   ))}
                 </tbody>
