@@ -329,9 +329,12 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
                 >
                   <Save size={11} /> Save
                 </button>
-                <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
+                               <label
+                  onClick={(e) => e.preventDefault()}
+                  className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity"
+                >
                   <Paperclip size={11} /> Add file
-                  <input type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) onUpload(stage, f); e.target.value = ""; }} />
+                  <input type="file" className="hidden" disabled />
                 </label>
               </>
             )}
