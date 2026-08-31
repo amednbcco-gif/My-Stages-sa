@@ -675,7 +675,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
             <LayoutGrid size={28} className="text-gold" />
           </div>
           <div className="text-center">
-            <p className="text-base font-bold text-white mb-1">Card Layout</p>
+            <p className="text-base font-bold text-white mb-1">Card Layout (View Only)</p>
             <p className="text-xs text-gray-500 leading-relaxed">Stage cards arranged in a responsive grid, two per row, it works as a (Dashboard Read Only)) for List Form, Collected and distributed in stages.Attachments sync with List Form automatically.</p>
           </div>
         </button>
@@ -689,7 +689,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
             <List size={28} className="text-sky-400" />
           </div>
           <div className="text-center">
-            <p className="text-base font-bold text-white mb-1">List Form</p>
+            <p className="text-base font-bold text-white mb-1">List Form (Data Entry)</p>
             <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields, also it's filled with more information, To act as the primary interface, Filled the field here is automatically reflected in Card Layout, Attachments sync with Card Layout automatically</p>
           </div>
         </button>
