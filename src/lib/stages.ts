@@ -58,8 +58,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "permitIssuedDate", label: "Permit Issued", type: "date" },
     { key: "permitClosedDate", label: "Permit Closed", type: "date" },
     { key: "permitClearancedDate", label: "Permit Clearanced", type: "date" },
-   
-  ],
+     ],
   stage4: [
     { key: "patStatus", label: "PAT Status", type: "pat-status" },
     { key: "patReqNo", label: "PAT Req. No", type: "text" },
