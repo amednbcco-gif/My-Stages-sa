@@ -120,7 +120,7 @@ export const PERMIT_OPTIONS: { value: StatusValue; label: string }[] = [
 ];
 export const PERMIT_STATUS_OPTIONS: { value: string; label: string }[] = [
   ...PERMIT_OPTIONS,
-  { value: "na", label: "N/A" },
+  { value: "N/A", label: "N/A" },
 ];
 
 export const CLEARANCE_OPTIONS: { value: StatusValue; label: string }[] = [
