@@ -83,7 +83,7 @@ function optionsFor(type: string) {
   if (type === "pat-status") return PAT_STATUS_OPTIONS;
   if (type === "crq-ho") return CRQ_HO_OPTIONS;
   if (type === "close-permit") return CLOSE_PERMIT_OPTIONS;
-  if (type === "permit") return PERMIT_OPTIONS;
+  if (type === "permit") return PERMIT_STATUS_OPTIONS;
   if (type === "clearance") return CLEARANCE_OPTIONS;
   if (type === "done") return DONE_OPTIONS;
   if (type === "execution") return EXECUTION_OPTIONS;
