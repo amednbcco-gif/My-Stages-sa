@@ -124,20 +124,6 @@ export const PERMIT_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "clearanced", label: "Clearanced" },
 ];
 
-export const CLEARANCE_OPTIONS: { value: StatusValue; label: string }[] = [
-  { value: "pending", label: "Pending" },
-  { value: "inprogress", label: "In Progress" },
-  { value: "submitted", label: "Submitted" },
-  { value: "approved", label: "Clearanced" },
-];
-
-export const CLOSE_PERMIT_OPTIONS: { value: StatusValue; label: string }[] = [
-  { value: "pending", label: "Pending" },
-  { value: "inprogress", label: "In Progress" },
-  { value: "submitted", label: "Submitted" },
-  { value: "closed", label: "Closed" },
-];
-
 export const PATSUB_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "pending", label: "Pending" },
   { value: "submitted", label: "Submitted" },
