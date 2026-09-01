@@ -105,7 +105,7 @@ interface FieldInputProps {
   disabled?: boolean;
 }
 function FieldInput({ field, value, stage, onFieldChange, disabled }: FieldInputProps) {
-    const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","execution","repat-status","connect-scan"].includes(field.type);
+      const isStatus = ["status","patsub","pat-status","crq-ho","close-permit","permit","clearance","done","execution","repat-status","connect-scan","trace360"].includes(field.type);
 
   if (disabled) {
     if (isStatus) {
