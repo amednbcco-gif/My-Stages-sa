@@ -211,7 +211,7 @@ export interface Milestone {
 }
 
 export const MILESTONES: Milestone[] = [
-  {
+    {
     id: "survey",
     title: "Survey & Design المسح والتصميم",
     stage: "stage1",
@@ -224,6 +224,7 @@ export const MILESTONES: Milestone[] = [
       { key: "planNo", label: "Plan No.", type: "text" },
       { key: "designStatus", label: "Design Status", type: "status" },
       { key: "dboqStatus", label: "DBOQ Status", type: "status" },
+      { key: "trace360Status", label: "Trace360 Status", type: "trace360" },
     ],
   },
   {
