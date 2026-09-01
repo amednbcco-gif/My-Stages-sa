@@ -570,7 +570,8 @@ function MilestoneCard({
                   <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
-                  {(showTeleowsLink || showConnectScanLink || showTrace360Link) && (href={externalLinkUrl}
+{(showTeleowsLink || showConnectScanLink || showTrace360Link) && 
+(href={externalLinkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       title={externalLinkTitle}
