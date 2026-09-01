@@ -25,6 +25,7 @@ import {
   CLEARANCE_OPTIONS,
   REPAT_OPTIONS,
   CONNECT_SCAN_OPTIONS,
+  TRACE360_OPTIONS,
   MILESTONES,
   computeProgress,
   addDays,
