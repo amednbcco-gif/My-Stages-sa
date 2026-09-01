@@ -20,6 +20,7 @@ export interface Stage1 {
   sendDocsDate: string;
   receiveDocsDate: string;
   planNo: string;
+  trace360Status: string;
 }
 
 export interface Stage2 {
