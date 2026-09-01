@@ -129,12 +129,12 @@ function FieldInput({ field, value, stage, onFieldChange, disabled }: FieldInput
     return <span className="text-xs text-gray-300">{String(value ?? "") || "—"}</span>;
   }
 
-  if (isStatus) {
+   if (isStatus) {
     return (
       <select
         value={String(value || "pending")}
         onChange={(e) => onFieldChange(stage, field.key, e.target.value)}
-        className={`rounded-lg border px-2 py-1 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-5 ${statusColor(String(value || "pending"))}`}
+        className={`w-full rounded-lg border px-2 py-1 text-xs font-semibold outline-none cursor-pointer transition-colors appearance-none pr-5 ${statusColor(String(value || "pending"))}`}
         style={{ backgroundImage: chevronBg, backgroundRepeat: "no-repeat", backgroundPosition: "right 5px center" }}
       >
         {optionsFor(field.type).map((o) => (
