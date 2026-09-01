@@ -550,16 +550,37 @@ function MilestoneCard({
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
           {milestone.fields.map((field) => {
             const value = stageData[field.key] ?? "";
-const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
+            const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             const showConnectScanLink = field.key === "connectScanStatus";
+            const showTrace360Link = field.key === "trace360Status";
+            const externalLinkUrl = showTeleowsLink
+              ? "https://100s-sg.teleows.com"
+              : showConnectScanLink
+              ? "https://10.64.239.95/ConnectScan/login"
+              : "https://apps.powerapps.com";
+            const externalLinkTitle = showTeleowsLink
+              ? "Open TeleOWS to get the OSSPA number"
+              : showConnectScanLink
+              ? "Open ConnectScan login"
+              : "Open Trace360 (Power Apps)";
             return (
               <div key={field.key} className="flex items-center gap-3">
                 <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
- <div className="flex flex-1 min-w-0 items-center gap-3">
+                <div className="flex flex-1 min-w-0 items-center gap-3">
                   <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
- {(showTeleowsLink || showConnectScanLink) && (<a href={showTeleowsLink ? "https://100s-sg.teleows.com" : "https://10.64.239.95/ConnectScan/login"} target="_blank" rel="noopener noreferrer" title={showTeleowsLink ? "Open TeleOWS to get the OSSPA number" : "Open ConnectScan login"} className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"><ExternalLink size={13} /></a>)}
+                  {(showTeleowsLink || showConnectScanLink || showTrace360Link) && (
+                    
+                      href={externalLinkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={externalLinkTitle}
+                      className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
+                    >
+                      <ExternalLink size={13} />
+                    </a>
+                  )}
                 </div>
               </div>
             );
