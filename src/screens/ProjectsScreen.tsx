@@ -120,7 +120,7 @@ export function ProjectsScreen() {
 
   useEffect(() => { loadProjects(); }, [user, isGuest]);
 
-  async function handleSave(data: Partial<Project>) {
+    async function handleSave(data: Partial<Project>) {
     if (editTarget) {
       const poVal = Number(data.po_value_sar) || 0;
       const { data: cur } = await supabase.from("projects").select("*").eq("id", editTarget.id).maybeSingle();
@@ -131,8 +131,24 @@ export function ProjectsScreen() {
       if (!error) { setToast("Project Updated"); setEditTarget(null); loadProjects(); }
     } else {
       const poVal = Number(data.po_value_sar) || 0;
+
+      // Resolve the correct owner_id: if the current user is a team member
+      // (not the account owner themselves), the project must be saved under
+      // their manager's owner_id so it shows up for the manager too.
+      let resolvedOwnerId = user?.id;
+      if (user) {
+        const { data: tm } = await supabase
+          .from("team_members")
+          .select("owner_id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (tm?.owner_id) {
+          resolvedOwnerId = tm.owner_id;
+        }
+      }
+
       const { data: inserted, error } = await supabase.from("projects").insert({
-        owner_id: user?.id,
+        owner_id: resolvedOwnerId,
         project_name: data.project_name,
         po_number: data.po_number,
         plan_no: data.plan_no,
