@@ -90,6 +90,7 @@ function optionsFor(type: string) {
   if (type === "execution") return EXECUTION_OPTIONS;
   if (type === "repat-status") return REPAT_OPTIONS;
   if (type === "connect-scan") return CONNECT_SCAN_OPTIONS;
+  if (type === "trace360") return TRACE360_OPTIONS;
   return STATUS_OPTIONS;
 }
 
