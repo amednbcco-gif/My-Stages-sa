@@ -44,6 +44,7 @@ export const DEMO_PROJECT: Project = {
     sendDocsDate: "2026-01-15",
     receiveDocsDate: "2026-01-20",
     planNo: "PLN-RUH-0042",
+    trace360Status: "",
   },
   stage2: {
     poReceiveStatus: "approved",
@@ -73,13 +74,6 @@ export const DEMO_PROJECT: Project = {
     civilStatus: "approved",
     actualStartDate: "2026-02-05",
     actualEndDate: "2026-04-15",
-    closePermit: "submitted",
-    clearancePermit: "pending",
-    permitSubmittedDate: "2026-01-28",
-    permitIssuedDate: "2026-02-03",
-    permitClosedDate: "2026-04-20",
-    permitClearancedDate: "",
-    finalClearanceStatus: "pending",
   },
   stage4: {
     patStatus: "submitted",

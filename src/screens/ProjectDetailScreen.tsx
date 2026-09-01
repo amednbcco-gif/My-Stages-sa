@@ -209,7 +209,7 @@ interface StageCardProps {
 // Stage 6 FAC Status now shown as first field inside the card body (before FAC Due Date)
 const TOP_STATUS_FIELD: Record<string, { key: string; label: string }> = {};
 
-function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage, canEdit, permits }: StageCardProps) {
+function StageCard({ stage, project, attachments, uploading, onFieldChange, onUpload: _onUpload, onDeleteAttachment, onDownloadAttachment, onSaveStage, canEdit, permits }: StageCardProps) {
   const fields = STAGE_FIELDS[stage];
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[stage] ?? {};
   const pct = stageProgress(project, stage);
@@ -570,11 +570,13 @@ function MilestoneCard({
                   <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
                   </div>
-{(showTeleowsLink || showConnectScanLink || showTrace360Link) &&  (href={externalLinkUrl}
- target="_blank"
- rel="noopener noreferrer"
- title={externalLinkTitle}
-className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
+{(showTeleowsLink || showConnectScanLink || showTrace360Link) && (
+                    <a
+                      href={externalLinkUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={externalLinkTitle}
+                      className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
                     >
                       <ExternalLink size={13} />
                     </a>
