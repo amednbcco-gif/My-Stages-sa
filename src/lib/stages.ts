@@ -26,6 +26,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "planNo", label: "Plan No.", type: "text" },
     { key: "sendDocsDate", label: "Docs Sent", type: "date" },
     { key: "receiveDocsDate", label: "Docs Received", type: "date" },
+    { key: "trace360Status", label: "Trace360 Status", type: "trace360" },
   ],
   stage2: [
     { key: "poReceiveStatus", label: "PO Status", type: "status" },
