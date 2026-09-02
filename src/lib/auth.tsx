@@ -9,7 +9,6 @@ interface AuthContextValue {
   profile: Profile | null;
   loading: boolean;
   isGuest: boolean;
-  enterGuestMode: () => void;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName: string, role: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -27,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-const [isGuest, setIsGuest] = useState(false);
+  const [isGuest] = useState(false);
 
   async function loadProfile(uid: string) {
     const { data } = await supabase
@@ -146,13 +145,10 @@ const [isGuest, setIsGuest] = useState(false);
     return { error: error?.message ?? null };
   }
 
-    function enterGuestMode() {
-    setIsGuest(true);
-  }
-
   return (
     <AuthContext.Provider
-      value={{ session, user, profile, loading, isGuest, enterGuestMode, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, verifySignupOtp, resendSignupOtp }}
+      value={{ session, user, profile, loading, isGuest, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, verifySignupOtp, resendSignupOtp }}
+    >
       {children}
     </AuthContext.Provider>
   );

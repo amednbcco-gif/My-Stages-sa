@@ -32,7 +32,7 @@ function StagesLogoIcon({ size = 52 }: { size?: number }) {
 }
 
 export function AuthScreen() {
-  const { signIn, signUp, enterGuestMode, resetPassword, verifySignupOtp, resendSignupOtp } = useAuth();
+  const { signIn, signUp, resetPassword, verifySignupOtp, resendSignupOtp } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -96,9 +96,8 @@ export function AuthScreen() {
     setBusy(false);
   }
 
- function handleGuest() {
-    enterGuestMode();
-    navigate("/dashboard");
+  function handleGuest() {
+    setInfo("Guest access is not available in this version. Please sign in or create an account.");
   }
 
   function openForgotModal() {
