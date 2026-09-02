@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // added: needed for enterGuestMode() to redirect after guest entry
 import { Mail, Lock, ArrowRight, Phone, User, HardHat, Briefcase, X } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { Spinner } from "../components/ui";
