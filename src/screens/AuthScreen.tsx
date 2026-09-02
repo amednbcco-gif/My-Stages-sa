@@ -33,6 +33,7 @@ function StagesLogoIcon({ size = 52 }: { size?: number }) {
 }
 
 export function AuthScreen() {
+  const navigate = useNavigate(); // added: used by handleGuest() to redirect after entering guest mode
   const { signIn, signUp, enterGuestMode, resetPassword, verifySignupOtp, resendSignupOtp } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
