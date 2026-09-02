@@ -112,7 +112,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
    async function signOut() {
     setIsGuest(false);
     await supabase.auth.signOut();
-  }
     setProfile(null);
   }
 
