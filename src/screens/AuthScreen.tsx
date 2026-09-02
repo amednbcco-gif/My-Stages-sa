@@ -32,7 +32,7 @@ function StagesLogoIcon({ size = 52 }: { size?: number }) {
 }
 
 export function AuthScreen() {
-  const { signIn, signUp, resetPassword, verifySignupOtp, resendSignupOtp } = useAuth();
+  const { signIn, signUp, enterGuestMode, resetPassword, verifySignupOtp, resendSignupOtp } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
