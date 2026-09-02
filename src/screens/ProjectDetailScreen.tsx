@@ -799,9 +799,19 @@ export function ProjectDetailScreen() {
     setTimeout(() => setToast(null), 2500);
   }, []);
 
-  useEffect(() => {
+   useEffect(() => {
     if (!id) return;
     setLoading(true);
+
+    if (isGuest) {
+      setProject(DEMO_PROJECT as unknown as Project);
+      setNotes([]);
+      setAttachments([]);
+      setPermits([]);
+      setLoading(false);
+      return;
+    }
+
     Promise.all([
       supabase.from("projects").select("*").eq("id", id).maybeSingle(),
       supabase.from("project_notes").select("*").eq("project_id", id).order("created_at", { ascending: false }),
@@ -811,7 +821,7 @@ export function ProjectDetailScreen() {
       setProject(proj as Project | null);
       setNotes(notesData as ProjectNote[] ?? []);
       setAttachments(attachData as StageAttachment[] ?? []);
-            setPermits(permitsData as PermitRow[] ?? []);
+      setPermits(permitsData as PermitRow[] ?? []);
       const loadedNotes = (notesData as ProjectNote[]) ?? [];
       if (loadedNotes.length > 0) {
         supabase.from("note_reactions").select("*").in("note_id", loadedNotes.map((n) => n.id))
@@ -819,7 +829,7 @@ export function ProjectDetailScreen() {
       }
       setLoading(false);
     });
-  }, [id]);
+  }, [id, isGuest]);
 
   useEffect(() => {
     if (!project || !user) return;
