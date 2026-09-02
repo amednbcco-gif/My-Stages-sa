@@ -30,7 +30,7 @@ import {
   computeProgress,
   addDays,
 } from "../lib/stages";
-import { getAbbreviation } from "../lib/demoProject";
+import { getAbbreviation, DEMO_PROJECT } from "../lib/demoProject";
 import type { Project, ProjectNote as BaseProjectNote, StageAttachment, PermitRow, NoteReaction } from "../lib/types";
 type ProjectNote = BaseProjectNote & { author_name?: string };
 
