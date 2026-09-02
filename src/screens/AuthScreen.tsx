@@ -96,7 +96,7 @@ export function AuthScreen() {
     setBusy(false);
   }
 
-  ffunction handleGuest() {
+  function handleGuest() {
     enterGuestMode();
     navigate("/dashboard");
   }
