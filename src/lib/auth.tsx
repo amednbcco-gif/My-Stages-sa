@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isGuest] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
 
   async function loadProfile(uid: string) {
     const { data } = await supabase
