@@ -9,6 +9,7 @@ interface AuthContextValue {
   profile: Profile | null;
   loading: boolean;
   isGuest: boolean;
+  enterGuestMode: () => void;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName: string, role: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
