@@ -11,8 +11,7 @@ import { ResetPasswordScreen } from "./screens/ResetPasswordScreen";
 import { Spinner } from "./components/ui";
 
 function ProtectedRoutes() {
-  const { user, loading } = useAuth();
-
+  const { user, loading, isGuest } = useAuth();
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-ink-900">
@@ -20,11 +19,9 @@ function ProtectedRoutes() {
       </div>
     );
   }
-
-  if (!user) {
+  if (!user && !isGuest) {
     return <AuthScreen />;
   }
-
   return (
     <AppShell>
       <Routes>
