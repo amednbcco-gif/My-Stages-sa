@@ -146,9 +146,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message ?? null };
   }
 
+    function enterGuestMode() {
+    setIsGuest(true);
+  }
+
   return (
     <AuthContext.Provider
-      value={{ session, user, profile, loading, isGuest, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, verifySignupOtp, resendSignupOtp }}
+      value={{ session, user, profile, loading, isGuest, enterGuestMode, signIn, signUp, signOut, refreshProfile, resetPassword, updatePassword, verifySignupOtp, resendSignupOtp }}
     >
       {children}
     </AuthContext.Provider>
