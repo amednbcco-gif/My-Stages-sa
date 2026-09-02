@@ -96,8 +96,9 @@ export function AuthScreen() {
     setBusy(false);
   }
 
-  function handleGuest() {
-    setInfo("Guest access is not available in this version. Please sign in or create an account.");
+ function handleGuest() {
+    enterGuestMode();
+    navigate("/dashboard");
   }
 
   function openForgotModal() {
