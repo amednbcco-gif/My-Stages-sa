@@ -245,10 +245,12 @@ export function OnHoldScreen() {
                       </td>
                     );
                   })}
-                  <td className="px-3 py-2 text-right">
-                    <button onClick={() => deleteRow(row.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors">
-                      <Trash2 size={14} />
-                    </button>
+                                    <td className="px-3 py-2 text-right">
+                    {!isGuest && (
+                      <button onClick={() => deleteRow(row.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors">
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
