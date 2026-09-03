@@ -32,6 +32,7 @@ function ProtectedRoutes() {
         <Route path="/team" element={<TeamScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/reset-password" element={<ResetPasswordScreen />} />
+        <Route path="/onhold" element={<OnHoldScreen />} />
         <Route path="*" element={<Navigate to="/projects" replace />} />
       </Routes>
     </AppShell>
