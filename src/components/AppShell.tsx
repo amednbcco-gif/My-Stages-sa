@@ -295,9 +295,8 @@ export function AppShell({ children }: AppShellProps) {
             </button>
           )}
 
-          {/* Notifications bell */}
-          {!isGuest && (
-            <div ref={notifRef} className="relative">
+                   {/* Notifications bell */}
+          <div ref={notifRef} className="relative">
               <button
                 onClick={openNotifications}
                 className="relative flex items-center justify-center rounded-lg border border-ink-700 bg-ink-900/60 p-2 text-gray-300 transition-all hover:border-gold/30 hover:text-white"
