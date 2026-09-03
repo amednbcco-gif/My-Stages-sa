@@ -275,7 +275,7 @@ export function AppShell({ children }: AppShellProps) {
 
         {/* Right: Notifications + User */}
         <div className="flex items-center gap-2 shrink-0">
-          {/* Background theme toggle */}
+                    {/* Background theme toggle */}
           <button
             onClick={toggleBgTheme}
             title={bgTheme === "fiber" ? "Switch to classic background" : "Switch to fiber background"}
@@ -283,6 +283,17 @@ export function AppShell({ children }: AppShellProps) {
           >
             <Waves size={14} />
           </button>
+
+          {/* On Hold tracker */}
+          {!isGuest && (
+            <button
+              onClick={() => navigate("/onhold")}
+              title="On Hold"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-ink-700 bg-ink-900/60 text-gray-300 transition-all hover:border-gold/30 hover:text-white"
+            >
+              <PauseCircle size={14} />
+            </button>
+          )}
 
           {/* Notifications bell */}
           {!isGuest && (
