@@ -207,17 +207,20 @@ export function OnHoldScreen() {
             ) : (
               rows.map((row) => (
                 <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/25 transition-colors">
-                  {columns.map((col) => (
-                    <td key={col.id} className="px-3 py-2">
-                      <input
-                        value={cellValue(row.id, col.id)}
-                        onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
-                        onBlur={(e) => persistCell(row.id, col.id, e.target.value)}
-                        placeholder="—"
-                        className="w-full rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600"
-                      />
-                    </td>
-                  ))}
+                                   {columns.map((col) => {
+                    const isSn = col.label.trim().toUpperCase() === "SN.";
+                    return (
+                      <td key={col.id} className={`px-3 py-2 ${isSn ? "w-16" : ""}`}>
+                        <input
+                          value={cellValue(row.id, col.id)}
+                          onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
+                          onBlur={(e) => persistCell(row.id, col.id, e.target.value)}
+                          placeholder="—"
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : "w-full"}`}
+                        />
+                      </td>
+                    );
+                  })}
                   <td className="px-3 py-2 text-right">
                     <button onClick={() => deleteRow(row.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors">
                       <Trash2 size={14} />
