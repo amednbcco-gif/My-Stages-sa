@@ -8,6 +8,7 @@ import { ProjectDetailScreen } from "./screens/ProjectDetailScreen";
 import { TeamScreen } from './screens/TeamScreen';
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { ResetPasswordScreen } from "./screens/ResetPasswordScreen";
+import { OnHoldScreen } from "./screens/OnHoldScreen";
 import { Spinner } from "./components/ui";
 
 function ProtectedRoutes() {
