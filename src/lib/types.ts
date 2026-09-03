@@ -205,3 +205,26 @@ export interface PermitRow {
   created_at: string;
   updated_at: string;
 }
+
+export interface OnHoldColumn {
+  id: string;
+  owner_id: string;
+  label: string;
+  position: number;
+  created_at: string;
+}
+
+export interface OnHoldRow {
+  id: string;
+  owner_id: string;
+  position: number;
+  created_at: string;
+}
+
+export interface OnHoldCell {
+  id: string;
+  row_id: string;
+  column_id: string;
+  value: string | null;
+  updated_at: string;
+}
