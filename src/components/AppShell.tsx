@@ -344,7 +344,7 @@ export function AppShell({ children }: AppShellProps) {
               )}
          </div>
 
-          {/* User menu */}
+                    {/* User menu */}
           <div ref={userMenuRef} className="relative">
             <button
               onClick={() => setUserMenuOpen((v) => !v)}
@@ -360,12 +360,9 @@ export function AppShell({ children }: AppShellProps) {
               <svg width="10" height="10" viewBox="0 0 10 10" className="text-gray-500 hidden sm:block">
                 <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" fill="none" />
               </svg>
-              }
             </button>
-</div>
-          )}
-          
-             {userMenuOpen && (
+
+            {userMenuOpen && (
               <div onClick={(e) => e.stopPropagation()} className="absolute right-0 top-full mt-1.5 w-60 rounded-xl border border-ink-700 bg-ink-800 shadow-xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-ink-700">
                   <p className="text-sm font-semibold text-white truncate">{displayName}</p>
