@@ -101,7 +101,7 @@ export function OnHoldScreen() {
     }
   }
 
-  useEffect(() => { loadAll(); }, [user?.id]);
+  useEffect(() => { loadAll(); }, [user?.id, isGuest]);
 
   async function addColumn() {
     if (!ownerId) return;
