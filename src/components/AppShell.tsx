@@ -284,16 +284,14 @@ export function AppShell({ children }: AppShellProps) {
             <Waves size={14} />
           </button>
 
-          {/* On Hold tracker */}
-          {!isGuest && (
-            <button
-              onClick={() => navigate("/onhold")}
-              title="On Hold"
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-ink-700 bg-ink-900/60 text-gray-300 transition-all hover:border-gold/30 hover:text-white"
-            >
-              <PauseCircle size={14} />
-            </button>
-          )}
+                  {/* On Hold tracker */}
+          <button
+            onClick={() => navigate("/onhold")}
+            title="On Hold"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-ink-700 bg-ink-900/60 text-gray-300 transition-all hover:border-gold/30 hover:text-white"
+          >
+            <PauseCircle size={14} />
+          </button>
 
                     {/* Notifications bell */}
           <div ref={notifRef} className="relative">
@@ -344,7 +342,7 @@ export function AppShell({ children }: AppShellProps) {
                   )}
                 </div>
               )}
-                      </div>
+         </div>
 
           {/* User menu */}
           <div ref={userMenuRef} className="relative">
