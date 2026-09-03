@@ -403,6 +403,7 @@ export function AppShell({ children }: AppShellProps) {
           </button>
         </div>
       </header>
+     )}
 
       {/* ── Mobile drawer ── */}
       {mobileOpen && (
