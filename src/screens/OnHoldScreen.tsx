@@ -167,8 +167,8 @@ export function OnHoldScreen() {
         <table className="w-full min-w-[600px] text-sm border-collapse">
           <thead>
             <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
-              {columns.map((col) => (
-                <th key={col.id} className="px-3 py-3 font-semibold whitespace-nowrap">
+               {columns.map((col) => (
+                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${col.label.trim().toUpperCase() === "SN." ? "w-16" : ""}`}>
                   {editingHeader === col.id ? (
                     <input
                       autoFocus
