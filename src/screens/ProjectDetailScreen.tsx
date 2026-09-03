@@ -1132,14 +1132,18 @@ export function ProjectDetailScreen() {
               <span className="text-xs text-ink-600">·</span>
               <h1 className="text-lg md:text-xl font-bold text-white truncate">{project.project_name || "—"}</h1>
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
-              <span className="flex items-center gap-1.5"><MapPin size={11} /> {project.site_id || "No site"}</span>
-              <span className="flex items-center gap-1.5"><DollarSign size={11} /> SAR {fmtNum(Number(project.po_value_sar || 0))}</span>
+<div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+<span className="flex items-center gap-1.5"><MapPin size={11} /> {project.site_id || "No site"}</span>
+<span className="flex items-center gap-1.5"><DollarSign size={11} /> SAR {fmtNum(Number(project.po_value_sar || 0))}</span>
               {project.po_number && <span>PO: {project.po_number}</span>}
               {project.region && <span>{project.region}</span>}
               {project.city && <span>{project.city}</span>}
               {project.sector && <span>{project.sector}</span>}
               {project.project_type && <span>{project.project_type}</span>}
+              {project.plan_no && <span>Plan No: {project.plan_no}</span>}
+              {project.project_manager && <span>PM: {project.project_manager}</span>}
+              {project.latitude != null && <span>Lat: {project.latitude}</span>}
+              {project.longitude != null && <span>Long: {project.longitude}</span>}
             </div>
           </div>
           <div className="shrink-0 text-right">
