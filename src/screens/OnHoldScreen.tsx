@@ -9,7 +9,7 @@ import type { OnHoldColumn, OnHoldRow, OnHoldCell } from "../lib/types";
 const DEFAULT_COLUMNS = ["SN.", "Project Name", "PO Value", "City", "Note"];
 
 export function OnHoldScreen() {
-  const { user } = useAuth();
+  const { user, isGuest } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
