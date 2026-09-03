@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FolderKanban, LayoutDashboard, Users, CircleUser as UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell, Trash2, Waves } from "lucide-react";
+import { FolderKanban, LayoutDashboard, Users, CircleUser as UserCircle, LogOut, Menu, X, Phone, Mail, Settings, Bell, Trash2, Waves, PauseCircle } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import { supabase } from "../lib/supabase";
 
