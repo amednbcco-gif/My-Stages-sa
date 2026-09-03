@@ -396,11 +396,10 @@ export function AppShell({ children }: AppShellProps) {
             onClick={() => setMobileOpen(true)}
             className="rounded-lg p-1.5 text-gray-400 hover:text-white md:hidden"
           >
-                      <Menu size={20} />
+             <Menu size={20} />
           </button>
         </div>
       </header>
-    
       {/* ── Mobile drawer ── */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
