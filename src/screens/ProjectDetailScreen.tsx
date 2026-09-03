@@ -1138,7 +1138,7 @@ export function ProjectDetailScreen() {
               {project.po_number && <span>PO: {project.po_number}</span>}
               {project.region && <span>{project.region}</span>}
               {project.city && <span>{project.city}</span>}
-              {project.sector && <span>{project.sector}</span>}
+              {project.Owner && <span>{project.Owner}</span>}
               {project.project_type && <span>{project.project_type}</span>}
               {project.plan_no && <span>Plan No: {project.plan_no}</span>}
               {project.project_manager && <span>PM: {project.project_manager}</span>}
