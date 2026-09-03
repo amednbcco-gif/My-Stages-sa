@@ -365,7 +365,7 @@ export function AppShell({ children }: AppShellProps) {
 </div>
           )}
           
-            {/*userMenuOpen && */} 
+             {userMenuOpen && (
               <div onClick={(e) => e.stopPropagation()} className="absolute right-0 top-full mt-1.5 w-60 rounded-xl border border-ink-700 bg-ink-800 shadow-xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-ink-700">
                   <p className="text-sm font-semibold text-white truncate">{displayName}</p>
