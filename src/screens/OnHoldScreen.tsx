@@ -169,7 +169,10 @@ export function OnHoldScreen() {
           <h1 className="text-2xl font-bold text-white">On Hold</h1>
           <p className="text-sm text-gray-400">Custom tracker — add columns and rows and name them however you like. Shared with your whole team.</p>
         </div>
-        <div className="flex gap-2">
+                <div className="flex gap-2">
+          <Button variant="secondary" onClick={exportCSV}>
+            <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
+          </Button>
           <Button variant="secondary" onClick={addColumn}>
             <Plus size={16} className="mr-1.5" /> Add Column
           </Button>
