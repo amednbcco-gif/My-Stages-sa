@@ -35,7 +35,22 @@ export function OnHoldScreen() {
     return tm?.owner_id ?? user.id;
   }
 
-   async function loadAll() {
+     async function loadAll() {
+    if (isGuest) {
+      const demoCols: OnHoldColumn[] = DEFAULT_COLUMNS.map((label, i) => ({
+        id: `demo-col-${i}`,
+        owner_id: "demo",
+        label,
+        position: i,
+        created_at: new Date().toISOString(),
+      }));
+      setColumns(demoCols);
+      setRows([]);
+      setCells([]);
+      setOwnerId(null);
+      setLoading(false);
+      return;
+    }
     if (!user) return;
     setLoading(true);
     try {
