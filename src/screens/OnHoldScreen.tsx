@@ -35,45 +35,55 @@ export function OnHoldScreen() {
     return tm?.owner_id ?? user.id;
   }
 
-  async function loadAll() {
+   async function loadAll() {
     if (!user) return;
     setLoading(true);
-    const resolved = await resolveOwnerId();
-    setOwnerId(resolved);
-    if (!resolved) { setLoading(false); return; }
+    try {
+      const resolved = await resolveOwnerId();
+      setOwnerId(resolved);
+      if (!resolved) { return; }
 
-    let { data: colsData } = await supabase
-      .from("on_hold_columns")
-      .select("*")
-      .eq("owner_id", resolved)
-      .order("position", { ascending: true });
+      let { data: colsData, error: colsErr } = await supabase
+        .from("on_hold_columns")
+        .select("*")
+        .eq("owner_id", resolved)
+        .order("position", { ascending: true });
 
-    if (!colsData || colsData.length === 0) {
-      const seeded = await Promise.all(
-        DEFAULT_COLUMNS.map((label, i) =>
-          supabase.from("on_hold_columns").insert({ owner_id: resolved, label, position: i }).select().single()
-        )
-      );
-      colsData = seeded.map((r) => r.data).filter(Boolean) as OnHoldColumn[];
+      if (colsErr) console.error("on_hold_columns select error:", colsErr);
+
+      if (!colsData || colsData.length === 0) {
+        const seeded = await Promise.all(
+          DEFAULT_COLUMNS.map((label, i) =>
+            supabase.from("on_hold_columns").insert({ owner_id: resolved, label, position: i }).select().single()
+          )
+        );
+        seeded.forEach((r) => { if (r.error) console.error("seed column error:", r.error); });
+        colsData = seeded.map((r) => r.data).filter(Boolean) as typeof colsData;
+      }
+      setColumns((colsData as OnHoldColumn[]) ?? []);
+
+      const { data: rowsData, error: rowsErr } = await supabase
+        .from("on_hold_rows")
+        .select("*")
+        .eq("owner_id", resolved)
+        .order("position", { ascending: true });
+
+      if (rowsErr) console.error("on_hold_rows select error:", rowsErr);
+      setRows((rowsData as OnHoldRow[]) ?? []);
+
+      const rowIds = ((rowsData as OnHoldRow[]) ?? []).map((r) => r.id);
+      if (rowIds.length > 0) {
+        const { data: cellsData, error: cellsErr } = await supabase.from("on_hold_cells").select("*").in("row_id", rowIds);
+        if (cellsErr) console.error("on_hold_cells select error:", cellsErr);
+        setCells((cellsData as OnHoldCell[]) ?? []);
+      } else {
+        setCells([]);
+      }
+    } catch (err) {
+      console.error("OnHoldScreen loadAll crashed:", err);
+    } finally {
+      setLoading(false);
     }
-    setColumns((colsData as OnHoldColumn[]) ?? []);
-
-    const { data: rowsData } = await supabase
-      .from("on_hold_rows")
-      .select("*")
-      .eq("owner_id", resolved)
-      .order("position", { ascending: true });
-    setRows((rowsData as OnHoldRow[]) ?? []);
-
-    const rowIds = ((rowsData as OnHoldRow[]) ?? []).map((r) => r.id);
-    if (rowIds.length > 0) {
-      const { data: cellsData } = await supabase.from("on_hold_cells").select("*").in("row_id", rowIds);
-      setCells((cellsData as OnHoldCell[]) ?? []);
-    } else {
-      setCells([]);
-    }
-
-    setLoading(false);
   }
 
   useEffect(() => { loadAll(); }, [user?.id]);
