@@ -123,6 +123,22 @@ export function OnHoldScreen() {
     setRows((prev) => prev.filter((r) => r.id !== rowId));
     setCells((prev) => prev.filter((c) => c.row_id !== rowId));
   }
+    function exportCSV() {
+    const headers = columns.map((c) => c.label);
+    const dataRows = rows.map((row) => columns.map((col) => cellValue(row.id, col.id)));
+    const csv = [headers, ...dataRows]
+      .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `STAGES_OnHold_${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
 
   function updateCellLocal(rowId: string, columnId: string, value: string) {
     setCells((prev) => {
