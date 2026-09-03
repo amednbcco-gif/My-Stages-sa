@@ -234,12 +234,13 @@ export function OnHoldScreen() {
                     const isSn = col.label.trim().toUpperCase() === "SN.";
                     return (
                       <td key={col.id} className={`px-3 py-2 ${isSn ? "w-16" : ""}`}>
-                        <input
+                                                <input
                           value={cellValue(row.id, col.id)}
                           onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
                           onBlur={(e) => persistCell(row.id, col.id, e.target.value)}
                           placeholder="—"
-                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : "w-full"}`}
+                          disabled={isGuest}
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 disabled:opacity-60 disabled:cursor-not-allowed ${isSn ? "w-16 text-center" : "w-full"}`}
                         />
                       </td>
                     );
