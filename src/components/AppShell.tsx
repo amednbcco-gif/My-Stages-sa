@@ -344,8 +344,7 @@ export function AppShell({ children }: AppShellProps) {
                   )}
                 </div>
               )}
-            </div>
-          )}
+                      </div>
 
           {/* User menu */}
           <div ref={userMenuRef} className="relative">
@@ -403,7 +402,6 @@ export function AppShell({ children }: AppShellProps) {
           </button>
         </div>
       </header>
-     )}
 
       {/* ── Mobile drawer ── */}
       {mobileOpen && (
