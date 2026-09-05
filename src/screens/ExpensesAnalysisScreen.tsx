@@ -469,8 +469,8 @@ export function ExpensesAnalysisScreen() {
               ))
             )}
           </tbody>
-          <tfoot>
-            <tr className="bg-ink-900/60 font-bold text-white">
+                    <tfoot>
+            <tr className="sticky bottom-0 z-10 bg-ink-900 font-bold text-white">
               {columns.map((col, i) => (
                 <td key={col.id} className="px-3 py-2.5 text-xs">
                   {i === 0 ? "Grand Total" : isTotalColumn(col) ? fmtNum(itemsCostsTotal) : ""}
