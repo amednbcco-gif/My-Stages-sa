@@ -228,3 +228,34 @@ export interface OnHoldCell {
   value: string | null;
   updated_at: string;
 }
+export interface ExpenseColumn {
+  id: string;
+  project_id: string;
+  label: string;
+  position: number;
+  fixed: boolean;
+  created_at: string;
+}
+
+export interface ExpenseRow {
+  id: string;
+  project_id: string;
+  position: number;
+  is_grand_total: boolean;
+  created_at: string;
+}
+
+export interface ExpenseCell {
+  id: string;
+  row_id: string;
+  column_id: string;
+  value: string | null;
+  updated_at: string;
+}
+
+export interface ExpenseSummary {
+  project_id: string;
+  manpower_costs: number;
+  other_costs: number;
+  updated_at: string;
+}
