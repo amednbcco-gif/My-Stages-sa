@@ -145,9 +145,14 @@ export function ExpensesAnalysisScreen() {
 
   useEffect(() => { loadAll(); }, [id, user?.id]);
 
-  const totalColumn = columns.find(isTotalColumn);
-  const itemsCostsTotal = totalColumn
-    ? rows.reduce((sum, row) => sum + (parseFloat(cellValue(row.id, totalColumn.id)) || 0), 0)
+    const qtyColumn = columns.find(isQuantityColumn);
+  const priceColumn = columns.find(isSupplierPriceColumn);
+  const itemsCostsTotal = (qtyColumn && priceColumn)
+    ? rows.reduce((sum, row) => {
+        const qty = parseFloat(cellValue(row.id, qtyColumn.id)) || 0;
+        const price = parseFloat(cellValue(row.id, priceColumn.id)) || 0;
+        return sum + qty * price;
+      }, 0)
     : 0;
   const poValue = Number(project?.po_value_sar || 0);
   const manpowerCosts = Number(manpowerDraft) || 0;
