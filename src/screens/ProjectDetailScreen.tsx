@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, Pencil, Trash2, Paperclip, MapPin, DollarSign, Save,
-  MessageSquare, Send, X, Check, LayoutGrid, List, Plus, ExternalLink,
+  MessageSquare, Send, X, Check, LayoutGrid, List, Plus, ExternalLink, Calculator,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
