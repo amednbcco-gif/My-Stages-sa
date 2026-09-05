@@ -313,8 +313,8 @@ export function TeamScreen() {
                           {m.full_name || m.email} already sees all your projects. Check the milestones below to also let them edit that milestone across all your <span className="text-gold">current</span> projects. If you add a new project later, come back here and save again to extend access to it too.
                         </p>
 
-                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                          {MILESTONES.map((ms) => (
+                                                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                          {[...MILESTONES, ...EXTRA_ASSIGNABLE].map((ms) => (
                             <label
                               key={ms.id}
                               className="flex items-center gap-2 rounded-lg border border-ink-700 bg-ink-800 px-3 py-2 text-sm text-gray-300 hover:border-gold/30 transition-colors cursor-pointer"
@@ -325,7 +325,7 @@ export function TeamScreen() {
                                 onChange={() => toggleMilestone(ms.id)}
                                 className="accent-gold h-4 w-4"
                               />
-                              {milestoneLabel(ms.title)}
+                              {ms.id === "expenses" ? ms.title : milestoneLabel(ms.title)}
                             </label>
                           ))}
                         </div>
