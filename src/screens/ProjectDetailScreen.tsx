@@ -1093,7 +1093,7 @@ export function ProjectDetailScreen() {
         >
           <ArrowLeft size={16} /> {viewMode ? "Change View" : "Back"}
         </button>
-        <div className="flex items-center gap-2">
+               <div className="flex items-center gap-2">
           {viewMode && (
             <div className="flex items-center rounded-lg border border-ink-700 bg-ink-800 p-0.5 gap-0.5">
               <button
@@ -1109,6 +1109,15 @@ export function ProjectDetailScreen() {
                 <List size={13} /> List
               </button>
             </div>
+          )}
+          {viewMode && (canEditAll || canEditMilestone("expenses")) && (
+            <button
+              onClick={() => navigate(`/projects/${project.id}/expenses`)}
+              title="Project Expenses Analysis"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-ink-700 bg-ink-800 text-gray-300 transition-all hover:border-gold/40 hover:text-gold"
+            >
+              <Calculator size={15} />
+            </button>
           )}
           {canEditAll && (
             <>
