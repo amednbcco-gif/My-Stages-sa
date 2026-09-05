@@ -140,9 +140,9 @@ export function TeamScreen() {
       .eq("scope", "field");
 
     if (assignMilestoneIds.length > 0 && projects.length > 0) {
-      const rows = projects.flatMap((proj) =>
+            const rows = projects.flatMap((proj) =>
         assignMilestoneIds.map((milestoneId) => {
-          const ms = MILESTONES.find((m) => m.id === milestoneId);
+          const ms = [...MILESTONES, ...EXTRA_ASSIGNABLE].find((m) => m.id === milestoneId);
           return {
             owner_id: user?.id,
             team_member_id: assignMemberId,
