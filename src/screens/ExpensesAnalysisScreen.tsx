@@ -255,14 +255,21 @@ export function ExpensesAnalysisScreen() {
     setMode("edit");
   }
 
-  async function saveAll() {
+   async function saveAll() {
     if (isGuest || !canEdit || !id) { setMode("view"); return; }
+    const qtyCol = columns.find(isQuantityColumn);
+    const priceCol = columns.find(isSupplierPriceColumn);
+    const totalCol = columns.find(isTotalColumn);
+
     const payload = rows.flatMap((row) =>
-      columns.map((col) => ({
-        row_id: row.id,
-        column_id: col.id,
-        value: cellValue(row.id, col.id),
-      }))
+      columns.map((col) => {
+        let val = cellValue(row.id, col.id);
+        if (totalCol && col.id === totalCol.id && qtyCol && priceCol) {
+          const computed = (parseFloat(cellValue(row.id, qtyCol.id)) || 0) * (parseFloat(cellValue(row.id, priceCol.id)) || 0);
+          val = String(computed);
+        }
+        return { row_id: row.id, column_id: col.id, value: val };
+      })
     );
     if (payload.length > 0) {
       const { error } = await supabase.from("project_expense_cells").upsert(payload, { onConflict: "row_id,column_id" });
@@ -381,10 +388,18 @@ export function ExpensesAnalysisScreen() {
             ) : (
               rows.map((row) => (
                 <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/25 transition-colors align-top">
-                  {columns.map((col) => {
+   {columns.map((col) => {
                     const isSn = isSnColumn(col);
                     const isDesc = isDescColumn(col);
-                    const value = cellValue(row.id, col.id);
+                    const isNarrow = isNarrowColumn(col);
+                    const isTotal = isTotalColumn(col);
+                    const qtyCol = columns.find(isQuantityColumn);
+                    const priceCol = columns.find(isSupplierPriceColumn);
+                    const computedTotal =
+                      isTotal && qtyCol && priceCol
+                        ? (parseFloat(cellValue(row.id, qtyCol.id)) || 0) * (parseFloat(cellValue(row.id, priceCol.id)) || 0)
+                        : null;
+                    const value = isTotal && computedTotal !== null ? String(computedTotal) : cellValue(row.id, col.id);
 
                     if (mode === "view" || isGuest || !canEdit) {
                       return (
@@ -396,7 +411,7 @@ export function ExpensesAnalysisScreen() {
                           {isDesc ? (
                             <p className="whitespace-pre-wrap break-words text-xs text-gray-300 min-h-[1.5em]">{value || "—"}</p>
                           ) : (
-                            <p className={`text-xs text-gray-300 break-words ${isSn ? "text-center" : ""}`}>{value || "—"}</p>
+                            <p className={`text-xs text-gray-300 break-words ${isSn || isNarrow ? "text-center" : ""}`}>{isTotal && computedTotal !== null ? fmtNum(computedTotal) : (value || "—")}</p>
                           )}
                         </td>
                       );
@@ -417,13 +432,23 @@ export function ExpensesAnalysisScreen() {
                       );
                     }
 
+                    if (isTotal) {
+                      return (
+                        <td key={col.id} className="px-3 py-2 align-top">
+                          <div className="w-24 rounded-lg border border-ink-700 bg-ink-900/30 px-2 py-1.5 text-xs text-gray-300">
+                            {computedTotal !== null ? fmtNum(computedTotal) : "—"}
+                          </div>
+                        </td>
+                      );
+                    }
+
                     return (
-                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-14" : ""}`}>
+                      <td key={col.id} className={`px-3 py-2 align-top ${isSn || isNarrow ? "w-24" : ""}`}>
                         <input
                           value={value}
                           onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
                           placeholder="—"
-                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-14 text-center" : "w-full"}`}
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn || isNarrow ? "w-24 text-center" : "w-full"}`}
                         />
                       </td>
                     );
