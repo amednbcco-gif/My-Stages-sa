@@ -330,7 +330,7 @@ export function ExpensesAnalysisScreen() {
           <thead>
             <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
               {columns.map((col) => (
-                                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-14" : isDescColumn(col) ? "w-64" : isNarrowColumn(col) ? "w-24" : "w-32"}`}>
+<th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-14" : isDescColumn(col) ? "w-64" : isNarrowColumn(col) ? "w-24" : "w-32"}`}>
                   {editingHeader === col.id ? (
                     <input
                       autoFocus
