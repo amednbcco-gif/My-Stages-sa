@@ -50,6 +50,16 @@ export function ExpensesAnalysisScreen() {
   function isTotalColumn(col: ExpenseColumn) {
     return col.label.trim().toLowerCase() === "total price";
   }
+    function isNarrowColumn(col: ExpenseColumn) {
+    const l = col.label.trim().toLowerCase();
+    return l === "unit" || l === "quantity" || l === "supplier price" || l === "item type" || l === "total price";
+  }
+  function isQuantityColumn(col: ExpenseColumn) {
+    return col.label.trim().toLowerCase() === "quantity";
+  }
+  function isSupplierPriceColumn(col: ExpenseColumn) {
+    return col.label.trim().toLowerCase() === "supplier price";
+  }
 
   async function loadAll() {
     if (!id || !user) { setLoading(false); return; }
