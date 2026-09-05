@@ -347,10 +347,10 @@ export function ExpensesAnalysisScreen() {
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
+            <div className="overflow-auto rounded-xl border border-ink-700 bg-ink-800" style={{ maxHeight: "60vh" }}>
         <table className="w-full min-w-[720px] text-sm border-collapse table-fixed">
           <thead>
-            <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
+            <tr className="sticky top-0 z-10 border-b border-ink-700 bg-ink-800 text-left text-[10px] uppercase tracking-wider text-white/90">
               {columns.map((col) => (
 <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-14" : isDescColumn(col) ? "w-64" : isNarrowColumn(col) ? "w-24" : "w-32"}`}>
                   {editingHeader === col.id ? (
