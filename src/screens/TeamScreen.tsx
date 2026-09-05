@@ -5,6 +5,10 @@ import { useAuth } from "../lib/auth";
 import { Button, Input, Spinner } from "../components/ui";
 import { Modal } from "../components/Modal";
 import { MILESTONES } from "../lib/stages";
+
+const EXTRA_ASSIGNABLE = [
+  { id: "expenses", title: "Project Expenses Analysis", stage: "" },
+];
 import type { TeamMember, ProjectPermission, Project } from "../lib/types";
 
 function milestoneLabel(title: string): string {
