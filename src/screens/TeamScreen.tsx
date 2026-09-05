@@ -292,7 +292,7 @@ export function TeamScreen() {
                     {perms.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {perms.map((p) => {
-                          const ms = MILESTONES.find((x) => x.id === p.field);
+                                  const ms = [...MILESTONES, ...EXTRA_ASSIGNABLE].find((x) => x.id === p.field);
                           return (
                             <span
                               key={p.id}
