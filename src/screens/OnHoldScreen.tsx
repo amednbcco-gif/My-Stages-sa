@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Trash2, X, FileSpreadsheet } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, X, FileSpreadsheet, Save as SaveIcon, Pencil } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
@@ -19,11 +19,20 @@ export function OnHoldScreen() {
   const [cells, setCells] = useState<OnHoldCell[]>([]);
   const [editingHeader, setEditingHeader] = useState<string | null>(null);
   const [headerDraft, setHeaderDraft] = useState("");
+  const [mode, setMode] = useState<"view" | "edit">("view");
 
   const cellValue = useCallback(
     (rowId: string, columnId: string) => cells.find((c) => c.row_id === rowId && c.column_id === columnId)?.value ?? "",
     [cells]
   );
+
+  function isNoteColumn(col: OnHoldColumn) {
+    return col.label.trim().toLowerCase() === "note";
+  }
+
+  function isSnColumn(col: OnHoldColumn) {
+    return col.label.trim().toUpperCase() === "SN.";
+  }
 
   async function resolveOwnerId(): Promise<string | null> {
     if (!user) return null;
@@ -35,7 +44,7 @@ export function OnHoldScreen() {
     return tm?.owner_id ?? user.id;
   }
 
-     async function loadAll() {
+  async function loadAll() {
     if (isGuest) {
       const demoCols: OnHoldColumn[] = DEFAULT_COLUMNS.map((label, i) => ({
         id: `demo-col-${i}`,
@@ -48,6 +57,7 @@ export function OnHoldScreen() {
       setRows([]);
       setCells([]);
       setOwnerId(null);
+      setMode("view");
       setLoading(false);
       return;
     }
@@ -94,6 +104,7 @@ export function OnHoldScreen() {
       } else {
         setCells([]);
       }
+      setMode("view");
     } catch (err) {
       console.error("OnHoldScreen loadAll crashed:", err);
     } finally {
@@ -148,7 +159,49 @@ export function OnHoldScreen() {
     setRows((prev) => prev.filter((r) => r.id !== rowId));
     setCells((prev) => prev.filter((c) => c.row_id !== rowId));
   }
-    function exportCSV() {
+
+  function updateCellLocal(rowId: string, columnId: string, value: string) {
+    setCells((prev) => {
+      const exists = prev.find((c) => c.row_id === rowId && c.column_id === columnId);
+      if (exists) return prev.map((c) => (c.row_id === rowId && c.column_id === columnId ? { ...c, value } : c));
+      return [...prev, { id: `temp-${rowId}-${columnId}`, row_id: rowId, column_id: columnId, value, updated_at: new Date().toISOString() }];
+    });
+  }
+
+  async function persistCell(rowId: string, columnId: string, value: string) {
+    await supabase
+      .from("on_hold_cells")
+      .upsert({ row_id: rowId, column_id: columnId, value }, { onConflict: "row_id,column_id" });
+  }
+
+  function enterEditMode() {
+    if (isGuest) return;
+    setMode("edit");
+  }
+
+  async function saveAll() {
+    if (isGuest) { setMode("view"); return; }
+    const payload = rows.flatMap((row) =>
+      columns.map((col) => ({
+        row_id: row.id,
+        column_id: col.id,
+        value: cellValue(row.id, col.id),
+      }))
+    );
+    if (payload.length > 0) {
+      const { error } = await supabase.from("on_hold_cells").upsert(payload, { onConflict: "row_id,column_id" });
+      if (error) console.error("saveAll upsert error:", error);
+    }
+    setMode("view");
+  }
+
+  function autoGrow(e: React.FormEvent<HTMLTextAreaElement>) {
+    const el = e.currentTarget;
+    el.style.height = "auto";
+    el.style.height = `${el.scrollHeight}px`;
+  }
+
+  function exportCSV() {
     const headers = columns.map((c) => c.label);
     const dataRows = rows.map((row) => columns.map((col) => cellValue(row.id, col.id)));
     const csv = [headers, ...dataRows]
@@ -165,20 +218,6 @@ export function OnHoldScreen() {
     URL.revokeObjectURL(url);
   }
 
-  function updateCellLocal(rowId: string, columnId: string, value: string) {
-    setCells((prev) => {
-      const exists = prev.find((c) => c.row_id === rowId && c.column_id === columnId);
-      if (exists) return prev.map((c) => (c.row_id === rowId && c.column_id === columnId ? { ...c, value } : c));
-      return [...prev, { id: `temp-${rowId}-${columnId}`, row_id: rowId, column_id: columnId, value, updated_at: new Date().toISOString() }];
-    });
-  }
-
-  async function persistCell(rowId: string, columnId: string, value: string) {
-    await supabase
-      .from("on_hold_cells")
-      .upsert({ row_id: rowId, column_id: columnId, value }, { onConflict: "row_id,column_id" });
-  }
-
   if (loading) return <div className="flex justify-center py-20"><Spinner size={32} /></div>;
 
   return (
@@ -192,9 +231,12 @@ export function OnHoldScreen() {
             <ArrowLeft size={16} /> Back
           </button>
           <h1 className="text-2xl font-bold text-white">On Hold</h1>
-          <p className="text-sm text-gray-400">Custom tracker — add columns and rows and name them however you like. Shared with your whole team.</p>
+          <p className="text-sm text-gray-400">
+            Custom tracker — add columns and rows and name them however you like. Shared with your whole team.
+            {!isGuest && (mode === "view" ? " Click any cell to edit." : " Editing — click Save when done.")}
+          </p>
         </div>
-                        <div className="flex gap-2">
+        <div className="flex gap-2">
           <Button variant="secondary" onClick={exportCSV}>
             <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
           </Button>
@@ -212,11 +254,11 @@ export function OnHoldScreen() {
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
-        <table className="w-full min-w-[600px] text-sm border-collapse">
+        <table className="w-full min-w-[600px] text-sm border-collapse table-fixed">
           <thead>
             <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
-               {columns.map((col) => (
-                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${col.label.trim().toUpperCase() === "SN." ? "w-16" : ""}`}>
+              {columns.map((col) => (
+                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isNoteColumn(col) ? "w-64" : "w-40"}`}>
                   {editingHeader === col.id ? (
                     <input
                       autoFocus
@@ -229,48 +271,82 @@ export function OnHoldScreen() {
                   ) : (
                     <div className="flex items-center gap-1.5">
                       <button
-                        onClick={() => { setEditingHeader(col.id); setHeaderDraft(col.label); }}
-                        className="hover:text-gold transition-colors"
+                        onClick={() => { if (!isGuest) { setEditingHeader(col.id); setHeaderDraft(col.label); } }}
+                        className="hover:text-gold transition-colors truncate"
                         title="Rename column"
                       >
                         {col.label}
                       </button>
-                      <button onClick={() => deleteColumn(col)} className="text-gray-600 hover:text-rose-300 transition-colors" title="Delete column">
-                        <X size={11} />
-                      </button>
+                      {!isGuest && (
+                        <button onClick={() => deleteColumn(col)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors" title="Delete column">
+                          <X size={11} />
+                        </button>
+                      )}
                     </div>
                   )}
                 </th>
               ))}
-              <th className="px-3 py-3 font-semibold text-right"></th>
+              <th className="px-3 py-3 font-semibold text-right w-10"></th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + 1} className="py-10 text-center text-gray-500">
-                  No rows yet. Click "Add Row" to get started.
+                  No rows yet. {!isGuest && 'Click "Add Row" to get started.'}
                 </td>
               </tr>
             ) : (
               rows.map((row) => (
-                <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/25 transition-colors">
-                                   {columns.map((col) => {
-                    const isSn = col.label.trim().toUpperCase() === "SN.";
+                <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/25 transition-colors align-top">
+                  {columns.map((col) => {
+                    const isSn = isSnColumn(col);
+                    const isNote = isNoteColumn(col);
+                    const value = cellValue(row.id, col.id);
+
+                    if (mode === "view" || isGuest) {
+                      return (
+                        <td
+                          key={col.id}
+                          onClick={enterEditMode}
+                          className={`px-3 py-2 align-top ${!isGuest ? "cursor-text hover:bg-ink-700/30" : ""}`}
+                        >
+                          {isNote ? (
+                            <p className="whitespace-pre-wrap break-words text-xs text-gray-300 min-h-[1.5em]">{value || "—"}</p>
+                          ) : (
+                            <p className={`text-xs text-gray-300 break-words ${isSn ? "text-center" : ""}`}>{value || "—"}</p>
+                          )}
+                        </td>
+                      );
+                    }
+
+                    if (isNote) {
+                      return (
+                        <td key={col.id} className="px-3 py-2 align-top">
+                          <textarea
+                            value={value}
+                            onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
+                            onInput={autoGrow}
+                            rows={1}
+                            placeholder="—"
+                            className="w-full resize-none overflow-hidden rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 leading-relaxed"
+                          />
+                        </td>
+                      );
+                    }
+
                     return (
-                      <td key={col.id} className={`px-3 py-2 ${isSn ? "w-16" : ""}`}>
-                                                <input
-                          value={cellValue(row.id, col.id)}
+                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : ""}`}>
+                        <input
+                          value={value}
                           onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
-                          onBlur={(e) => persistCell(row.id, col.id, e.target.value)}
                           placeholder="—"
-                          disabled={isGuest}
-                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 disabled:opacity-60 disabled:cursor-not-allowed ${isSn ? "w-16 text-center" : "w-full"}`}
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : "w-full"}`}
                         />
                       </td>
                     );
                   })}
-                                    <td className="px-3 py-2 text-right">
+                  <td className="px-3 py-2 text-right align-top">
                     {!isGuest && (
                       <button onClick={() => deleteRow(row.id)} className="rounded-lg p-1.5 text-gray-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors">
                         <Trash2 size={14} />
@@ -283,6 +359,20 @@ export function OnHoldScreen() {
           </tbody>
         </table>
       </div>
+
+      {!isGuest && rows.length > 0 && (
+        <div className="mt-4 flex justify-end">
+          {mode === "edit" ? (
+            <Button variant="primary" onClick={saveAll}>
+              <SaveIcon size={16} className="mr-1.5" /> Save
+            </Button>
+          ) : (
+            <Button variant="secondary" onClick={enterEditMode}>
+              <Pencil size={16} className="mr-1.5" /> Edit
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
