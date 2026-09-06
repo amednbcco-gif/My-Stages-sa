@@ -1110,7 +1110,7 @@ export function ProjectDetailScreen() {
               </button>
             </div>
           )}
-          {viewMode && (canEditAll || canEditMilestone("expenses")) && (
+                  {viewMode && (canEditAll || canEditMilestone("expenses") || isGuest) && (
             <button
               onClick={() => navigate(`/projects/${project.id}/expenses`)}
               title="Project Expenses Analysis"
