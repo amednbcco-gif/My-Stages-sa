@@ -588,7 +588,6 @@ function MilestoneCard({
                       <ExternalLink size={13} />
                     </a>
                   )}
-                  )}
                 </div>
               </div>
             );
