@@ -437,7 +437,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
                   <td className="py-1.5 px-2">
                     {canEdit ? <input type="number" className={inputCls + " w-16"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} /> : <span className={roCls + " w-16 block"}>{p.cw_meters}</span>}
                   </td>
-                                    <td className="py-1.5 px-2">
+                     <td className="py-1.5 px-2">
                     {canEdit ? (
                       <select
                         value={p.permit_status}
@@ -451,6 +451,24 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
                       <span className={`rounded-lg border px-2 py-1 text-xs font-semibold ${statusColor(p.permit_status)}`}>
                         {PERMIT_OPTIONS.find((o) => o.value === p.permit_status)?.label ?? p.permit_status}
                       </span>
+                    )}
+                  </td>
+                  <td className="py-1.5 px-2 align-top">
+                    {canEdit ? (
+                      <textarea
+                        value={p.note ?? ""}
+                        onChange={(e) => onPermitUpdate(p.id, { note: e.target.value })}
+                        onInput={(e) => {
+                          const el = e.currentTarget;
+                          el.style.height = "auto";
+                          el.style.height = `${el.scrollHeight}px`;
+                        }}
+                        rows={1}
+                        placeholder="—"
+                        className="w-full min-w-[160px] resize-none overflow-hidden rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 leading-relaxed"
+                      />
+                    ) : (
+                      <p className="min-w-[160px] whitespace-pre-wrap break-words text-xs text-gray-300">{p.note || "—"}</p>
                     )}
                   </td>
                   <td className="py-1.5 px-2 text-center">
