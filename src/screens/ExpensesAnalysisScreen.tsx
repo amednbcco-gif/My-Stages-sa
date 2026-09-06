@@ -168,7 +168,7 @@ export function ExpensesAnalysisScreen() {
     }
   }
 
-  useEffect(() => { loadAll(); }, [id, user?.id]);
+   useEffect(() => { loadAll(); }, [id, user?.id, isGuest]);
 
     const qtyColumn = columns.find(isQuantityColumn);
   const priceColumn = columns.find(isSupplierPriceColumn);
