@@ -202,6 +202,7 @@ export interface PermitRow {
   end_date: string | null;
   cw_meters: number;
   permit_status: string;
+  note: string | null;
   created_at: string;
   updated_at: string;
 }
