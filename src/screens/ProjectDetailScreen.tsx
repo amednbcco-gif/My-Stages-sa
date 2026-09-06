@@ -490,19 +490,26 @@ function MilestoneCard({
   canEdit: boolean;
 }) {
   const [showFiles, setShowFiles] = useState(false);
+  const [cardMode, setCardMode] = useState<"view" | "edit">("view");
   const stageData = (project as unknown as Record<string, Record<string, unknown>>)[milestone.stage] ?? {};
   const statusVal = String(stageData[milestone.statusField.key] ?? "pending");
   const done = milestoneDone(statusVal);
   const msAtts = attachments.filter((a) => a.stage === milestone.stage && (a.field === milestone.id || a.field === "_stage"));
   const isUploading = uploading === `${milestone.stage}.${milestone.id}`;
 
-  // count filled data fields
   const filledFields = milestone.fields.filter((f) => {
     const v = stageData[f.key];
     if (f.type === "number") return Number(v) > 0;
     return Boolean(v);
   }).length;
   const pct = milestone.fields.length > 0 ? Math.round((filledFields / milestone.fields.length) * 100) : 0;
+
+  const fieldsEditable = canEdit && cardMode === "edit";
+
+  function handleSaveClick() {
+    onSaveStage(milestone.stage);
+    setCardMode("view");
+  }
 
   return (
     <div className={`rounded-2xl border bg-ink-800 overflow-hidden transition-all ${done ? "border-emerald-500/30" : "border-ink-700"}`}>
@@ -524,7 +531,7 @@ function MilestoneCard({
 
         {/* Status dropdown */}
         <div className="shrink-0">
-          {canEdit ? (
+          {fieldsEditable ? (
           <select
             value={statusVal}
             onChange={(e) => onFieldChange(milestone.stage, milestone.statusField.key, e.target.value)}
@@ -543,9 +550,9 @@ function MilestoneCard({
         </div>
       </div>
 
-            {/* Fields grid OR permit table */}
+      {/* Fields grid OR permit table */}
       {milestone.id === "permit" ? (
-        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={canEdit} />
+        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={fieldsEditable} />
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
           {milestone.fields.map((field) => {
@@ -568,10 +575,10 @@ function MilestoneCard({
                 <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
                 <div className="flex flex-1 min-w-0 items-center gap-3">
                   <div className="min-w-0 flex-1">
-                    <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!canEdit} />
+                    <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
                   </div>
-{(showTeleowsLink || showConnectScanLink || showTrace360Link) && (
-                    <a
+                  {(showTeleowsLink || showConnectScanLink || showTrace360Link) && (
+                    
                       href={externalLinkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -587,7 +594,7 @@ function MilestoneCard({
           })}
         </div>
       )}
-    
+
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -599,12 +606,21 @@ function MilestoneCard({
 
         <div className="flex items-center gap-1.5 shrink-0">
           {canEdit && (
-          <button
-            onClick={() => onSaveStage(milestone.stage)}
-            className="flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-500/70 hover:text-emerald-200 transition-colors"
-          >
-            <Save size={12} /> Save
-          </button>
+            cardMode === "edit" ? (
+              <button
+                onClick={handleSaveClick}
+                className="flex items-center gap-1.5 rounded-lg border border-emerald-600/50 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-300 hover:border-emerald-500/70 hover:text-emerald-200 transition-colors"
+              >
+                <Save size={12} /> Save
+              </button>
+            ) : (
+              <button
+                onClick={() => setCardMode("edit")}
+                className="flex items-center gap-1.5 rounded-lg border border-ink-600 bg-ink-800 px-2.5 py-1.5 text-xs font-semibold text-gray-300 hover:border-gold/50 hover:text-gold transition-colors"
+              >
+                <Pencil size={12} /> Edit
+              </button>
+            )
           )}
           {/* Attachment button */}
           <button
@@ -627,7 +643,7 @@ function MilestoneCard({
                 <span className="ml-0.5 rounded-full bg-ink-700 px-1.5 py-0.5 text-[10px] text-gray-300">{msAtts.length}</span>
               )}
             </span>
-            {canEdit && (
+            {fieldsEditable && (
             <label className="flex cursor-pointer items-center gap-1 text-xs font-semibold text-gold hover:opacity-80 transition-opacity">
               <Paperclip size={11} /> Add file
               <input
@@ -652,7 +668,7 @@ function MilestoneCard({
                   <button onClick={() => onDownloadAttachment(att)} className="flex items-center gap-1.5 text-xs text-sky-300 hover:underline truncate">
                     <Paperclip size={10} /><span className="truncate">{att.file_name}</span>
                   </button>
-                  {canEdit && (
+                  {fieldsEditable && (
                     <button onClick={() => onDeleteAttachment(att)} className="shrink-0 text-gray-600 hover:text-rose-300 transition-colors">
                       <Trash2 size={11} />
                     </button>
@@ -666,7 +682,6 @@ function MilestoneCard({
     </div>
   );
 }
-
 function MilestoneList(props: MilestoneListProps) {
   const { canEditMilestone, ...rest } = props;
   return (
