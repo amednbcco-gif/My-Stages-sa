@@ -281,7 +281,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
             <p className="text-xs text-gray-600">No permits yet.</p>
           ) : (
             <div className="overflow-x-auto -mx-1 px-1">
-              <table className="w-full min-w-[560px] border-collapse text-xs">
+                          <table className="w-full min-w-[720px] border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-ink-700 text-gray-500">
                     <th className="py-1.5 px-2 text-left font-semibold">Permit No</th>
@@ -290,20 +290,24 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
                     <th className="py-1.5 px-2 text-left font-semibold">End Date</th>
                     <th className="py-1.5 px-2 text-left font-semibold">CW (m)</th>
                     <th className="py-1.5 px-2 text-left font-semibold">Permit Status</th>
+                    <th className="py-1.5 px-2 text-left font-semibold min-w-[160px]">Note</th>
                   </tr>
                 </thead>
                 <tbody>
                   {permits.map((p) => (
                     <tr key={p.id} className="border-b border-ink-700/40">
- <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
-<td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
- <td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
+                      <td className="py-1.5 px-2 text-gray-300">{p.permit_no || "—"}</td>
+                      <td className="py-1.5 px-2 text-gray-300">{p.issued_date ? fmtDate(p.issued_date) : "—"}</td>
+                      <td className="py-1.5 px-2 text-gray-300">{p.start_date ? fmtDate(p.start_date) : "—"}</td>
                       <td className="py-1.5 px-2 text-gray-300">{p.end_date ? fmtDate(p.end_date) : "—"}</td>
                       <td className="py-1.5 px-2 text-gray-300">{p.cw_meters}</td>
                       <td className="py-1.5 px-2">
                         <span className={`rounded-lg border px-2 py-1 text-[11px] font-semibold ${statusColor(p.permit_status)}`}>
                           {PERMIT_OPTIONS.find((o) => o.value === p.permit_status)?.label ?? p.permit_status}
                         </span>
+                      </td>
+                      <td className="py-1.5 px-2 align-top">
+                        <p className="whitespace-pre-wrap break-words text-gray-300">{p.note || "—"}</p>
                       </td>
                     </tr>
                   ))}
