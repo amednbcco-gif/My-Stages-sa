@@ -7,6 +7,12 @@ import { computeProgress, currentStage, stageShortLabel, STAGE_LABELS, MILESTONE
 import { DEMO_PROJECT } from "../lib/demoProject";
 import type { Project, TeamMember, ProjectPermission } from "../lib/types";
 
+function fmtDate(iso: string): string {
+  if (!iso) return "";
+  const parts = iso.split("T")[0].split("-");
+  if (parts.length < 3) return iso;
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+}
 function fmtSAR(n: number) {
   if (!n || isNaN(n)) return "0";
   return n.toLocaleString("en-US", { maximumFractionDigits: 0 });
