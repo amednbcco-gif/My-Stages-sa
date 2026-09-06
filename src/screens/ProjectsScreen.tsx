@@ -204,7 +204,6 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     .map((p, idx) => ({ ...p, displaySn: String(idx + 1).padStart(2, "0") }));
 }
-
  async function exportCSV() {
     try {
     const projectIds = withSequentialSn(filtered).map((p) => p.id);
