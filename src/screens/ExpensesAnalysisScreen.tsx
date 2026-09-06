@@ -5,6 +5,7 @@ import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
 import type { ExpenseColumn, ExpenseRow, ExpenseCell, ExpenseSummary, Project } from "../lib/types";
+import { DEMO_PROJECT } from "../lib/demoProject";
 
 const DEFAULT_COLUMNS = ["SN.", "Item Type", "Item Description", "Unit", "Quantity", "Supplier Price", "Total Price"];
 
