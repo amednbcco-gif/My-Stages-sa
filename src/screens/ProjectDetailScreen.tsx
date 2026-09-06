@@ -1125,12 +1125,24 @@ export function ProjectDetailScreen() {
               <Calculator size={15} />
             </button>
           )}
-          {canEditAll && (
+                 {!isGuest && (
             <>
-              <Button variant="secondary" onClick={() => setEditOpen(true)}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (!canEditAll) { showToast("You don't have permission to edit this project."); return; }
+                  setEditOpen(true);
+                }}
+              >
                 <Pencil size={14} className="mr-1.5" /> Edit
               </Button>
-              <Button variant="danger" onClick={handleDeleteProject}>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  if (!canEditAll) { showToast("You don't have permission to delete this project."); return; }
+                  handleDeleteProject();
+                }}
+              >
                 <Trash2 size={14} className="mr-1.5" /> Delete
               </Button>
             </>
