@@ -382,8 +382,12 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url);
     setToast("Export complete");
+    } catch (err) {
+      console.error("exportCSV crashed:", err);
+      setToast("Export failed — check console for details");
+    }
   }
 
   const filtered = projects.filter(
