@@ -205,9 +205,14 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     .map((p, idx) => ({ ...p, displaySn: String(idx + 1).padStart(2, "0") }));
 }
 
-       async function exportCSV() {
+         async function exportCSV() {
     const projectIds = withSequentialSn(filtered).map((p) => p.id);
     let notesMap: Record<string, string> = {};
+    let permitsMap: Record<string, {
+      permitNo: string; issuedDate: string; startDate: string; endDate: string;
+      cw: string; status: string; note: string;
+    }> = {};
+
     if (projectIds.length > 0) {
       const { data: notesData } = await supabase
         .from("project_notes")
@@ -219,6 +224,31 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
           notesMap[n.project_id] = (notesMap[n.project_id] ? notesMap[n.project_id] + " | " : "") + n.body;
         }
       }
+
+      const { data: permitsData } = await supabase
+        .from("project_permits")
+        .select("project_id,permit_no,issued_date,start_date,end_date,cw_meters,permit_status,note,sn")
+        .in("project_id", projectIds)
+        .order("sn", { ascending: true });
+      if (permitsData) {
+        for (const perm of permitsData as {
+          project_id: string; permit_no: string; issued_date: string | null; start_date: string | null;
+          end_date: string | null; cw_meters: number; permit_status: string; note: string | null;
+        }[]) {
+          const existing = permitsMap[perm.project_id] ?? { permitNo: "", issuedDate: "", startDate: "", endDate: "", cw: "", status: "", note: "" };
+          const statusLabel = PERMIT_OPTIONS.find((o) => o.value === perm.permit_status)?.label ?? perm.permit_status;
+          const sep = existing.permitNo ? " | " : "";
+          permitsMap[perm.project_id] = {
+            permitNo: existing.permitNo + sep + (perm.permit_no || "—"),
+            issuedDate: existing.issuedDate + sep + (perm.issued_date ? fmtDate(perm.issued_date) : "—"),
+            startDate: existing.startDate + sep + (perm.start_date ? fmtDate(perm.start_date) : "—"),
+            endDate: existing.endDate + sep + (perm.end_date ? fmtDate(perm.end_date) : "—"),
+            cw: existing.cw + sep + String(perm.cw_meters ?? "—"),
+            status: existing.status + sep + statusLabel,
+            note: existing.note + sep + (perm.note || "—"),
+          };
+        }
+      }
     }
 
     const headers = [
@@ -226,7 +256,9 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       "PO No.", "PO Value SAR", "Region", "Owner", "PLAN No.", "City", "Project Type", "Latitude", "Longitude", "Project Manager",
       "Docs Sent", "Docs Received", "DBOQ Amount", "Survey & Design Status", "Design Status", "DBOQ Status",
       "PO & ABOQ Status", "PO Received", "Baseline Start", "Baseline End", "ABOQ Status", "ABOQ Submitted Date", "ABOQ Approved Date", "PO Issuance Date", "ABOQ Amount",
-      "Permits Status", "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Fiber Cable (m)", "Splicing Status", "Patching Status", "Cable Pulling Status", 
+      "Permits Status",
+      "Permit No", "Permit Issued Date", "Permit Start Date", "Permit End Date", "Permit CW (m)", "Permit Status", "Permit Note",
+      "The Execution Status", "Actual Start", "Actual End", "CIVIL (m)", "MH/HH", "ODB/ODF", "Closures", "HDD (m)", "Fiber Cable (m)", "Splicing Status", "Patching Status", "Cable Pulling Status", "Close Permit", "Permit Submitted Date", "Permit Issued Date", "Permit Closed Date", "Permit Clearanced Date", "Permit Final Clearance Status",
       "OWS/PAT Request Date", "PAT Req. No", "PAT Start", "PAT Stage", "PAT Status", "Connect Scan Status",
       "GIS Docs Sent", "GIS Received", "GIS Status",
       "CRQ HO Submitted Files Date", "CRQ HO No.", "HO REQ No.", "CRQ HO Status",
@@ -238,7 +270,9 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       "Notes",
     ];
 
-    const rows = withSequentialSn(filtered).map((p) => [
+    const rows = withSequentialSn(filtered).map((p) => {
+      const perm = permitsMap[p.id] ?? { permitNo: "", issuedDate: "", startDate: "", endDate: "", cw: "", status: "", note: "" };
+      return [
       p.displaySn,
       p.project_name,
       // Project info
@@ -262,6 +296,14 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       getVal(p, "stage2", "aboqAmount"),
       // Stage 3 — Execution
       labelOf(PERMIT_OPTIONS, getVal(p, "stage3", "permitsStatus")),
+      // Permit rows (multi-permit joined)
+      perm.permitNo,
+      perm.issuedDate,
+      perm.startDate,
+      perm.endDate,
+      perm.cw,
+      perm.status,
+      perm.note,
       labelOf(EXECUTION_OPTIONS, getVal(p, "stage3", "civilStatus")),
       getVal(p, "stage3", "actualStartDate"),
       getVal(p, "stage3", "actualEndDate"),
@@ -274,7 +316,12 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "fiberSplicingStatus")),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "patchingStatus")),
       labelOf(DONE_OPTIONS, getVal(p, "stage3", "cablePullingStatus")),
- 
+      labelOf(CLOSE_PERMIT_OPTIONS, getVal(p, "stage3", "closePermit")),
+      getVal(p, "stage3", "permitSubmittedDate"),
+      getVal(p, "stage3", "permitIssuedDate"),
+      getVal(p, "stage3", "permitClosedDate"),
+      getVal(p, "stage3", "permitClearancedDate"),
+      labelOf(CLEARANCE_OPTIONS, getVal(p, "stage3", "finalClearanceStatus")),
       // Stage 4 — PAT, GIS, CRQ HO, Re-PAT
       getVal(p, "stage4", "owsPatRequestDate"),
       getVal(p, "stage4", "patReqNo"),
@@ -321,7 +368,8 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
       labelOf(PATSUB_OPTIONS, getVal(p, "stage6", "facStatus")),
       // Notes
       notesMap[p.id] ?? "",
-    ]);
+    ];
+    });
 
     const csv = [headers, ...rows]
       .map((r) => r.map((c) => `"${String(c ?? "").replace(/"/g, '""')}"`).join(","))
