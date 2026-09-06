@@ -578,8 +578,7 @@ function MilestoneCard({
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
                   </div>
                   {(showTeleowsLink || showConnectScanLink || showTrace360Link) && (
-                    
-                      href={externalLinkUrl}
+ href={externalLinkUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       title={externalLinkTitle}
