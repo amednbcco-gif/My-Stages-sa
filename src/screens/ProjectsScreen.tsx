@@ -206,7 +206,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
 }
  async function exportCSV() {
     try { const projectIds = withSequentialSn(filtered).map((p) => p.id); 
-    let notesMap: Record<string, string}> = {};
+    let notesMap: Record<string, string> = {};
     let permitsMap: Record<string, {
       permitNo: string; issuedDate: string; startDate: string; endDate: string;
       cw: string; status: string; note: string;
