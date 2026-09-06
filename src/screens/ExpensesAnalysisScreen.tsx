@@ -62,8 +62,32 @@ export function ExpensesAnalysisScreen() {
     return col.label.trim().toLowerCase() === "supplier price";
   }
 
-  async function loadAll() {
-    if (!id || !user) { setLoading(false); return; }
+    async function loadAll() {
+    if (!id) { setLoading(false); return; }
+
+    if (isGuest) {
+      setProject(DEMO_PROJECT as unknown as Project);
+      setCanEdit(false);
+      const demoCols: ExpenseColumn[] = DEFAULT_COLUMNS.map((label, i) => ({
+        id: `demo-col-${i}`,
+        project_id: id,
+        label,
+        position: i,
+        fixed: label === "SN." || label === "Item Type" || label === "Item Description" || label === "Unit" || label === "Quantity",
+        created_at: new Date().toISOString(),
+      }));
+      setColumns(demoCols);
+      setRows([]);
+      setCells([]);
+      setSummary(null);
+      setManpowerDraft("0");
+      setOtherDraft("0");
+      setMode("view");
+      setLoading(false);
+      return;
+    }
+
+    if (!user) { setLoading(false); return; }
     setLoading(true);
     try {
       const { data: proj } = await supabase.from("projects").select("*").eq("id", id).maybeSingle();
