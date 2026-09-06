@@ -17,7 +17,7 @@ function milestoneLabel(title: string): string {
 }
 
 export function TeamScreen() {
-  const { user, profile } = useAuth();
+  const { user, profile, isGuest } = useAuth();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [milestonePerms, setMilestonePerms] = useState<ProjectPermission[]>([]);
