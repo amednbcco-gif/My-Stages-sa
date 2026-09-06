@@ -415,7 +415,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
           </thead>
           <tbody>
             {permits.length === 0 ? (
-  <tr><td colSpan={9} className="py-4 text-center text-gray-600">No permits yet.{canEdit ? " Click + to add one." : ""}</td></tr>
+               <tr><td colSpan={9} className="py-4 text-center text-gray-600">No permits yet.{canEdit ? " Click + to add one." : ""}</td></tr>
             ) : (
               permits.map((p) => (
                 <tr key={p.id} className="border-b border-ink-700/40 hover:bg-ink-800/40 transition-colors">
