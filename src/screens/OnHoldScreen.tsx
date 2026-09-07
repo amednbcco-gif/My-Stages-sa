@@ -33,7 +33,10 @@ export function OnHoldScreen() {
   function isSnColumn(col: OnHoldColumn) {
     return col.label.trim().toUpperCase() === "SN.";
   }
-
+  function isCityColumn(col: OnHoldColumn) {
+    return col.label.trim().toLowerCase() === "city";
+  }
+  
   async function resolveOwnerId(): Promise<string | null> {
     if (!user) return null;
     const { data: tm } = await supabase
