@@ -162,6 +162,7 @@ export const PAT_STATUS_OPTIONS: { value: StatusValue; label: string }[] = [
 
 export const CRQ_HO_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "pending", label: "Pending" },
+  { value: "inprogress", label: "In Progress" },
   { value: "submitted", label: "Submitted" },
   { value: "approved", label: "Handed Over" },
 ];
