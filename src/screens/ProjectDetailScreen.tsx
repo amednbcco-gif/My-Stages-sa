@@ -406,7 +406,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
         <table className="w-full min-w-[820px] border-collapse text-xs">
           <thead>
                         <tr className="border-b border-ink-600 text-gray-500">
-              <th className="py-2 px-2 text-left font-semibold">SN</th>
+      <th className="py-2 px-2 text-left font-semibold w-16">SN</th>
               <th className="py-2 px-2 text-left font-semibold">Permit No</th>
               <th className="py-2 px-2 text-left font-semibold">Issued Date</th>
               <th className="py-2 px-2 text-left font-semibold">Start Date</th>
