@@ -424,7 +424,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
               permits.map((p) => (
                 <tr key={p.id} className="border-b border-ink-700/40 hover:bg-ink-800/40 transition-colors">
                         <td className="py-1.5 px-2 w-18">
-                    {canEdit ? <input type="number" className={inputCls + " w-16"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} /> : <span className={roCls + " w-16 block"}>{p.sn}</span>}
+                    {canEdit ? <input type="number" className={inputCls + " w-18"} value={p.sn} onChange={(e) => onPermitUpdate(p.id, { sn: parseInt(e.target.value) || 1 })} /> : <span className={roCls + " w-18 block"}>{p.sn}</span>}
                   </td>
                   <td className="py-1.5 px-2">
                     {canEdit ? <input type="text" className={inputCls} value={p.permit_no} onChange={(e) => onPermitUpdate(p.id, { permit_no: e.target.value })} /> : <span className={roCls + " block"}>{p.permit_no || "—"}</span>}
