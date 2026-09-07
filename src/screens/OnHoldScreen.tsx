@@ -261,7 +261,7 @@ export function OnHoldScreen() {
           <thead>
             <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
               {columns.map((col) => (
-                                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isCityColumn(col) ? "w-28" : ""}`}>
+ <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isCityColumn(col) ? "w-28" : ""}`}>
                   {editingHeader === col.id ? (
                     <input
                       autoFocus
