@@ -33,14 +33,11 @@ export function OnHoldScreen() {
   function isSnColumn(col: OnHoldColumn) {
     return col.label.trim().toUpperCase() === "SN.";
   }
-    function isCityColumn(col: OnHoldColumn) {
-    return col.label.trim().toLowerCase() === "city";
-  }
-  
+
   function isCityColumn(col: OnHoldColumn) {
     return col.label.trim().toLowerCase() === "city";
   }
-  
+
   async function resolveOwnerId(): Promise<string | null> {
     if (!user) return null;
     const { data: tm } = await supabase
@@ -265,7 +262,7 @@ export function OnHoldScreen() {
           <thead>
             <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
               {columns.map((col) => (
- <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isCityColumn(col) ? "w-28" : ""}`}>
+                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isCityColumn(col) ? "w-28" : isNoteColumn(col) ? "w-64" : "w-40"}`}>
                   {editingHeader === col.id ? (
                     <input
                       autoFocus
@@ -309,19 +306,20 @@ export function OnHoldScreen() {
                   {columns.map((col) => {
                     const isSn = isSnColumn(col);
                     const isNote = isNoteColumn(col);
+                    const isCity = isCityColumn(col);
                     const value = cellValue(row.id, col.id);
 
-            if (mode === "view" || isGuest) {
-           return (
-      <td
-         key={col.id}
-  onClick={enterEditMode}
-   className={`px-3 py-2 align-top ${!isGuest ? "cursor-text hover:bg-ink-700/30" : ""}`}
+                    if (mode === "view" || isGuest) {
+                      return (
+                        <td
+                          key={col.id}
+                          onClick={enterEditMode}
+                          className={`px-3 py-2 align-top ${!isGuest ? "cursor-text hover:bg-ink-700/30" : ""}`}
                         >
-     {isNote ? (
-  <p className="whitespace-pre-wrap break-words text-xs text-gray-300 min-h-[1.5em]">{value || "—"}</p>
+                          {isNote ? (
+                            <p className="whitespace-pre-wrap break-words text-xs text-gray-300 min-h-[1.5em]">{value || "—"}</p>
                           ) : (
-  <p className={`text-xs text-gray-300 break-words ${isSn ? "text-center" : ""}`}>{value || "—"}</p>
+                            <p className={`text-xs text-gray-300 break-words ${isSn ? "text-center" : ""}`}>{value || "—"}</p>
                           )}
                         </td>
                       );
@@ -343,12 +341,12 @@ export function OnHoldScreen() {
                     }
 
                     return (
-                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : ""}`}>
+                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : isCity ? "w-28" : ""}`}>
                         <input
                           value={value}
                           onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
                           placeholder="—"
-                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : "w-full"}`}
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : isCity ? "w-28" : "w-full"}`}
                         />
                       </td>
                     );
