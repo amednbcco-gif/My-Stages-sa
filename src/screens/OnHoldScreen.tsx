@@ -37,7 +37,10 @@ export function OnHoldScreen() {
   function isCityColumn(col: OnHoldColumn) {
     return col.label.trim().toLowerCase() === "city";
   }
-
+  function isPoValueColumn(col: OnHoldColumn) {
+    return col.label.trim().toLowerCase() === "po value";
+  }
+  
   async function resolveOwnerId(): Promise<string | null> {
     if (!user) return null;
     const { data: tm } = await supabase
