@@ -53,6 +53,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setLatitude("");
       setLongitude("");
       setProjectManager("");
+      setContractorName("");
       setStatus("Pending");
     }
   }, [initial, open]);
