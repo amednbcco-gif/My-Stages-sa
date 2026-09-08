@@ -261,3 +261,28 @@ export interface ExpenseSummary {
   other_costs: number;
   updated_at: string;
 }
+export interface PipColumn {
+  id: string;
+  project_id: string;
+  label: string;
+  position: number;
+  fixed: boolean;
+  created_at: string;
+}
+
+export interface PipRow {
+  id: string;
+  project_id: string;
+  position: number;
+  is_total: boolean;
+  fixed: boolean;
+  created_at: string;
+}
+
+export interface PipCell {
+  id: string;
+  row_id: string;
+  column_id: string;
+  value: string | null;
+  updated_at: string;
+}
