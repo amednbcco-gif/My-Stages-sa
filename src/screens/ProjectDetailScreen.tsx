@@ -1148,6 +1148,15 @@ export function ProjectDetailScreen() {
               <Calculator size={15} />
             </button>
           )}
+                           {viewMode && (canEditAll || canEditMilestone("pip") || isGuest) && (
+            <button
+              onClick={() => navigate(`/projects/${project.id}/pip`)}
+              title="PIP (Project Implementation Plan)"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-ink-700 bg-ink-800 text-gray-300 transition-all hover:border-gold/40 hover:text-gold"
+            >
+              <GanttChartSquare size={15} />
+            </button>
+          )}
                  {!isGuest && (
             <>
               <Button
