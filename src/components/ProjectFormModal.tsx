@@ -38,6 +38,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
       setProjectManager(initial.project_manager ?? "");
+      setContractorName(initial.contractor_name ?? "");
       setStatus(initial.status);
     } else {
       setProjectName("");
