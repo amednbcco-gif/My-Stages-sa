@@ -168,6 +168,7 @@ export function ProjectsScreen() {
         latitude: data.latitude,
         longitude: data.longitude,
         project_manager: data.project_manager,
+        contractor_name: data.contractor_name,
         status: data.status,
         stage1: { ...(data.stage1 as object ?? {}), dboqAmount: poVal },
         stage2: { ...(data.stage2 as object ?? {}), poAmount: poVal },
