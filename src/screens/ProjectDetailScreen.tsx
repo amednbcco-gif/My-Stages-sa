@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
- import {
+import {
   ArrowLeft, Pencil, Trash2, Paperclip, MapPin, DollarSign, Save,
   MessageSquare, Send, X, Check, LayoutGrid, List, Plus, ExternalLink, Calculator, GanttChartSquare,
 } from "lucide-react";
