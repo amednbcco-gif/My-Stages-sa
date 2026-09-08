@@ -306,10 +306,11 @@ export function OnHoldScreen() {
             ) : (
               rows.map((row) => (
                 <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/25 transition-colors align-top">
-                  {columns.map((col) => {
+                                    {columns.map((col) => {
                     const isSn = isSnColumn(col);
                     const isNote = isNoteColumn(col);
                     const isCity = isCityColumn(col);
+                    const isPoValue = isPoValueColumn(col);
                     const value = cellValue(row.id, col.id);
 
                     if (mode === "view" || isGuest) {
