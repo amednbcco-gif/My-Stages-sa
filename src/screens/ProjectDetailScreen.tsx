@@ -1190,8 +1190,9 @@ export function ProjectDetailScreen() {
               {project.city && <span>{project.city}</span>}
               {project.Owner && <span>{project.Owner}</span>}
               {project.project_type && <span>{project.project_type}</span>}
-              {project.plan_no && <span>Plan No: {project.plan_no}</span>}
+             {project.plan_no && <span>Plan No: {project.plan_no}</span>}
               {project.project_manager && <span>PM: {project.project_manager}</span>}
+              {project.contractor_name && <span>Contractor: {project.contractor_name}</span>}
               {project.latitude != null && <span>Lat: {project.latitude}</span>}
               {project.longitude != null && <span>Long: {project.longitude}</span>}
             </div>
