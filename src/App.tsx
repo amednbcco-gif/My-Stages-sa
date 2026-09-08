@@ -10,6 +10,7 @@ import { ProfileScreen } from "./screens/ProfileScreen";
 import { ResetPasswordScreen } from "./screens/ResetPasswordScreen";
 import { OnHoldScreen } from "./screens/OnHoldScreen";
 import { ExpensesAnalysisScreen } from "./screens/ExpensesAnalysisScreen";
+import { PipScreen } from "./screens/PipScreen";
 import { Spinner } from "./components/ui";
 
 function ProtectedRoutes() {
