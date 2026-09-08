@@ -440,7 +440,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, PO No., Plan No., Site ID..."
+placeholder="Search by name, PO No., Plan No., Site ID, Project Manager, Owner, Contractor..."
           className="w-full rounded-lg border border-ink-700 bg-ink-800 py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-500 outline-none focus:border-gold/50"
         />
       </div>
