@@ -262,7 +262,7 @@ export function OnHoldScreen() {
           <thead>
             <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
               {columns.map((col) => (
-                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isCityColumn(col) ? "w-28" : isNoteColumn(col) ? "w-64" : "w-40"}`}>
+                <th key={col.id} className={`px-3 py-3 font-semibold whitespace-nowrap ${isSnColumn(col) ? "w-16" : isCityColumn(col) ? "w-20" : isNoteColumn(col) ? "w-64" : "w-40"}`}>
                   {editingHeader === col.id ? (
                     <input
                       autoFocus
@@ -341,12 +341,12 @@ export function OnHoldScreen() {
                     }
 
                     return (
-                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : isCity ? "w-28" : ""}`}>
+                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : isCity ? "w-20" : ""}`}>
                         <input
                           value={value}
                           onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
                           placeholder="—"
-                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : isCity ? "w-28" : "w-full"}`}
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : isCity ? "w-20" : "w-full"}`}
                         />
                       </td>
                     );
