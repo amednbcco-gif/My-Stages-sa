@@ -8,6 +8,7 @@ import { MILESTONES } from "../lib/stages";
 
 const EXTRA_ASSIGNABLE = [
   { id: "expenses", title: "Project Expenses Analysis", stage: "" },
+  { id: "pip", title: "PIP (Project Implementation Plan)", stage: "" },
 ];
 import type { TeamMember, ProjectPermission, Project } from "../lib/types";
 
