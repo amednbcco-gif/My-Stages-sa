@@ -23,6 +23,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [longitude, setLongitude] = useState("");
   const [projectManager, setProjectManager] = useState("");
   const [contractorName, setContractorName] = useState("");
+  const [status, setStatus] = useState<ProjectStatus>("Pending");
   const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (initial) {
