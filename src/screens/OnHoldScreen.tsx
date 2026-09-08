@@ -344,13 +344,13 @@ export function OnHoldScreen() {
                       );
                     }
 
-                    return (
-                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : isCity ? "w-20" : ""}`}>
+                                       return (
+                      <td key={col.id} className={`px-3 py-2 align-top ${isSn ? "w-16" : isCity || isPoValue ? "w-20" : ""}`}>
                         <input
                           value={value}
                           onChange={(e) => updateCellLocal(row.id, col.id, e.target.value)}
                           placeholder="—"
-                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : isCity ? "w-20" : "w-full"}`}
+                          className={`rounded-lg border border-ink-700 bg-ink-900/50 px-2 py-1.5 text-xs text-white outline-none focus:border-gold/50 placeholder-gray-600 ${isSn ? "w-16 text-center" : isCity || isPoValue ? "w-20" : "w-full"}`}
                         />
                       </td>
                     );
