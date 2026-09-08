@@ -108,7 +108,8 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
         <Input label="Project Type" value={projectType} onChange={setProjectType} placeholder="Project Type" />
         <Input label="Latitude" value={latitude} onChange={setLatitude} type="number" placeholder="e.g. 24.7136" />
         <Input label="Longitude" value={longitude} onChange={setLongitude} type="number" placeholder="e.g. 46.6753" />
-        <Input label="Project Manager" value={projectManager} onChange={setProjectManager} placeholder="Project Manager" />
+              <Input label="Project Manager" value={projectManager} onChange={setProjectManager} placeholder="Project Manager" />
+        <Input label="Contractor Name" value={contractorName} onChange={setContractorName} placeholder="Contractor Name" />
         <Select
           label="Status"
           value={status}
