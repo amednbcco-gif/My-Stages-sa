@@ -398,12 +398,14 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
     }
   }
 
-  const filtered = projects.filter(
+    const filtered = projects.filter(
     (p) =>
       p.project_name?.toLowerCase().includes(search.toLowerCase()) ||
       p.po_number?.toLowerCase().includes(search.toLowerCase()) ||
       p.plan_no?.toLowerCase().includes(search.toLowerCase()) ||
-      p.site_id?.toLowerCase().includes(search.toLowerCase())
+      p.site_id?.toLowerCase().includes(search.toLowerCase()) ||
+      p.project_manager?.toLowerCase().includes(search.toLowerCase()) ||
+      p.contractor_name?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
