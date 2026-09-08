@@ -71,7 +71,8 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       project_type: projectType,
       latitude: latitude ? Number(latitude) : null,
       longitude: longitude ? Number(longitude) : null,
-      project_manager: projectManager,
+     project_manager: projectManager,
+      contractor_name: contractorName,
       status,
     });
     setSaving(false);
