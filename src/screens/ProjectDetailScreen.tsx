@@ -406,7 +406,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
         <table className="w-full min-w-[820px] border-collapse text-xs">
           <thead>
                         <tr className="border-b border-ink-600 text-gray-500">
-      <th className="py-2 px-2 text-left font-semibold w-18">SN</th>
+                   <th className="py-2 px-2 text-left font-semibold w-20">SN</th>
               <th className="py-2 px-2 text-left font-semibold">Permit No</th>
               <th className="py-2 px-2 text-left font-semibold">Issued Date</th>
               <th className="py-2 px-2 text-left font-semibold">Start Date</th>
@@ -439,7 +439,7 @@ function PermitTable({ permits, onPermitAdd, onPermitUpdate, onPermitDelete, can
                     {canEdit ? <input type="date" className={inputCls} value={p.end_date ?? ""} onChange={(e) => onPermitUpdate(p.id, { end_date: e.target.value || null })} /> : <span className={roCls + " block"}>{p.end_date ? fmtDate(p.end_date) : "—"}</span>}
                   </td>
                   <td className="py-1.5 px-2">
-                    {canEdit ? <input type="number" className={inputCls + " w-16"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} /> : <span className={roCls + " w-16 block"}>{p.cw_meters}</span>}
+                    {canEdit ? <input type="number" className={inputCls + " w-18"} value={p.cw_meters} onChange={(e) => onPermitUpdate(p.id, { cw_meters: parseFloat(e.target.value) || 0 })} /> : <span className={roCls + " w-16 block"}>{p.cw_meters}</span>}
                   </td>
                      <td className="py-1.5 px-2">
                     {canEdit ? (
