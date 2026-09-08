@@ -36,6 +36,7 @@ function ProtectedRoutes() {
         <Route path="/reset-password" element={<ResetPasswordScreen />} />
         <Route path="/onhold" element={<OnHoldScreen />} />
  <Route path="/projects/:id/expenses" element={<ExpensesAnalysisScreen />} />
+                <Route path="/projects/:id/pip" element={<PipScreen />} />
         <Route path="*" element={<Navigate to="/projects" replace />} />
       </Routes>
     </AppShell>
