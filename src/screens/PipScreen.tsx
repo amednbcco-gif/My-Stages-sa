@@ -333,9 +333,20 @@ export function PipScreen() {
         <h1 className="text-2xl font-bold text-white">PIP (Project Implementation Plan)</h1>
       </div>
 
-            {project && (
+               {project && (
         <div className="mb-6 rounded-2xl border border-ink-700 bg-ink-800 px-5 py-4">
           <h2 className="text-lg font-bold text-white">{project.project_name || "—"}</h2>
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+            <span>Site ID: {project.site_id || "—"}</span>
+            <span>PO: {project.po_number || "—"}</span>
+            <span>SAR {Number(project.po_value_sar || 0).toLocaleString("en-US")}</span>
+            {project.plan_no && <span>Plan No: {project.plan_no}</span>}
+            {project.project_type && <span>{project.project_type}</span>}
+            {project.project_manager && <span>PM: {project.project_manager}</span>}
+            {project.contractor_name && <span>Contractor: {project.contractor_name}</span>}
+            {project.latitude != null && <span>Lat: {project.latitude}</span>}
+            {project.longitude != null && <span>Long: {project.longitude}</span>}
+          </div>
         </div>
       )}
 
