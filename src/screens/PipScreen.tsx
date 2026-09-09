@@ -142,10 +142,10 @@ export function PipScreen() {
       }
       setColumns((colsData as PipColumn[]) ?? []);
 
-      let { data: rowsData } = await supabase
+           let { data: rowsData } = await supabase
         .from("project_pip_rows").select("*").eq("project_id", id).order("position", { ascending: true });
 
-      if (!rowsData || rowsData.length === 0) {
+      if (!rowsData || rowsData.length < DEFAULT_TASKS.length) {
         const taskRows = await Promise.all(
           DEFAULT_TASKS.map((_, i) =>
             supabase.from("project_pip_rows").insert({ project_id: id, position: i, is_total: false, fixed: false }).select().single()
