@@ -44,7 +44,12 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
       setLatitude(initial.latitude != null ? String(initial.latitude) : "");
       setLongitude(initial.longitude != null ? String(initial.longitude) : "");
       setProjectManager(initial.project_manager ?? "");
-      setContractorName(initial.contractor_name ?? "");
+           setContractorName(initial.contractor_name ?? "");
+      setCwMeters(initial.cw_meters != null ? String(initial.cw_meters) : "");
+      setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
+      setRockAreaMeters(initial.rock_area_meters != null ? String(initial.rock_area_meters) : "");
+      setCableMeters(initial.cable_meters != null ? String(initial.cable_meters) : "");
+      setHhPcs(initial.hh_pcs != null ? String(initial.hh_pcs) : "");
       setStatus(initial.status);
     } else {
       setProjectName("");
