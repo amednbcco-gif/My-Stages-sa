@@ -170,48 +170,6 @@ export function PipScreen() {
         }
       }
 
-      // Reconcile: if this project's task labels/order don't match the current DEFAULT_TASKS list,
-      // rebuild the task rows automatically (keeps the Total row, re-seeds SN + task labels only).
-      const taskColForCheck = colsArr.find(isTaskCol);
-      const snColForCheck = colsArr.find(isSnCol);
-      if (taskColForCheck && snColForCheck) {
-        const { data: cellsForCheck } = await supabase
-          .from("project_pip_cells")
-          .select("*")
-          .in("row_id", ((rowsData as PipRow[]) ?? []).map((r) => r.id));
-
-        const nonTotalRows = ((rowsData as PipRow[]) ?? []).filter((r) => !r.is_total).sort((a, b) => a.position - b.position);
-        const currentLabels = nonTotalRows.map((row) =>
-          (cellsForCheck as PipCell[] | null)?.find((c) => c.row_id === row.id && c.column_id === taskColForCheck.id)?.value ?? ""
-        );
-        const matches = currentLabels.length === DEFAULT_TASKS.length && currentLabels.every((v, i) => v === DEFAULT_TASKS[i]);
-
-        if (!matches) {
-          const totalRowForCheck = ((rowsData as PipRow[]) ?? []).find((r) => r.is_total);
-          for (const row of nonTotalRows) {
-            await supabase.from("project_pip_rows").delete().eq("id", row.id);
-          }
-          const rebuiltRows = await Promise.all(
-            DEFAULT_TASKS.map((_, i) =>
-              supabase.from("project_pip_rows").insert({ project_id: id, position: i, is_total: false, fixed: false }).select().single()
-            )
-          );
-          if (totalRowForCheck) {
-            await supabase.from("project_pip_rows").update({ position: DEFAULT_TASKS.length }).eq("id", totalRowForCheck.id);
-          }
-          const rebuiltRowObjs = rebuiltRows.map((r) => r.data).filter(Boolean) as PipRow[];
-          const seedCells = rebuiltRowObjs.flatMap((row, idx) => [
-            { row_id: row.id, column_id: snColForCheck.id, value: String(idx + 1) },
-            { row_id: row.id, column_id: taskColForCheck.id, value: DEFAULT_TASKS[idx] ?? "" },
-          ]);
-          if (seedCells.length > 0) await supabase.from("project_pip_cells").insert(seedCells);
-
-          const { data: finalRows } = await supabase
-            .from("project_pip_rows").select("*").eq("project_id", id).order("position", { ascending: true });
-          rowsData = finalRows;
-        }
-      }
-
       setRows((rowsData as PipRow[]) ?? []);
 
       const rowIds = ((rowsData as PipRow[]) ?? []).map((r) => r.id);
