@@ -15,7 +15,7 @@ function fmtNum(n: number): string {
 
 export function ExpensesAnalysisScreen() {
   const { id } = useParams<{ id: string }>();
-  const { user, isGuest } = useAuth();
+    const { user, profile, isGuest } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
