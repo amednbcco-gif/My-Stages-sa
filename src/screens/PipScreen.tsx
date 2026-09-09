@@ -267,7 +267,7 @@ export function PipScreen() {
     setMode("edit");
   }
 
-   async function saveAll() {
+     async function saveAll() {
     if (isGuest || !canEdit || !id) { setMode("view"); return; }
     const payload = rows.flatMap((row) =>
       columns.map((col) => {
@@ -288,6 +288,19 @@ export function PipScreen() {
     }
     await supabase.from("projects").update({ pip_total_days: totalDays }).eq("id", id);
     setProject((prev) => prev ? { ...prev, pip_total_days: totalDays } : prev);
+
+    if (project && user) {
+      const actorName = profile?.full_name?.trim() || user.email || "Someone";
+      await supabase.from("notifications").insert({
+        owner_id: project.owner_id,
+        project_id: project.id,
+        project_name: project.project_name,
+        actor_id: user.id,
+        actor_name: actorName,
+        message: "updated PIP (Project Implementation Plan)",
+      });
+    }
+
     setMode("view");
   }
 
