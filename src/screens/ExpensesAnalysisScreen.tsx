@@ -15,7 +15,7 @@ function fmtNum(n: number): string {
 
 export function ExpensesAnalysisScreen() {
   const { id } = useParams<{ id: string }>();
-    const { user, profile, isGuest } = useAuth();
+  const { user, profile, isGuest } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -285,7 +285,7 @@ export function ExpensesAnalysisScreen() {
     setMode("edit");
   }
 
-   async function saveAll() {
+     async function saveAll() {
     if (isGuest || !canEdit || !id) { setMode("view"); return; }
     const qtyCol = columns.find(isQuantityColumn);
     const priceCol = columns.find(isSupplierPriceColumn);
@@ -309,6 +309,19 @@ export function ExpensesAnalysisScreen() {
       .from("project_expense_summary")
       .upsert({ project_id: id, manpower_costs: manpowerCosts, other_costs: otherCosts }, { onConflict: "project_id" });
     setSummary({ project_id: id, manpower_costs: manpowerCosts, other_costs: otherCosts, updated_at: new Date().toISOString() });
+
+    if (project && user) {
+      const actorName = profile?.full_name?.trim() || user.email || "Someone";
+      await supabase.from("notifications").insert({
+        owner_id: project.owner_id,
+        project_id: project.id,
+        project_name: project.project_name,
+        actor_id: user.id,
+        actor_name: actorName,
+        message: "updated Project Expenses Analysis",
+      });
+    }
+
     setMode("view");
   }
 
