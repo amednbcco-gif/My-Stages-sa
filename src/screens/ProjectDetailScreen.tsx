@@ -574,8 +574,38 @@ function MilestoneCard({
       </div>
 
       {/* Fields grid OR permit table */}
-      {milestone.id === "permit" ? (
-        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={fieldsEditable} />
+           {milestone.id === "permit" ? (
+        <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={canEdit} />
+      ) : milestone.id === "civil" ? (
+        <>
+          <div className="px-5 pt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {[
+              { label: "CW (m)", value: project.cw_meters },
+              { label: "HDD (m)", value: project.hdd_meters },
+              { label: "Rock Area (m)", value: project.rock_area_meters },
+              { label: "Cable (144/288m)", value: project.cable_meters },
+              { label: "HH (Pcs)", value: project.hh_pcs },
+            ].map((item) => (
+              <div key={item.label} className="rounded-lg border border-ink-700 bg-ink-900/40 px-3 py-2 text-center">
+                <p className="text-[10px] text-gray-500">{item.label}</p>
+                <p className="text-sm font-semibold text-white">{item.value ?? 0}</p>
+              </div>
+            ))}
+          </div>
+          <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
+            {milestone.fields.map((field) => {
+              const value = stageData[field.key] ?? "";
+              return (
+                <div key={field.key} className="flex items-center gap-3">
+                  <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                  <div className="flex-1 min-w-0">
+                    <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
           {milestone.fields.map((field) => {
