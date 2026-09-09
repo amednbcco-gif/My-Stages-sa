@@ -119,6 +119,37 @@ function FiberBackground() {
   );
 }
 
+function playNotificationSound() {
+  try {
+    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    function tone(freq: number, start: number, duration: number, gainPeak: number) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now + start);
+      gain.gain.linearRampToValueAtTime(gainPeak, now + start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + start + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + start);
+      osc.stop(now + start + duration + 0.05);
+    }
+
+    tone(880, 0, 0.16, 0.18);
+    tone(1318.5, 0.11, 0.22, 0.15);
+
+    setTimeout(() => ctx.close(), 600);
+  } catch (e) {
+    // Audio not available (e.g. autoplay restrictions) — fail silently
+  }
+}
+
+const centerNav = [
+
 const centerNav = [
   { to: "/theprojects", label: "The Projects", icon: FolderKanban },
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
