@@ -88,7 +88,12 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       latitude: latitude ? Number(latitude) : null,
       longitude: longitude ? Number(longitude) : null,
      project_manager: projectManager,
-      contractor_name: contractorName,
+           contractor_name: contractorName,
+      cw_meters: cwMeters ? Number(cwMeters) : 0,
+      hdd_meters: hddMeters ? Number(hddMeters) : 0,
+      rock_area_meters: rockAreaMeters ? Number(rockAreaMeters) : 0,
+      cable_meters: cableMeters ? Number(cableMeters) : 0,
+      hh_pcs: hhPcs ? Number(hhPcs) : 0,
       status,
     });
     setSaving(false);
