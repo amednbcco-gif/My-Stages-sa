@@ -199,6 +199,17 @@ export function OnHoldScreen() {
       const { error } = await supabase.from("on_hold_cells").upsert(payload, { onConflict: "row_id,column_id" });
       if (error) console.error("saveAll upsert error:", error);
     }
+    if (ownerId && user) {
+      const actorName = profile?.full_name?.trim() || user.email || "Someone";
+      await supabase.from("notifications").insert({
+        owner_id: ownerId,
+        project_id: null,
+        project_name: null,
+        actor_id: user.id,
+        actor_name: actorName,
+        message: "updated the On Hold tracker",
+      });
+    }
     setMode("view");
   }
 
