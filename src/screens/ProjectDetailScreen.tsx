@@ -262,7 +262,23 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
         </div>
       </div>
 
-                  <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
+                       {stage === "stage3" && (
+        <div className="px-5 pt-2 pb-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {[
+            { label: "CW (m)", value: project.cw_meters },
+            { label: "HDD (m)", value: project.hdd_meters },
+            { label: "Rock Area (m)", value: project.rock_area_meters },
+            { label: "Cable (144/288m)", value: project.cable_meters },
+            { label: "HH (Pcs)", value: project.hh_pcs },
+          ].map((item) => (
+            <div key={item.label} className="rounded-lg border border-ink-700 bg-ink-900/40 px-2.5 py-1.5 text-center">
+              <p className="text-[9px] text-gray-500">{item.label}</p>
+              <p className="text-xs font-semibold text-white">{item.value ?? 0}</p>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
         {fields.map((field) => {
           const value = stageData[field.key] ?? "";
           return (
