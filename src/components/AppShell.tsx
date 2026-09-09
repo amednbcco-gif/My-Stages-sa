@@ -118,7 +118,6 @@ function FiberBackground() {
     </div>
   );
 }
-
 function playNotificationSound() {
   try {
     const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -147,8 +146,6 @@ function playNotificationSound() {
     // Audio not available (e.g. autoplay restrictions) — fail silently
   }
 }
-
-const centerNav = [
 
 const centerNav = [
   { to: "/theprojects", label: "The Projects", icon: FolderKanban },
