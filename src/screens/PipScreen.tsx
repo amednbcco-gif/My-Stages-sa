@@ -49,7 +49,7 @@ function daysBetween(start: string, end: string): number | null {
 
 export function PipScreen() {
   const { id } = useParams<{ id: string }>();
-  const { user, isGuest } = useAuth();
+  const { user, profile, isGuest } = useAuth();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
