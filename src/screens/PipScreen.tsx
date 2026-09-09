@@ -129,10 +129,10 @@ export function PipScreen() {
       setCanEdit(allowed);
       if (!allowed) { setAccessDenied(true); setLoading(false); return; }
 
-      let { data: colsData } = await supabase
+           let { data: colsData } = await supabase
         .from("project_pip_columns").select("*").eq("project_id", id).order("position", { ascending: true });
 
-      if (!colsData || colsData.length === 0) {
+      if (!colsData || colsData.length < DEFAULT_COLUMNS.length) {
         const seeded = await Promise.all(
           DEFAULT_COLUMNS.map((label, i) =>
             supabase.from("project_pip_columns").insert({ project_id: id, label, position: i, fixed: true }).select().single()
