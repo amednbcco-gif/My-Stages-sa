@@ -130,7 +130,14 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
         <Input label="Latitude" value={latitude} onChange={setLatitude} type="number" placeholder="e.g. 24.7136" />
         <Input label="Longitude" value={longitude} onChange={setLongitude} type="number" placeholder="e.g. 46.6753" />
               <Input label="Project Manager" value={projectManager} onChange={setProjectManager} placeholder="Project Manager" />
-                <Input label="Contractor Name" value={contractorName} onChange={setContractorName} placeholder="Contractor Name" />
+                       <Input label="Contractor Name" value={contractorName} onChange={setContractorName} placeholder="Contractor Name" />
+        <div>
+          <label className="mb-1.5 block text-xs font-medium text-gray-400">PIP (Total Days)</label>
+          <div className="w-full rounded-lg border border-ink-700 bg-ink-900/40 px-3 py-2.5 text-sm text-gray-400">
+            {initial?.pip_total_days ?? 0} days
+            <span className="ml-2 text-[10px] text-gray-600">(auto-calculated from PIP page)</span>
+          </div>
+        </div>
         <Input label="CW (m)" value={cwMeters} onChange={setCwMeters} type="number" placeholder="0" />
         <Input label="HDD (m)" value={hddMeters} onChange={setHddMeters} type="number" placeholder="0" />
         <Input label="Rock Area (m)" value={rockAreaMeters} onChange={setRockAreaMeters} type="number" placeholder="0" />
