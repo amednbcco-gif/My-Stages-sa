@@ -376,6 +376,34 @@ export function PipScreen() {
         </div>
       )}
       
+      {project && (
+        <div className="mb-6 overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
+          <table className="w-full min-w-[420px] border-collapse text-sm">
+            <tbody>
+              <tr className="border-b border-ink-700">
+                <td rowSpan={4} className="w-32 border-r border-ink-700 bg-ink-900/40 px-3 py-3 text-center align-middle text-xs font-bold text-white">
+                  Summary
+                </td>
+                <td className="px-3 py-2 text-xs font-semibold text-gray-400">Project Start Date</td>
+                <td className="px-3 py-2 text-right text-xs text-gray-200">{minDate !== null ? fmtDate(new Date(minDate).toISOString()) : "—"}</td>
+              </tr>
+              <tr className="border-b border-ink-700">
+                <td className="px-3 py-2 text-xs font-semibold text-gray-400">Project End Date</td>
+                <td className="px-3 py-2 text-right text-xs text-gray-200">{maxDate !== null ? fmtDate(new Date(maxDate).toISOString()) : "—"}</td>
+              </tr>
+              <tr className="border-b border-ink-700">
+                <td className="px-3 py-2 text-xs font-semibold text-gray-400">Display Week</td>
+                <td className="px-3 py-2 text-right text-xs text-gray-200">{minDate !== null && maxDate !== null ? `${Math.ceil(rangeDays / 7)} weeks` : "—"}</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2 text-xs font-semibold text-gray-400">Total PIP Days</td>
+                <td className="px-3 py-2 text-right text-xs font-bold text-gold">{totalDays}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+      
       <div className="mb-2 flex justify-end">
         <Button variant="secondary" onClick={exportCSV}>
           <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
