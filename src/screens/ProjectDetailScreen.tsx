@@ -579,7 +579,13 @@ function MilestoneCard({
       ) : (
         <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
           {milestone.fields.map((field) => {
-            const value = stageData[field.key] ?? "";
+            let value = stageData[field.key] ?? "";
+            if (milestone.id === "civil" && !value) {
+              if (field.key === "civilActualMeters" && project.cw_meters) value = project.cw_meters;
+              else if (field.key === "hddActualMeters" && project.hdd_meters) value = project.hdd_meters;
+              else if (field.key === "fiberCableMeters" && project.cable_meters) value = project.cable_meters;
+              else if (field.key === "mhHh" && project.hh_pcs) value = project.hh_pcs;
+            }
             const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             const showConnectScanLink = field.key === "connectScanStatus";
             const showTrace360Link = field.key === "trace360Status";
