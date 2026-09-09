@@ -363,8 +363,8 @@ export function PipScreen() {
                 <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">CW (m)</td>
                 <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">HDD (m)</td>
                 <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">Rock Area (m)</td>
-                                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">Cable 144/288F (m)</td>
-                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">MH/MMH/HH (Pcs)</td>
+                                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">Fiber Cable (m)</td>
+                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">MH/HH</td>
               </tr>
               <tr>
                 <td className="px-3 py-2 text-center text-xs text-gray-200">{project.cw_meters ?? 0}</td>
