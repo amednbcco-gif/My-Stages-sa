@@ -125,6 +125,11 @@ export interface Project {
   longitude: number | null;
    project_manager: string;
   contractor_name: string;
+  cw_meters: number;
+  hdd_meters: number;
+  rock_area_meters: number;
+  cable_meters: number;
+  hh_pcs: number;
   sn: string;
   status: ProjectStatus;
   stage1: Stage1;
