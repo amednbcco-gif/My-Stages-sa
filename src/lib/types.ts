@@ -130,6 +130,7 @@ export interface Project {
   rock_area_meters: number;
   cable_meters: number;
   hh_pcs: number;
+  pip_total_days: number;
   sn: string;
   status: ProjectStatus;
   stage1: Stage1;
