@@ -130,8 +130,13 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
         <Input label="Latitude" value={latitude} onChange={setLatitude} type="number" placeholder="e.g. 24.7136" />
         <Input label="Longitude" value={longitude} onChange={setLongitude} type="number" placeholder="e.g. 46.6753" />
               <Input label="Project Manager" value={projectManager} onChange={setProjectManager} placeholder="Project Manager" />
-        <Input label="Contractor Name" value={contractorName} onChange={setContractorName} placeholder="Contractor Name" />
-                <Select
+                <Input label="Contractor Name" value={contractorName} onChange={setContractorName} placeholder="Contractor Name" />
+        <Input label="CW (m)" value={cwMeters} onChange={setCwMeters} type="number" placeholder="0" />
+        <Input label="HDD (m)" value={hddMeters} onChange={setHddMeters} type="number" placeholder="0" />
+        <Input label="Rock Area (m)" value={rockAreaMeters} onChange={setRockAreaMeters} type="number" placeholder="0" />
+        <Input label="Cable (144/288m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
+        <Input label="HH (Pcs)" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
+        <Select
           label="Status"
           value={status}
           onChange={(v) => setStatus(v as ProjectStatus)}
