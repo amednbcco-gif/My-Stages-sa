@@ -18,16 +18,15 @@ const DEFAULT_COLUMNS = [
 ];
 
 const DEFAULT_TASKS = [
-  "Design Documents (Documentation)",
-  "Permits (Municipality/MOT/Access)",
-  "Materials (Preparation &Transportation/Shipping)",
-  "Execution (Civil Works (Trenching, Ducting, cabling, milling&paving)",
+  "Design & Survey Documents (Documentation)",
+  "The Permits (Municipality/MOT/Access)",
+  "The Materials (Preparation &Transportation/Shipping)",
+  "The Execution (Civil Works (Trenching, Ducting, Cabling, Milling&Paving)",
   "Integration/Splicing (TCN/MDT rack/ODB,ODF installation, Patching)",
   "PAT (C-PAT, E-PAT)",
   "CRQ HO (Documentation)",
   "GIS Certificate",
-  "PCR",
-  "SDN",
+  "PCR & SDN",
   "RFS",
   "PAC",
   "FAC",
@@ -129,7 +128,7 @@ export function PipScreen() {
       setCanEdit(allowed);
       if (!allowed) { setAccessDenied(true); setLoading(false); return; }
 
-           let { data: colsData } = await supabase
+      let { data: colsData } = await supabase
         .from("project_pip_columns").select("*").eq("project_id", id).order("position", { ascending: true });
 
       if (!colsData || colsData.length < DEFAULT_COLUMNS.length) {
@@ -140,22 +139,23 @@ export function PipScreen() {
         );
         colsData = seeded.map((r) => r.data).filter(Boolean) as typeof colsData;
       }
-      setColumns((colsData as PipColumn[]) ?? []);
+      let colsArr = (colsData as PipColumn[]) ?? [];
+      setColumns(colsArr);
 
-           let { data: rowsData } = await supabase
+      let { data: rowsData } = await supabase
         .from("project_pip_rows").select("*").eq("project_id", id).order("position", { ascending: true });
 
       if (!rowsData || rowsData.length < DEFAULT_TASKS.length) {
-        const taskRows = await Promise.all(
+        const taskRowsIns = await Promise.all(
           DEFAULT_TASKS.map((_, i) =>
             supabase.from("project_pip_rows").insert({ project_id: id, position: i, is_total: false, fixed: false }).select().single()
           )
         );
-        const totalRow = await supabase.from("project_pip_rows").insert({ project_id: id, position: DEFAULT_TASKS.length, is_total: true, fixed: true }).select().single();
-        rowsData = [...taskRows.map((r) => r.data), totalRow.data].filter(Boolean) as typeof rowsData;
+        const totalRowIns = await supabase.from("project_pip_rows").insert({ project_id: id, position: DEFAULT_TASKS.length, is_total: true, fixed: true }).select().single();
+        rowsData = [...taskRowsIns.map((r) => r.data), totalRowIns.data].filter(Boolean) as typeof rowsData;
 
-        const taskCol = (colsData as PipColumn[]).find(isTaskCol);
-        const snCol = (colsData as PipColumn[]).find(isSnCol);
+        const taskCol = colsArr.find(isTaskCol);
+        const snCol = colsArr.find(isSnCol);
         if (taskCol && snCol) {
           const seedCells = (rowsData as PipRow[]).flatMap((row, idx) => {
             if (row.is_total) {
@@ -169,6 +169,49 @@ export function PipScreen() {
           if (seedCells.length > 0) await supabase.from("project_pip_cells").insert(seedCells);
         }
       }
+
+      // Reconcile: if this project's task labels/order don't match the current DEFAULT_TASKS list,
+      // rebuild the task rows automatically (keeps the Total row, re-seeds SN + task labels only).
+      const taskColForCheck = colsArr.find(isTaskCol);
+      const snColForCheck = colsArr.find(isSnCol);
+      if (taskColForCheck && snColForCheck) {
+        const { data: cellsForCheck } = await supabase
+          .from("project_pip_cells")
+          .select("*")
+          .in("row_id", ((rowsData as PipRow[]) ?? []).map((r) => r.id));
+
+        const nonTotalRows = ((rowsData as PipRow[]) ?? []).filter((r) => !r.is_total).sort((a, b) => a.position - b.position);
+        const currentLabels = nonTotalRows.map((row) =>
+          (cellsForCheck as PipCell[] | null)?.find((c) => c.row_id === row.id && c.column_id === taskColForCheck.id)?.value ?? ""
+        );
+        const matches = currentLabels.length === DEFAULT_TASKS.length && currentLabels.every((v, i) => v === DEFAULT_TASKS[i]);
+
+        if (!matches) {
+          const totalRowForCheck = ((rowsData as PipRow[]) ?? []).find((r) => r.is_total);
+          for (const row of nonTotalRows) {
+            await supabase.from("project_pip_rows").delete().eq("id", row.id);
+          }
+          const rebuiltRows = await Promise.all(
+            DEFAULT_TASKS.map((_, i) =>
+              supabase.from("project_pip_rows").insert({ project_id: id, position: i, is_total: false, fixed: false }).select().single()
+            )
+          );
+          if (totalRowForCheck) {
+            await supabase.from("project_pip_rows").update({ position: DEFAULT_TASKS.length }).eq("id", totalRowForCheck.id);
+          }
+          const rebuiltRowObjs = rebuiltRows.map((r) => r.data).filter(Boolean) as PipRow[];
+          const seedCells = rebuiltRowObjs.flatMap((row, idx) => [
+            { row_id: row.id, column_id: snColForCheck.id, value: String(idx + 1) },
+            { row_id: row.id, column_id: taskColForCheck.id, value: DEFAULT_TASKS[idx] ?? "" },
+          ]);
+          if (seedCells.length > 0) await supabase.from("project_pip_cells").insert(seedCells);
+
+          const { data: finalRows } = await supabase
+            .from("project_pip_rows").select("*").eq("project_id", id).order("position", { ascending: true });
+          rowsData = finalRows;
+        }
+      }
+
       setRows((rowsData as PipRow[]) ?? []);
 
       const rowIds = ((rowsData as PipRow[]) ?? []).map((r) => r.id);
@@ -201,7 +244,6 @@ export function PipScreen() {
 
   const totalDays = taskRows.reduce((sum, row) => sum + (rowDays(row) ?? 0), 0);
 
-  // Gantt range
   const allDates = taskRows.flatMap((row) => {
     if (!startCol || !endCol) return [];
     return [cellValue(row.id, startCol.id), cellValue(row.id, endCol.id)].filter(Boolean);
