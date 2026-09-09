@@ -333,9 +333,35 @@ export function PipScreen() {
         <h1 className="text-2xl font-bold text-white">PIP (Project Implementation Plan)</h1>
       </div>
 
-      {project && (
+            {project && (
         <div className="mb-6 rounded-2xl border border-ink-700 bg-ink-800 px-5 py-4">
           <h2 className="text-lg font-bold text-white">{project.project_name || "—"}</h2>
+        </div>
+      )}
+
+      {project && (
+        <div className="mb-6 overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
+          <table className="w-full min-w-[560px] border-collapse text-sm">
+            <tbody>
+              <tr className="border-b border-ink-700">
+                <td rowSpan={2} className="w-40 border-r border-ink-700 bg-ink-900/40 px-3 py-3 text-center align-middle text-xs font-bold text-white">
+                  Civil &amp; Fiber Details
+                </td>
+                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">CW (m)</td>
+                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">HDD (m)</td>
+                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">Rock Area (m)</td>
+                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">Cable (144/288m)</td>
+                <td className="px-3 py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">HH (Pcs)</td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2 text-center text-xs text-gray-200">{project.cw_meters ?? 0}</td>
+                <td className="px-3 py-2 text-center text-xs text-gray-200">{project.hdd_meters ?? 0}</td>
+                <td className="px-3 py-2 text-center text-xs text-gray-200">{project.rock_area_meters ?? 0}</td>
+                <td className="px-3 py-2 text-center text-xs text-gray-200">{project.cable_meters ?? 0}</td>
+                <td className="px-3 py-2 text-center text-xs text-gray-200">{project.hh_pcs ?? 0}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       )}
 
