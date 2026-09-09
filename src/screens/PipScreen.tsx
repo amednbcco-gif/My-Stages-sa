@@ -350,7 +350,7 @@ export function PipScreen() {
         </div>
       )}
 
-      {project && (
+           {project && (
         <div className="mb-6 overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
           <table className="w-full min-w-[560px] border-collapse text-sm">
             <tbody>
