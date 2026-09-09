@@ -267,8 +267,8 @@ export function PipScreen() {
     setMode("edit");
   }
 
-  async function saveAll() {
-    if (isGuest || !canEdit) { setMode("view"); return; }
+   async function saveAll() {
+    if (isGuest || !canEdit || !id) { setMode("view"); return; }
     const payload = rows.flatMap((row) =>
       columns.map((col) => {
         let val = cellValue(row.id, col.id);
@@ -286,6 +286,8 @@ export function PipScreen() {
       const { error } = await supabase.from("project_pip_cells").upsert(payload, { onConflict: "row_id,column_id" });
       if (error) console.error("saveAll upsert error:", error);
     }
+    await supabase.from("projects").update({ pip_total_days: totalDays }).eq("id", id);
+    setProject((prev) => prev ? { ...prev, pip_total_days: totalDays } : prev);
     setMode("view");
   }
 
