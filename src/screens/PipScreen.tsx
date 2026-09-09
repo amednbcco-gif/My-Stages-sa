@@ -375,6 +375,7 @@ export function PipScreen() {
           </table>
         </div>
       )}
+      
       {project && (
         <div className="mb-6 overflow-x-auto rounded-xl border border-ink-700 bg-ink-800">
           <table className="w-full min-w-[420px] border-collapse text-sm">
@@ -402,6 +403,7 @@ export function PipScreen() {
           </table>
         </div>
       )}
+      
       <div className="mb-2 flex justify-end">
         <Button variant="secondary" onClick={exportCSV}>
           <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
