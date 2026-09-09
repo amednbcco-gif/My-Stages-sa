@@ -262,9 +262,15 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
         </div>
       </div>
 
-      <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
+           <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
         {fields.map((field) => {
-          const value = stageData[field.key] ?? "";
+          let value = stageData[field.key] ?? "";
+          if (stage === "stage3" && !value) {
+            if (field.key === "civilActualMeters" && project.cw_meters) value = project.cw_meters;
+            else if (field.key === "hddActualMeters" && project.hdd_meters) value = project.hdd_meters;
+            else if (field.key === "fiberCableMeters" && project.cable_meters) value = project.cable_meters;
+            else if (field.key === "mhHh" && project.hh_pcs) value = project.hh_pcs;
+          }
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
               <span className="shrink-0 text-sm font-semibold text-white">{field.label}</span>
