@@ -168,11 +168,12 @@ export function AppShell({ children }: AppShellProps) {
     }
     loadNotifications();
 
-    const channel = supabase
+       const channel = supabase
       .channel("notifications_live")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications" }, (payload) => {
         setNotifications((prev) => [payload.new as NotificationRow, ...prev].slice(0, 30));
         setUnreadCount((c) => c + 1);
+        playNotificationSound();
       })
       .subscribe();
 
