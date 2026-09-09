@@ -141,8 +141,8 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
         <Input label="CW (m)" value={cwMeters} onChange={setCwMeters} type="number" placeholder="0" />
         <Input label="HDD (m)" value={hddMeters} onChange={setHddMeters} type="number" placeholder="0" />
         <Input label="Rock Area (m)" value={rockAreaMeters} onChange={setRockAreaMeters} type="number" placeholder="0" />
-        <Input label="Cable (144/288m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
-        <Input label="HH (Pcs)" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
+               <Input label="Cable 144/288F (m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
+        <Input label="MH/MMH/HH (Pcs)" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
         <Select
           label="Status"
           value={status}
