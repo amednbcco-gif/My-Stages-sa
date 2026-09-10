@@ -288,11 +288,12 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     { label: "Total Value (SAR)", value: fmtSAR(totalValueSAR), icon: DollarSign, color: "text-gold", bg: "bg-gold/10" },
   ];
 
-    const finCards = [
+     const finCards = [
     {
       label: "ABOQ",
       sub: `${aboqApproved.length} project${aboqApproved.length === 1 ? "" : "s"} approved · manually entered`,
       value: aboq,
+      total: aboqTotalAll,
       icon: Landmark,
       color: "text-sky-300",
       bg: "bg-sky-500/10",
@@ -302,6 +303,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
       label: "RFS",
       sub: `${rfsApproved.length} project${rfsApproved.length === 1 ? "" : "s"} approved · 80% of ABOQ`,
       value: rfs,
+      total: rfsTotalAll,
       icon: Receipt,
       color: "text-emerald-300",
       bg: "bg-emerald-500/10",
@@ -311,6 +313,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
       label: "PAC",
       sub: `${pacApproved.length} project${pacApproved.length === 1 ? "" : "s"} approved · 10% of ABOQ`,
       value: pac,
+      total: pacTotalAll,
       icon: FileCheck2,
       color: "text-amber-300",
       bg: "bg-amber-500/10",
@@ -320,6 +323,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
       label: "FAC",
       sub: `${facApproved.length} project${facApproved.length === 1 ? "" : "s"} approved · 10% of ABOQ`,
       value: fac,
+      total: facTotalAll,
       icon: Wallet,
       color: "text-gold",
       bg: "bg-gold/10",
