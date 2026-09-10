@@ -288,7 +288,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     { label: "Total Value (SAR)", value: fmtSAR(totalValueSAR), icon: DollarSign, color: "text-gold", bg: "bg-gold/10" },
   ];
 
-  const finCards = [
+    const finCards = [
     {
       label: "ABOQ",
       sub: `${aboqApproved.length} project${aboqApproved.length === 1 ? "" : "s"} approved · manually entered`,
@@ -326,7 +326,6 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
       ring: "border-gold/20",
     },
   ];
-
   return (
     <div className="p-4 md:p-8">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
