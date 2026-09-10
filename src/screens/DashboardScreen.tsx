@@ -644,26 +644,29 @@ function FinancialSplitPie({
     if (!canvasRef.current || !(window as any).Chart) return;
     if (chartRef.current) chartRef.current.destroy();
 
-    const labels = ["RFS", "PAC", "FAC"];
-    const data = [rfsTotal, pacTotal, facTotal];
-    const colors = ["#2a78d6", "#eb6834", "#1baf7a"];
+    const labels = ["RFS Total", "RFS Approved", "PAC Total", "PAC Approved", "FAC Total", "FAC Approved"];
+    const data = [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved];
+    const colors = ["#2a78d6", "#a9d0f5", "#eb6834", "#f6c2a4", "#1baf7a", "#a8ecd2"];
+    const totalSum = data.reduce((a, b) => a + b, 0);
 
-    const bigLabelsPlugin = {
-      id: "bigLabels",
+    const sliceLabelsPlugin = {
+      id: "sliceLabels",
       afterDatasetsDraw(chart: any) {
         const { ctx } = chart;
         const meta = chart.getDatasetMeta(0);
         meta.data.forEach((arc: any, index: number) => {
           const value = data[index];
           if (!value) return;
+          const share = totalSum > 0 ? value / totalSum : 0;
+          if (share < 0.04) return; // skip labels on slivers too thin to read
           const pos = arc.tooltipPosition();
           ctx.save();
           ctx.fillStyle = "#0f1115";
-          ctx.font = "700 10px sans-serif";
+          ctx.font = "700 9px sans-serif";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(labels[index], pos.x, pos.y - 7);
-          ctx.fillText(Number(value).toLocaleString(), pos.x, pos.y + 7);
+          ctx.fillText(labels[index], pos.x, pos.y - 6);
+          ctx.fillText(Number(value).toLocaleString(), pos.x, pos.y + 6);
           ctx.restore();
         });
       },
@@ -671,24 +674,36 @@ function FinancialSplitPie({
 
     chartRef.current = new (window as any).Chart(canvasRef.current, {
       type: "pie",
-      plugins: [bigLabelsPlugin],
-      data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: "#1a1a19", borderWidth: 2 }] },
+      plugins: [sliceLabelsPlugin],
+      data: {
+        labels,
+        datasets: [{
+          data,
+          backgroundColor: colors,
+          borderColor: "#1a1a19",
+          borderWidth: 2,
+        }],
+      },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 11 }, boxWidth: 12 } },
-          tooltip: { callbacks: { label: (ctx: any) => `${ctx.label} Total: ${Number(ctx.parsed).toLocaleString()}` } },
+          tooltip: {
+            callbacks: {
+              label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`,
+            },
+          },
         },
       },
     });
 
     return () => chartRef.current?.destroy();
-  }, [rfsTotal, pacTotal, facTotal]);
+  }, [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved]);
 
   return (
     <div>
-      <div style={{ position: "relative", width: "100%", height: 220 }}>
+      <div style={{ position: "relative", width: "100%", height: 260 }}>
         <canvas ref={canvasRef} />
       </div>
       <p className="mt-4 mb-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-500">
