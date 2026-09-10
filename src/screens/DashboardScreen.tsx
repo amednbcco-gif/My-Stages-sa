@@ -421,96 +421,12 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
           <h3 className="mb-4 text-sm font-semibold text-white">
             RFS / PAC / FAC — Total vs Approved
           </h3>
-          function MiniSplitPie({
-  label, total, approved, totalColor, approvedColor,
-}: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current || !(window as any).Chart) return;
-    if (chartRef.current) chartRef.current.destroy();
-
-    const notApproved = Math.max(total - approved, 0);
-    const data = [approved, notApproved];
-    const colors = [approvedColor, totalColor];
-    const pieLabels = [`${label} Approved`, `${label} Total`];
-
-    const sliceLabelsPlugin = {
-      id: "sliceLabels",
-      afterDatasetsDraw(chart: any) {
-        const { ctx } = chart;
-        const meta = chart.getDatasetMeta(0);
-        meta.data.forEach((arc: any, index: number) => {
-          const value = data[index];
-          if (!value) return;
-          const pos = arc.tooltipPosition();
-          ctx.save();
-          ctx.fillStyle = "#0f1115";
-          ctx.font = "700 8px sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText(Number(value).toLocaleString(), pos.x, pos.y);
-          ctx.restore();
-        });
-      },
-    };
-
-    chartRef.current = new (window as any).Chart(canvasRef.current, {
-      type: "pie",
-      plugins: [sliceLabelsPlugin],
-      data: {
-        labels: pieLabels,
-        datasets: [{ data, backgroundColor: colors, borderColor: "#1a1a19", borderWidth: 2 }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}` } },
-        },
-      },
-    });
-
-    return () => chartRef.current?.destroy();
-  }, [label, total, approved, totalColor, approvedColor]);
-
-  return (
-    <div className="flex flex-col items-center">
-      <div style={{ position: "relative", width: "100%", height: 130 }}>
-        <canvas ref={canvasRef} />
-      </div>
-      <p className="mt-1 text-xs font-semibold text-white">{label}</p>
-      <div className="mt-1 flex items-center gap-2 text-[10px] text-gray-400">
-        <span className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: approvedColor }} /> Approved
-        </span>
-        <span className="flex items-center gap-1">
-          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: totalColor }} /> Total
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function FinancialSplitPie({
-  rfsTotal, rfsApproved,
-  pacTotal, pacApproved,
-  facTotal, facApproved,
-}: {
-  rfsTotal: number; rfsApproved: number;
-  pacTotal: number; pacApproved: number;
-  facTotal: number; facApproved: number;
-}) {
-  return (
-    <div className="grid grid-cols-3 gap-2">
-      <MiniSplitPie label="RFS" total={rfsTotal} approved={rfsApproved} totalColor="#2a78d6" approvedColor="#a9d0f5" />
-      <MiniSplitPie label="PAC" total={pacTotal} approved={pacApproved} totalColor="#eb6834" approvedColor="#f6c2a4" />
-      <MiniSplitPie label="FAC" total={facTotal} approved={facApproved} totalColor="#1baf7a" approvedColor="#a8ecd2" />
-    </div>
-  );
-}
+  <FinancialSplitPie
+            rfsTotal={rfsTotalAll} rfsApproved={rfs}
+            pacTotal={pacTotalAll} pacApproved={pac}
+            facTotal={facTotalAll} facApproved={fac}
+          />
+        </div>
 
         {/* Average Progress */}
         <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
