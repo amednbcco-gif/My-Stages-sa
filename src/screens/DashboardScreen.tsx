@@ -87,6 +87,28 @@ export function DashboardScreen() {
     stageDist[currentStage(p)]++;
   });
 
+    // ── Milestone status breakdown (all 12 milestones × 4 statuses) ──
+  function milestoneLabel(title: string): string {
+    return title.replace(/[\u0600-\u06FF].*$/, "").trim();
+  }
+
+  const milestoneStatusRows = MILESTONES.map((ms) => {
+    const counts = { pending: 0, inprogress: 0, submitted: 0, approved: 0 };
+    projects.forEach((p) => {
+      const stageData = (p as unknown as Record<string, Record<string, unknown>>)[ms.stage] ?? {};
+      const raw = String(stageData[ms.statusField.key] ?? "pending").trim().toLowerCase();
+      if (raw === "" || raw === "pending") counts.pending++;
+      else if (raw === "inprogress" || raw === "in progress" || raw.includes("inprogress")) counts.inprogress++;
+      else if (raw === "submitted") counts.submitted++;
+      else counts.approved++;
+    });
+    return {
+      id: ms.id,
+      title: milestoneLabel(ms.title),
+      ...counts,
+    };
+  });
+
   // ── Team Evaluate ──
 //
 // Evaluate each team member using ONLY the main milestones assigned through
