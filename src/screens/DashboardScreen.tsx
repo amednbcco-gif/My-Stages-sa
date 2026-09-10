@@ -563,15 +563,9 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   );
 }
       
-function FinancialSplitPie({
-  rfsTotal, rfsApproved,
-  pacTotal, pacApproved,
-  facTotal, facApproved,
-}: {
-  rfsTotal: number; rfsApproved: number;
-  pacTotal: number; pacApproved: number;
-  facTotal: number; facApproved: number;
-}) {
+function MiniSplitPie({
+  label, total, approved, totalColor, approvedColor,
+}: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
 
@@ -579,11 +573,10 @@ function FinancialSplitPie({
     if (!canvasRef.current || !(window as any).Chart) return;
     if (chartRef.current) chartRef.current.destroy();
 
-    const labels = ["RFS Total", "RFS Approved", "PAC Total", "PAC Approved", "FAC Total", "FAC Approved"];
-    const data = [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved];
-    const colors = ["#2a78d6", "#a9d0f5", "#eb6834", "#f6c2a4", "#1baf7a", "#a8ecd2"];
-
-   const totalSum = data.reduce((a, b) => a + b, 0);
+    const notApproved = Math.max(total - approved, 0);
+    const data = [approved, notApproved];
+    const colors = [approvedColor, totalColor];
+    const pieLabels = [`${label} Approved`, `${label} Total`];
 
     const sliceLabelsPlugin = {
       id: "sliceLabels",
@@ -593,16 +586,13 @@ function FinancialSplitPie({
         meta.data.forEach((arc: any, index: number) => {
           const value = data[index];
           if (!value) return;
-          const share = totalSum > 0 ? value / totalSum : 0;
-          if (share < 0.04) return; // skip labels on slivers too thin to read
           const pos = arc.tooltipPosition();
           ctx.save();
           ctx.fillStyle = "#0f1115";
-          ctx.font = "700 9px sans-serif";
+          ctx.font = "700 8px sans-serif";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(labels[index], pos.x, pos.y - 6);
-          ctx.fillText(Number(value).toLocaleString(), pos.x, pos.y + 6);
+          ctx.fillText(Number(value).toLocaleString(), pos.x, pos.y);
           ctx.restore();
         });
       },
@@ -612,34 +602,54 @@ function FinancialSplitPie({
       type: "pie",
       plugins: [sliceLabelsPlugin],
       data: {
-        labels,
-        datasets: [{
-          data,
-          backgroundColor: colors,
-          borderColor: "#1a1a19",
-          borderWidth: 2,
-        }],
+        labels: pieLabels,
+        datasets: [{ data, backgroundColor: colors, borderColor: "#1a1a19", borderWidth: 2 }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 11 }, boxWidth: 12 } },
-          tooltip: {
-            callbacks: {
-              label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`,
-            },
-          },
+          legend: { display: false },
+          tooltip: { callbacks: { label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}` } },
         },
       },
     });
 
     return () => chartRef.current?.destroy();
-  }, [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved]);
+  }, [label, total, approved, totalColor, approvedColor]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: 300 }}>
-      <canvas ref={canvasRef} />
+    <div className="flex flex-col items-center">
+      <div style={{ position: "relative", width: "100%", height: 130 }}>
+        <canvas ref={canvasRef} />
+      </div>
+      <p className="mt-1 text-xs font-semibold text-white">{label}</p>
+      <div className="mt-1 flex items-center gap-2 text-[10px] text-gray-400">
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: approvedColor }} /> Approved
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: totalColor }} /> Total
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function FinancialSplitPie({
+  rfsTotal, rfsApproved,
+  pacTotal, pacApproved,
+  facTotal, facApproved,
+}: {
+  rfsTotal: number; rfsApproved: number;
+  pacTotal: number; pacApproved: number;
+  facTotal: number; facApproved: number;
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      <MiniSplitPie label="RFS" total={rfsTotal} approved={rfsApproved} totalColor="#2a78d6" approvedColor="#a9d0f5" />
+      <MiniSplitPie label="PAC" total={pacTotal} approved={pacApproved} totalColor="#eb6834" approvedColor="#f6c2a4" />
+      <MiniSplitPie label="FAC" total={facTotal} approved={facApproved} totalColor="#1baf7a" approvedColor="#a8ecd2" />
     </div>
   );
 }
