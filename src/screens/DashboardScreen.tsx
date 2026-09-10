@@ -583,6 +583,8 @@ function FinancialSplitPie({
     const data = [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved];
     const colors = ["#2a78d6", "#a9d0f5", "#eb6834", "#f6c2a4", "#1baf7a", "#a8ecd2"];
 
+   const totalSum = data.reduce((a, b) => a + b, 0);
+
     const sliceLabelsPlugin = {
       id: "sliceLabels",
       afterDatasetsDraw(chart: any) {
@@ -591,6 +593,8 @@ function FinancialSplitPie({
         meta.data.forEach((arc: any, index: number) => {
           const value = data[index];
           if (!value) return;
+          const share = totalSum > 0 ? value / totalSum : 0;
+          if (share < 0.04) return; // skip labels on slivers too thin to read
           const pos = arc.tooltipPosition();
           ctx.save();
           ctx.fillStyle = "#0f1115";
