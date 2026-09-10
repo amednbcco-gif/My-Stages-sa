@@ -491,9 +491,36 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
             </div>
           </div>
         </div>
+            </div>
+
+      {/* Milestone Status Breakdown */}
+      <div className="mb-6 rounded-xl border border-ink-700 bg-ink-800 p-5">
+        <h3 className="mb-4 text-sm font-semibold text-white">Milestone Status Breakdown</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
+                <th className="px-3 py-2.5 font-semibold">Task Name</th>
+                <th className="px-3 py-2.5 text-center font-semibold text-gray-400">Pending</th>
+                <th className="px-3 py-2.5 text-center font-semibold text-sky-300">In-Progress</th>
+                <th className="px-3 py-2.5 text-center font-semibold text-amber-300">Submitted</th>
+                <th className="px-3 py-2.5 text-center font-semibold text-emerald-300">Approved</th>
+              </tr>
+            </thead>
+            <tbody>
+              {milestoneStatusRows.map((row) => (
+                <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/20 transition-colors">
+                  <td className="px-3 py-2.5 text-xs font-medium text-white">{row.title}</td>
+                  <td className="px-3 py-2.5 text-center text-xs text-gray-400">{row.pending}</td>
+                  <td className="px-3 py-2.5 text-center text-xs text-sky-300">{row.inprogress}</td>
+                  <td className="px-3 py-2.5 text-center text-xs text-amber-300">{row.submitted}</td>
+                  <td className="px-3 py-2.5 text-center text-xs text-emerald-300">{row.approved}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-      
-      {/* Team Evaluate */}
 
       {/* Team Evaluate */}
       <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
