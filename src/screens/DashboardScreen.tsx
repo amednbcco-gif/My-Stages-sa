@@ -368,7 +368,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
       <p className="mb-4 text-xs text-gray-500">
         ABOQ is the manually entered approved bill of quantities. RFS = 80% of ABOQ, PAC = 10% of ABOQ, FAC = 10% of ABOQ.
       </p>
-      <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {finCards.map((c) => {
           const Icon = c.icon;
           return (
@@ -379,10 +379,21 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 </div>
                 <span className={`text-xs font-bold tracking-wider ${c.color}`}>{c.label}</span>
               </div>
-              <p className="text-xl font-bold text-white">
-                {fmtSAR(c.value)} <span className="text-xs font-normal text-gray-500">SAR</span>
-              </p>
-              <p className="mt-1 text-[11px] leading-snug text-gray-500">{c.sub}</p>
+              <div className="flex items-end justify-between gap-2">
+                <div>
+                  <p className="text-[10px] text-gray-500">Approved</p>
+                  <p className="text-xl font-bold text-white">
+                    {fmtSAR(c.value)} <span className="text-xs font-normal text-gray-500">SAR</span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] text-gray-500">Total</p>
+                  <p className="text-sm font-semibold text-gray-300">
+                    {fmtSAR(c.total)} <span className="text-[10px] font-normal text-gray-500">SAR</span>
+                  </p>
+                </div>
+              </div>
+              <p className="mt-1.5 text-[11px] leading-snug text-gray-500">{c.sub}</p>
             </div>
           );
         })}
