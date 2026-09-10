@@ -630,7 +630,7 @@ function MilestoneCard({
           <span className="text-[10px] text-gray-500 shrink-0">{filledFields}/{milestone.fields.length} filled</span>
         </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
+               <div className="flex items-center gap-1.5 shrink-0">
           {canEdit && (
             cardMode === "edit" ? (
               <button
