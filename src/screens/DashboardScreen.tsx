@@ -432,7 +432,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
         <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white">Average Progress</h3>
-            <TrendingUp size={16} className="text-gold" />
+            <TrendingUp size={20} className="text-gold" />
           </div>
           <div className="flex flex-col items-center gap-5 py-2">
             <div className="relative h-40 w-40">
