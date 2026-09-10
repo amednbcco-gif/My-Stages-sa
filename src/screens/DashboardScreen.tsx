@@ -563,7 +563,15 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   );
 }
       
-function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number }) {
+function FinancialSplitPie({
+  rfsTotal, rfsApproved,
+  pacTotal, pacApproved,
+  facTotal, facApproved,
+}: {
+  rfsTotal: number; rfsApproved: number;
+  pacTotal: number; pacApproved: number;
+  facTotal: number; facApproved: number;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
 
@@ -571,13 +579,39 @@ function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number
     if (!canvasRef.current || !(window as any).Chart) return;
     if (chartRef.current) chartRef.current.destroy();
 
+    const labels = ["RFS Total", "RFS Approved", "PAC Total", "PAC Approved", "FAC Total", "FAC Approved"];
+    const data = [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved];
+    const colors = ["#2a78d6", "#a9d0f5", "#eb6834", "#f6c2a4", "#1baf7a", "#a8ecd2"];
+
+    const sliceLabelsPlugin = {
+      id: "sliceLabels",
+      afterDatasetsDraw(chart: any) {
+        const { ctx } = chart;
+        const meta = chart.getDatasetMeta(0);
+        meta.data.forEach((arc: any, index: number) => {
+          const value = data[index];
+          if (!value) return;
+          const pos = arc.tooltipPosition();
+          ctx.save();
+          ctx.fillStyle = "#0f1115";
+          ctx.font = "700 9px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(labels[index], pos.x, pos.y - 6);
+          ctx.fillText(Number(value).toLocaleString(), pos.x, pos.y + 6);
+          ctx.restore();
+        });
+      },
+    };
+
     chartRef.current = new (window as any).Chart(canvasRef.current, {
       type: "pie",
+      plugins: [sliceLabelsPlugin],
       data: {
-        labels: ["RFS", "PAC", "FAC"],
+        labels,
         datasets: [{
-          data: [rfs, pac, fac],
-          backgroundColor: ["#2a78d6", "#eb6834", "#1baf7a"],
+          data,
+          backgroundColor: colors,
           borderColor: "#1a1a19",
           borderWidth: 2,
         }],
@@ -586,14 +620,10 @@ function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 12 } } },
+          legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 11 }, boxWidth: 12 } },
           tooltip: {
             callbacks: {
-              label: (ctx: any) => {
-                const total = ctx.dataset.data.reduce((a: number, b: number) => a + b, 0);
-                const p = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : "0";
-                return `${ctx.label}: ${ctx.parsed.toLocaleString()} (${p}%)`;
-              },
+              label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`,
             },
           },
         },
@@ -601,10 +631,10 @@ function RfsPacFacPie({ rfs, pac, fac }: { rfs: number; pac: number; fac: number
     });
 
     return () => chartRef.current?.destroy();
-  }, [rfs, pac, fac]);
+  }, [rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: 260 }}>
+    <div style={{ position: "relative", width: "100%", height: 300 }}>
       <canvas ref={canvasRef} />
     </div>
   );
