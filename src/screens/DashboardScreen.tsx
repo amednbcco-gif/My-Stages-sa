@@ -428,14 +428,14 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
           />
         </div>
 
-        {/* Average Progress */}
+                {/* Average Progress */}
         <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-white">Average Progress</h3>
             <TrendingUp size={16} className="text-gold" />
           </div>
-          <div className="flex items-center gap-4">
-            <div className="relative h-24 w-24">
+          <div className="flex flex-col items-center gap-5 py-2">
+            <div className="relative h-40 w-40">
               <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="40" fill="none" stroke="#14365f" strokeWidth="8" />
                 <circle
@@ -446,21 +446,21 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-xl font-bold text-white">{avgProgress}%</span>
+                <span className="text-3xl font-bold text-white">{avgProgress}%</span>
               </div>
             </div>
-            <div className="flex-1 space-y-2">
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-400">Completed</span>
-                <span className="text-emerald-300">{completed}</span>
+            <div className="flex items-center justify-center gap-6">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-lg font-bold text-emerald-300">{completed}</span>
+                <span className="text-xs text-gray-400">Completed</span>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-400">In Progress</span>
-                <span className="text-sky-300">{inProgress}</span>
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-lg font-bold text-sky-300">{inProgress}</span>
+                <span className="text-xs text-gray-400">In Progress</span>
               </div>
-              <div className="flex justify-between text-xs">
-                <span className="text-gray-400">Pending</span>
-                <span className="text-amber-300">{pending}</span>
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-lg font-bold text-amber-300">{pending}</span>
+                <span className="text-xs text-gray-400">Pending</span>
               </div>
             </div>
           </div>
