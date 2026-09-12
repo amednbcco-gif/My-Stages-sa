@@ -292,3 +292,16 @@ export interface PipCell {
   value: string | null;
   updated_at: string;
 }
+
+export interface MonthlyTarget {
+  id: string;
+  owner_id: string;
+  year: number;
+  month: number;
+  milestone_id: string;
+  metric_type: "count" | "rfs_amount" | "aboq_amount";
+  target_value: number;
+  project_ids: string[];
+  created_at: string;
+  updated_at: string;
+}
