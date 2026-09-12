@@ -822,12 +822,15 @@ const MiniSplitPie = ({
         labels: pieLabels,
         datasets: [{ data, backgroundColor: colors, borderColor: "#1a1a19", borderWidth: 1.5 }],
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`;
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`
+          }
         }
       }
     }
