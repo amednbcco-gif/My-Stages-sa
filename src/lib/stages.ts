@@ -360,7 +360,7 @@ export const MILESTONES: Milestone[] = [
       { key: "rfsAmount", label: "RFS Amount", type: "number" },
     ],
   },
-  {
+    {
     id: "pac",
     title: "PAC",
     stage: "stage5",
@@ -372,6 +372,7 @@ export const MILESTONES: Milestone[] = [
       { key: "pacAmount", label: "PAC Amount", type: "number" },
       { key: "pacErqNo", label: "PAC REQ No.", type: "text" },
       { key: "pacCrqNo", label: "PAC CRQ No.", type: "text" },
+      { key: "pacApprovedDate", label: "PAC Approved Date", type: "date" },
     ],
   },
   {
