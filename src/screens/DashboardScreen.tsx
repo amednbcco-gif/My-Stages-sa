@@ -5,7 +5,7 @@ import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
 import { computeProgress, currentStage, stageShortLabel, STAGE_LABELS, MILESTONES } from "../lib/stages";
 import { DEMO_PROJECT } from "../lib/demoProject";
-import type { Project, TeamMember, ProjectPermission } from "../lib/types";
+import type { Project, TeamMember, ProjectPermission, MonthlyTarget } from "../lib/types";
 
 function fmtSAR(n: number) {
   if (!n || isNaN(n)) return "0";
