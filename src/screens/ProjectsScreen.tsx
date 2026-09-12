@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Search, Pencil, Trash2, FileSpreadsheet } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, FileSpreadsheet, CalendarClock } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { DEMO_PROJECT } from "../lib/demoProject";
