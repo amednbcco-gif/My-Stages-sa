@@ -771,11 +771,12 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                       className={"h-full rounded-full transition-all duration-500 " + (te.pct >= 75 ? "bg-emerald-500" : te.pct >= 40 ? "bg-amber-500" : "bg-rose-500")}
                       style={{ width: `${te.pct}%` }}
                     />
-                  </div>
+                 </div>
                   <span className="w-10 text-right text-xs font-bold text-gray-200">{te.pct}%</span>
                 </div>
               </div>
-            ))}
+            ))
+          )}
          </div>
         )}
       </div>
@@ -788,10 +789,6 @@ const MiniSplitPie = ({
 }: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
-    
-  useEffect(() => {
-    if (!canvasRef.current || !(window as any).Chart) return;
-    if (chartRef.current) chartRef.current.destroy();
 
     const notApproved = Math.max(total - approved, 0);
     const data = [approved, notApproved];
