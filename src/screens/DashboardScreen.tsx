@@ -776,17 +776,19 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 </div>
               </div>
             ))}
-          </div>
+                    </div>
         )}
       </div>
     </div>
   );
 }
-      function MiniSplitPie({
+
+function MiniSplitPie({
   label, total, approved, totalColor, approvedColor,
 }: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
+
     
   useEffect(() => {
     if (!canvasRef.current || !(window as any).Chart) return;
