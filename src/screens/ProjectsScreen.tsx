@@ -111,6 +111,42 @@ export function ProjectsScreen() {
   const [showAdd, setShowAdd] = useState(false);
   const [editTarget, setEditTarget] = useState<Project | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+    const [showBulkFill, setShowBulkFill] = useState(false);
+  const [bulkFillField, setBulkFillField] = useState<"aboqApprovedDate" | "rfsDate" | "pacApprovedDate" | "facApprovedDate">("aboqApprovedDate");
+  const [bulkFillDate, setBulkFillDate] = useState("");
+  const [bulkFillProjectIds, setBulkFillProjectIds] = useState<string[]>([]);
+  const [bulkFillSaving, setBulkFillSaving] = useState(false);
+
+  const BULK_FILL_FIELDS: Record<string, { label: string; stage: "stage2" | "stage5" | "stage6" }> = {
+    aboqApprovedDate: { label: "ABOQ Approved Date", stage: "stage2" },
+    rfsDate: { label: "RFS Approved Date", stage: "stage5" },
+    pacApprovedDate: { label: "PAC Approved Date", stage: "stage5" },
+    facApprovedDate: { label: "FAC Approved Date", stage: "stage6" },
+  };
+
+  function toggleBulkFillProject(id: string) {
+    setBulkFillProjectIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+  }
+
+  async function applyBulkFill() {
+    if (!bulkFillDate || bulkFillProjectIds.length === 0) return;
+    setBulkFillSaving(true);
+    const cfg = BULK_FILL_FIELDS[bulkFillField];
+    for (const projectId of bulkFillProjectIds) {
+      const proj = projects.find((p) => p.id === projectId);
+      if (!proj) continue;
+      const currentStageData = (proj as unknown as Record<string, Record<string, unknown>>)[cfg.stage] ?? {};
+      await supabase.from("projects").update({
+        [cfg.stage]: { ...currentStageData, [bulkFillField]: bulkFillDate },
+      }).eq("id", projectId);
+    }
+    setBulkFillSaving(false);
+    setShowBulkFill(false);
+    setBulkFillProjectIds([]);
+    setBulkFillDate("");
+    setToast("Bulk fill applied");
+    loadProjects();
+  }
 
   async function loadProjects() {
     if (isGuest) {
