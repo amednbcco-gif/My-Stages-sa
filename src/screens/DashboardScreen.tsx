@@ -788,7 +788,6 @@ const MiniSplitPie = ({
 }: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
-
     
   useEffect(() => {
     if (!canvasRef.current || !(window as any).Chart) return;
