@@ -570,32 +570,109 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
         </div>
             </div>
 
-      {/* Milestone Status Breakdown */}
-      <div className="mb-6 rounded-xl border border-ink-700 bg-ink-800 p-5">
-        <h3 className="mb-4 text-sm font-semibold text-white">Milestone Status Breakdown</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
-                <th className="px-3 py-2.5 font-semibold">Task Name</th>
-                <th className="px-3 py-2.5 text-center font-semibold text-gray-400">Pending</th>
-                <th className="px-3 py-2.5 text-center font-semibold text-sky-300">In-Progress</th>
-                <th className="px-3 py-2.5 text-center font-semibold text-amber-300">Submitted</th>
-                <th className="px-3 py-2.5 text-center font-semibold text-emerald-300">Approved</th>
-              </tr>
-            </thead>
-            <tbody>
-              {milestoneStatusRows.map((row) => (
-                <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/20 transition-colors">
-                  <td className="px-3 py-2.5 text-xs font-medium text-white">{row.title}</td>
-                  <td className="px-3 py-2.5 text-center text-xs text-gray-400">{row.pending}</td>
-                  <td className="px-3 py-2.5 text-center text-xs text-sky-300">{row.inprogress}</td>
-                  <td className="px-3 py-2.5 text-center text-xs text-amber-300">{row.submitted}</td>
-                  <td className="px-3 py-2.5 text-center text-xs text-emerald-300">{row.approved}</td>
+            {/* Milestone Status Breakdown + Monthly Target vs Achieved */}
+      <div className="mb-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+          <h3 className="mb-4 text-sm font-semibold text-white">Milestone Status Breakdown</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[480px] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-ink-700 text-left text-[10px] uppercase tracking-wider text-white/90">
+                  <th className="px-3 py-2.5 font-semibold">Task Name</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-gray-400">Pending</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-sky-300">In-Progress</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-amber-300">Submitted</th>
+                  <th className="px-3 py-2.5 text-center font-semibold text-emerald-300">Approved</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {milestoneStatusRows.map((row) => (
+                  <tr key={row.id} className="border-b border-ink-700/40 hover:bg-ink-700/20 transition-colors">
+                    <td className="px-3 py-2.5 text-xs font-medium text-white">{row.title}</td>
+                    <td className="px-3 py-2.5 text-center text-xs text-gray-400">{row.pending}</td>
+                    <td className="px-3 py-2.5 text-center text-xs text-sky-300">{row.inprogress}</td>
+                    <td className="px-3 py-2.5 text-center text-xs text-amber-300">{row.submitted}</td>
+                    <td className="px-3 py-2.5 text-center text-xs text-emerald-300">{row.approved}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Monthly Target vs Achieved */}
+        <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
+          <h3 className="mb-4 text-sm font-semibold text-white">Monthly Target vs Achieved</h3>
+          <MonthlyTargetChart data={monthlyChartData} labels={monthNames} />
+
+          {!isGuest && profile?.role === "manager" && (
+            <div className="mt-5 space-y-3 border-t border-ink-700/50 pt-4">
+              <p className="text-xs font-semibold text-gray-400">Set target for a month</p>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <select
+                  value={targetMonth}
+                  onChange={(e) => loadTargetIntoForm(Number(e.target.value))}
+                  className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none cursor-pointer"
+                >
+                  {monthNames.map((m, i) => (
+                    <option key={m} value={i + 1} className="bg-ink-800">{m}</option>
+                  ))}
+                </select>
+                <select
+                  value={targetMilestoneId}
+                  onChange={(e) => setTargetMilestoneId(e.target.value)}
+                  className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none cursor-pointer"
+                >
+                  {MILESTONES.map((ms) => (
+                    <option key={ms.id} value={ms.id} className="bg-ink-800">{milestoneLabel(ms.title)}</option>
+                  ))}
+                </select>
+                <select
+                  value={targetMetricType}
+                  onChange={(e) => setTargetMetricType(e.target.value as "count" | "rfs_amount" | "aboq_amount")}
+                  className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none cursor-pointer"
+                >
+                  <option value="count" className="bg-ink-800">Project Count</option>
+                  <option value="rfs_amount" className="bg-ink-800">RFS Amount</option>
+                  <option value="aboq_amount" className="bg-ink-800">ABOQ Amount</option>
+                </select>
+                <input
+                  value={targetValueDraft}
+                  onChange={(e) => setTargetValueDraft(e.target.value)}
+                  type="number"
+                  placeholder="Target value"
+                  className="rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none placeholder-gray-600"
+                />
+              </div>
+
+              <div>
+                <p className="mb-1.5 text-[11px] text-gray-500">Select projects that count toward {monthNames[targetMonth - 1]}:</p>
+                <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-ink-700 bg-ink-900/30 p-2">
+                  {projects.map((p) => (
+                    <label key={p.id} className="flex items-center gap-2 rounded px-1.5 py-1 text-xs text-gray-300 hover:bg-ink-700/30 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={targetProjectIds.includes(p.id)}
+                        onChange={() => toggleTargetProject(p.id)}
+                        className="accent-gold h-3.5 w-3.5"
+                      />
+                      <span className="truncate">{p.project_name || p.sn}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <Button variant="primary" onClick={saveMonthlyTarget} disabled={savingTarget}>
+                {savingTarget ? "Saving…" : `Save ${monthNames[targetMonth - 1]} Target`}
+              </Button>
+
+              {currentMonthTarget && (
+                <p className="text-[11px] text-gray-500">
+                  Current: Target {currentMonthTarget.target_value.toLocaleString()} · Achieved {computeAchieved(currentMonthTarget).toLocaleString()}
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
