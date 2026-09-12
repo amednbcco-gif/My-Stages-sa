@@ -615,17 +615,17 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
           </div>
         </div>
 
-              {/* Monthly Target vs Achieved */}
+                    {/* Monthly Target vs Achieved */}
         <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
           <h3 className="mb-4 text-sm font-semibold text-white">Monthly Target vs Achieved</h3>
           <p className="mb-3 text-[11px] text-gray-500">
-            Target auto-calculates from the full amount of the selected projects. Achieved counts only the approved portion. Any shortfall rolls over into next month's target automatically.
+            Achieved is calculated automatically from each project's actual approval date. Any shortfall rolls over into next month's target automatically.
           </p>
           <MonthlyTargetChart data={monthlyChartData} labels={monthNames} />
 
           {!isGuest && profile?.role === "manager" && (
             <div className="mt-5 space-y-3 border-t border-ink-700/50 pt-4">
-              <p className="text-xs font-semibold text-gray-400">Set target — select months, metrics &amp; projects</p>
+              <p className="text-xs font-semibold text-gray-400">Set target — select months &amp; metrics</p>
 
               <div>
                 <p className="mb-1.5 text-[11px] text-gray-500">Months:</p>
@@ -660,39 +660,28 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
               </div>
 
               <div>
-                <p className="mb-1.5 text-[11px] text-gray-500">Projects included in this target:</p>
-                <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-ink-700 bg-ink-900/30 p-2">
-                  {projects.map((p) => (
-                    <label key={p.id} className="flex items-center gap-2 rounded px-1.5 py-1 text-xs text-gray-300 hover:bg-ink-700/30 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={targetProjectIds.includes(p.id)}
-                        onChange={() => toggleTargetProject(p.id)}
-                        className="accent-gold h-3.5 w-3.5"
-                      />
-                      <span className="truncate">{p.project_name || p.sn}</span>
-                    </label>
-                  ))}
-                </div>
+                <label className="mb-1.5 block text-[11px] text-gray-500">Target amount (applied to all selected months &amp; metrics):</label>
+                <input
+                  value={targetValueDraft}
+                  onChange={(e) => setTargetValueDraft(e.target.value)}
+                  type="number"
+                  placeholder="0"
+                  className="w-full rounded-lg border border-ink-600 bg-ink-900/60 px-3 py-2 text-xs text-white outline-none placeholder-gray-600"
+                />
               </div>
 
-              <Button variant="primary" onClick={saveMonthlyTarget} disabled={savingTarget || targetMonths.length === 0 || targetMetricTypes.length === 0 || targetProjectIds.length === 0}>
+              <Button variant="primary" onClick={saveMonthlyTarget} disabled={savingTarget || targetMonths.length === 0 || targetMetricTypes.length === 0}>
                 {savingTarget ? "Saving…" : "Save Targets"}
               </Button>
 
               {targetMonths.length > 0 && targetMetricTypes.length > 0 && (
                 <div className="space-y-1 rounded-lg border border-ink-700 bg-ink-900/30 p-2">
                   {targetMonths.map((month) =>
-                    targetMetricTypes.map((metricType) => {
-                      const row = monthlyTargets.find((t) => t.month === month && t.metric_type === metricType);
-                      const target = row ? effectiveTarget(month, metricType) : 0;
-                      const achieved = row ? computeRowAchieved(row) : 0;
-                      return (
-                        <p key={`${month}-${metricType}`} className="text-[11px] text-gray-500">
-                          {monthNames[month - 1]} · {METRIC_CONFIG[metricType].label}: Target {target.toLocaleString()} · Achieved {achieved.toLocaleString()}
-                        </p>
-                      );
-                    })
+                    targetMetricTypes.map((metricType) => (
+                      <p key={`${month}-${metricType}`} className="text-[11px] text-gray-500">
+                        {monthNames[month - 1]} · {METRIC_CONFIG[metricType].label}: Target {effectiveTarget(month, metricType).toLocaleString()} · Achieved {computeAchievedForMonth(month, metricType).toLocaleString()}
+                      </p>
+                    ))
                   )}
                 </div>
               )}
