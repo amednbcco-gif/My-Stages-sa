@@ -101,8 +101,8 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "facAmount", label: "FAC Amount", type: "number" },
     { key: "finalClearanceStatus", label: "Final Clearance Permit", type: "clearance" },
    { key: "facCrqNo", label: "FAC CRQ No.", type: "text" },
-    { key: "facApprovedDate", label: "FAC Approved Date", type: "date" },
     { key: "facReqNo", label: "FAC REQ No.", type: "text" },
+   { key: "facApprovedDate", label: "FAC Approved Date", type: "date" },
   ],
 };
 
