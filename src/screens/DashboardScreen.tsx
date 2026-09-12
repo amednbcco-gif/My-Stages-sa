@@ -114,7 +114,18 @@ export function DashboardScreen() {
     stageDist[currentStage(p)]++;
   });
 
-    // ── Milestone status breakdown (all 12 milestones × 4 statuses) ──
+  const completedValues = [
+    "approved",
+    "rectified",
+    "handed over",
+    "done",
+    "clearanced",
+    "closed",
+    "patted",
+    "issued",
+  ].map((value) => value.toLowerCase());
+
+  // ── Milestone status breakdown (all 12 milestones × 4 statuses) ──
   function milestoneLabel(title: string): string {
     return title.replace(/[\u0600-\u06FF].*$/, "").trim();
   }
@@ -245,17 +256,6 @@ export function DashboardScreen() {
 //
 // (30 + (50 × 0.5)) / 80 × 100
 // = 68.75% ≈ 69%
-
-const completedValues = [
-  "approved",
-  "rectified",
-  "handed over",
-  "done",
-  "clearanced",
-  "closed",
-  "patted",
-  "issued",
-].map((value) => value.toLowerCase());
 
 const visibleMembers = profile?.role === "manager" ? members : members.filter((m) => m.user_id === user?.id);
 const teamEvals: TeamEval[] = visibleMembers.map((m) => {
