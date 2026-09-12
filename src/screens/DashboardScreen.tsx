@@ -827,10 +827,11 @@ const MiniSplitPie = ({
         maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: { callbacks: { label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}` } },
-        },
-      },
-    });
+          tooltip: { callbacks: { label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`;
+        }
+      }
+    }
+  });
 
     return () => chartRef.current?.destroy();
   }, [label, total, approved, totalColor, approvedColor]);
