@@ -25,10 +25,19 @@ interface TeamEval {
 
 export function DashboardScreen() {
   const { user, isGuest, profile } = useAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
+   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [permissions, setPermissions] = useState<ProjectPermission[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [ownerIdForTargets, setOwnerIdForTargets] = useState<string | null>(null);
+  const [monthlyTargets, setMonthlyTargets] = useState<MonthlyTarget[]>([]);
+  const [targetMonth, setTargetMonth] = useState(new Date().getMonth() + 1);
+  const [targetMilestoneId, setTargetMilestoneId] = useState(MILESTONES[0].id);
+  const [targetMetricType, setTargetMetricType] = useState<"count" | "rfs_amount" | "aboq_amount">("count");
+  const [targetValueDraft, setTargetValueDraft] = useState("0");
+  const [targetProjectIds, setTargetProjectIds] = useState<string[]>([]);
+  const [savingTarget, setSavingTarget] = useState(false);
 
   useEffect(() => {
     async function load() {
