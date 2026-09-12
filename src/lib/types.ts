@@ -102,6 +102,7 @@ export interface Stage6 {
   facDate: string;
   facSubmitFilesDate: string;
   facAmount: number;
+  facApprovedDate: string;
   clearancePermit: StatusValue;
   facCrqStatus: StatusValue;
   facCrqNo: string;
