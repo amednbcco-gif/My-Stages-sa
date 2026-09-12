@@ -145,47 +145,41 @@ export function DashboardScreen() {
     };
   });
 
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  const METRIC_CONFIG: Record<string, { label: string; milestoneId: string; getAmount: (p: Project) => number }> = {
-    aboq_amount: { label: "ABOQ Amount", milestoneId: "po", getAmount: (p) => Number(p.stage2?.aboqAmount) || 0 },
-    rfs_amount: { label: "RFS Amount", milestoneId: "rfs", getAmount: (p) => Number(p.stage5?.rfsAmount) || 0 },
-    pac_amount: { label: "PAC Amount", milestoneId: "pac", getAmount: (p) => Number(p.stage5?.pacAmount) || 0 },
-    fac_amount: { label: "FAC Amount", milestoneId: "fac", getAmount: (p) => Number(p.stage6?.facAmount) || 0 },
+  const METRIC_CONFIG: Record<string, { label: string; getAmount: (p: Project) => number; getDate: (p: Project) => string }> = {
+    aboq_amount: { label: "ABOQ Amount", getAmount: (p) => Number(p.stage2?.aboqAmount) || 0, getDate: (p) => p.stage2?.aboqApprovedDate || "" },
+    rfs_amount: { label: "RFS Amount", getAmount: (p) => Number(p.stage5?.rfsAmount) || 0, getDate: (p) => p.stage5?.rfsDate || "" },
+    pac_amount: { label: "PAC Amount", getAmount: (p) => Number(p.stage5?.pacAmount) || 0, getDate: (p) => p.stage5?.pacApprovedDate || "" },
+    fac_amount: { label: "FAC Amount", getAmount: (p) => Number(p.stage6?.facAmount) || 0, getDate: (p) => p.stage6?.facApprovedDate || "" },
   };
 
-  function isMilestoneApproved(p: Project, milestoneId: string): boolean {
-    const ms = MILESTONES.find((m) => m.id === milestoneId);
-    if (!ms) return false;
-    const stageData = (p as unknown as Record<string, Record<string, unknown>>)[ms.stage] ?? {};
-    const status = String(stageData[ms.statusField.key] ?? "").trim().toLowerCase();
-    return completedValues.includes(status);
-  }
+  const currentYear = new Date().getFullYear();
 
-  function computeRowTarget(row: MonthlyTarget): number {
-    const cfg = METRIC_CONFIG[row.metric_type];
+  function computeAchievedForMonth(month: number, metricType: string): number {
+    const cfg = METRIC_CONFIG[metricType];
     if (!cfg) return 0;
-    const selected = projects.filter((p) => row.project_ids.includes(p.id));
-    return selected.reduce((sum, p) => sum + cfg.getAmount(p), 0);
+    return projects.reduce((sum, p) => {
+      const dateStr = cfg.getDate(p);
+      if (!dateStr) return sum;
+      const d = new Date(dateStr + "T00:00:00");
+      if (isNaN(d.getTime())) return sum;
+      if (d.getFullYear() === currentYear && d.getMonth() + 1 === month) {
+        return sum + cfg.getAmount(p);
+      }
+      return sum;
+    }, 0);
   }
 
-  function computeRowAchieved(row: MonthlyTarget): number {
-    const cfg = METRIC_CONFIG[row.metric_type];
-    if (!cfg) return 0;
-    const selected = projects.filter((p) => row.project_ids.includes(p.id));
-    return selected.reduce((sum, p) => sum + (isMilestoneApproved(p, cfg.milestoneId) ? cfg.getAmount(p) : 0), 0);
-  }
-
-  // Effective target per month = this month's own target + unmet remainder rolled over from the previous month,
-  // computed per metric type so each metric (ABOQ/RFS/PAC/FAC) carries its own rollover chain.
+  // Effective target = this month's manually-set target + unmet remainder rolled over from the previous month.
   function effectiveTarget(month: number, metricType: string): number {
     const row = monthlyTargets.find((t) => t.month === month && t.metric_type === metricType);
-    const ownTarget = row ? computeRowTarget(row) : 0;
+    const ownTarget = row ? row.target_value : 0;
     if (month <= 1) return ownTarget;
     const prevRow = monthlyTargets.find((t) => t.month === month - 1 && t.metric_type === metricType);
     if (!prevRow) return ownTarget;
     const prevEffective = effectiveTarget(month - 1, metricType);
-    const prevAchieved = computeRowAchieved(prevRow);
+    const prevAchieved = computeAchievedForMonth(month - 1, metricType);
     const remainder = Math.max(prevEffective - prevAchieved, 0);
     return ownTarget + remainder;
   }
@@ -197,9 +191,8 @@ export function DashboardScreen() {
     let target = 0;
     let achieved = 0;
     for (const metricType of activeMetricTypes) {
-      const row = monthlyTargets.find((t) => t.month === month && t.metric_type === metricType);
       target += effectiveTarget(month, metricType);
-      if (row) achieved += computeRowAchieved(row);
+      achieved += computeAchievedForMonth(month, metricType);
     }
     return { target, achieved };
   });
@@ -212,35 +205,27 @@ export function DashboardScreen() {
     setTargetMetricTypes((prev) => prev.includes(metric) ? prev.filter((m) => m !== metric) : [...prev, metric]);
   }
 
-  function toggleTargetProject(projectId: string) {
-    setTargetProjectIds((prev) => prev.includes(projectId) ? prev.filter((id) => id !== projectId) : [...prev, projectId]);
-  }
-
   async function saveMonthlyTarget() {
     if (!ownerIdForTargets || targetMonths.length === 0 || targetMetricTypes.length === 0) return;
     setSavingTarget(true);
-    const currentYear = new Date().getFullYear();
 
     const combos = targetMonths.flatMap((month) => targetMetricTypes.map((metricType) => ({ month, metricType })));
+    const value = Number(targetValueDraft) || 0;
 
     const results = await Promise.all(
-      combos.map(({ month, metricType }) => {
-        const cfg = METRIC_CONFIG[metricType];
-        const selected = projects.filter((p) => targetProjectIds.includes(p.id));
-        const autoTarget = selected.reduce((sum, p) => sum + cfg.getAmount(p), 0);
-        return supabase
+      combos.map(({ month, metricType }) =>
+        supabase
           .from("monthly_targets")
           .upsert({
             owner_id: ownerIdForTargets,
             year: currentYear,
             month,
             metric_type: metricType,
-            target_value: autoTarget,
-            project_ids: targetProjectIds,
+            target_value: value,
           }, { onConflict: "owner_id,year,month,metric_type" })
           .select()
-          .single();
-      })
+          .single()
+      )
     );
 
     setSavingTarget(false);
