@@ -39,7 +39,7 @@ export function DashboardScreen() {
   const [targetProjectIds, setTargetProjectIds] = useState<string[]>([]);
   const [savingTarget, setSavingTarget] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
     async function load() {
       if (isGuest) {
         setProjects([DEMO_PROJECT]);
@@ -56,6 +56,24 @@ export function DashboardScreen() {
       setProjects((projRes.data as Project[]) ?? []);
       setMembers((memRes.data as TeamMember[]) ?? []);
       setPermissions((permRes.data as ProjectPermission[]) ?? []);
+
+      let resolvedOwner = user?.id ?? null;
+      if (user) {
+        const { data: tm } = await supabase.from("team_members").select("owner_id").eq("user_id", user.id).maybeSingle();
+        if (tm?.owner_id) resolvedOwner = tm.owner_id;
+      }
+      setOwnerIdForTargets(resolvedOwner);
+
+      if (resolvedOwner) {
+        const currentYear = new Date().getFullYear();
+        const { data: mtData } = await supabase
+          .from("monthly_targets")
+          .select("*")
+          .eq("owner_id", resolvedOwner)
+          .eq("year", currentYear);
+        setMonthlyTargets((mtData as MonthlyTarget[]) ?? []);
+      }
+
       setLoading(false);
     }
     if (user || isGuest) load();
