@@ -831,15 +831,16 @@ const MiniSplitPie = ({
           callbacks: {
             label: (ctx: any) => `${ctx.label}: ${Number(ctx.parsed).toLocaleString()}`
           }
+         }
         }
       }
-    }
-  });
+    });
 
     return () => chartRef.current?.destroy();
   }, [label, total, approved, totalColor, approvedColor]);
 
   return (
+
     <div className="flex flex-col items-center">
       <div style={{ position: "relative", width: "100%", height: 90 }}>
         <canvas ref={canvasRef} />
