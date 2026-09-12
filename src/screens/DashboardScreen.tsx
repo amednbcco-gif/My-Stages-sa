@@ -30,12 +30,10 @@ export function DashboardScreen() {
   const [permissions, setPermissions] = useState<ProjectPermission[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [ownerIdForTargets, setOwnerIdForTargets] = useState<string | null>(null);
+    const [ownerIdForTargets, setOwnerIdForTargets] = useState<string | null>(null);
   const [monthlyTargets, setMonthlyTargets] = useState<MonthlyTarget[]>([]);
-  const [targetMonth, setTargetMonth] = useState(new Date().getMonth() + 1);
-  const [targetMilestoneId, setTargetMilestoneId] = useState(MILESTONES[0].id);
-  const [targetMetricType, setTargetMetricType] = useState<"count" | "rfs_amount" | "aboq_amount">("count");
-  const [targetValueDraft, setTargetValueDraft] = useState("0");
+  const [targetMonths, setTargetMonths] = useState<number[]>([new Date().getMonth() + 1]);
+  const [targetMetricTypes, setTargetMetricTypes] = useState<Array<"aboq_amount" | "rfs_amount" | "pac_amount" | "fac_amount">>(["aboq_amount"]);
   const [targetProjectIds, setTargetProjectIds] = useState<string[]>([]);
   const [savingTarget, setSavingTarget] = useState(false);
 
