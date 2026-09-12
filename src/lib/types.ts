@@ -302,7 +302,6 @@ export interface MonthlyTarget {
   month: number;
   metric_type: "aboq_amount" | "rfs_amount" | "pac_amount" | "fac_amount";
   target_value: number;
-  project_ids: string[];
   created_at: string;
   updated_at: string;
 }
