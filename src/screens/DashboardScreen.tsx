@@ -145,50 +145,71 @@ export function DashboardScreen() {
     };
   });
 
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  function computeAchieved(mt: MonthlyTarget): number {
-    const ms = MILESTONES.find((m) => m.id === mt.milestone_id);
-    if (!ms) return 0;
-    const selectedProjects = projects.filter((p) => mt.project_ids.includes(p.id));
-    let achieved = 0;
-    for (const p of selectedProjects) {
-      const stageData = (p as unknown as Record<string, Record<string, unknown>>)[ms.stage] ?? {};
-      const status = String(stageData[ms.statusField.key] ?? "").trim().toLowerCase();
-      const isDone = completedValues.includes(status);
-      if (!isDone) continue;
-      if (mt.metric_type === "count") achieved += 1;
-      else if (mt.metric_type === "rfs_amount") achieved += Number(p.stage5?.rfsAmount) || 0;
-      else if (mt.metric_type === "aboq_amount") achieved += Number(p.stage2?.aboqAmount) || 0;
-    }
-    return achieved;
+  const METRIC_CONFIG: Record<string, { label: string; milestoneId: string; getAmount: (p: Project) => number }> = {
+    aboq_amount: { label: "ABOQ Amount", milestoneId: "po", getAmount: (p) => Number(p.stage2?.aboqAmount) || 0 },
+    rfs_amount: { label: "RFS Amount", milestoneId: "rfs", getAmount: (p) => Number(p.stage5?.rfsAmount) || 0 },
+    pac_amount: { label: "PAC Amount", milestoneId: "pac", getAmount: (p) => Number(p.stage5?.pacAmount) || 0 },
+    fac_amount: { label: "FAC Amount", milestoneId: "fac", getAmount: (p) => Number(p.stage6?.facAmount) || 0 },
+  };
+
+  function isMilestoneApproved(p: Project, milestoneId: string): boolean {
+    const ms = MILESTONES.find((m) => m.id === milestoneId);
+    if (!ms) return false;
+    const stageData = (p as unknown as Record<string, Record<string, unknown>>)[ms.stage] ?? {};
+    const status = String(stageData[ms.statusField.key] ?? "").trim().toLowerCase();
+    return completedValues.includes(status);
   }
+
+  function computeRowTarget(row: MonthlyTarget): number {
+    const cfg = METRIC_CONFIG[row.metric_type];
+    if (!cfg) return 0;
+    const selected = projects.filter((p) => row.project_ids.includes(p.id));
+    return selected.reduce((sum, p) => sum + cfg.getAmount(p), 0);
+  }
+
+  function computeRowAchieved(row: MonthlyTarget): number {
+    const cfg = METRIC_CONFIG[row.metric_type];
+    if (!cfg) return 0;
+    const selected = projects.filter((p) => row.project_ids.includes(p.id));
+    return selected.reduce((sum, p) => sum + (isMilestoneApproved(p, cfg.milestoneId) ? cfg.getAmount(p) : 0), 0);
+  }
+
+  // Effective target per month = this month's own target + unmet remainder rolled over from the previous month,
+  // computed per metric type so each metric (ABOQ/RFS/PAC/FAC) carries its own rollover chain.
+  function effectiveTarget(month: number, metricType: string): number {
+    const row = monthlyTargets.find((t) => t.month === month && t.metric_type === metricType);
+    const ownTarget = row ? computeRowTarget(row) : 0;
+    if (month <= 1) return ownTarget;
+    const prevRow = monthlyTargets.find((t) => t.month === month - 1 && t.metric_type === metricType);
+    if (!prevRow) return ownTarget;
+    const prevEffective = effectiveTarget(month - 1, metricType);
+    const prevAchieved = computeRowAchieved(prevRow);
+    const remainder = Math.max(prevEffective - prevAchieved, 0);
+    return ownTarget + remainder;
+  }
+
+  const activeMetricTypes = Array.from(new Set(monthlyTargets.map((t) => t.metric_type)));
 
   const monthlyChartData = monthNames.map((_, idx) => {
     const month = idx + 1;
-    const mt = monthlyTargets.find((t) => t.month === month);
-    return {
-      target: mt?.target_value ?? 0,
-      achieved: mt ? computeAchieved(mt) : 0,
-    };
+    let target = 0;
+    let achieved = 0;
+    for (const metricType of activeMetricTypes) {
+      const row = monthlyTargets.find((t) => t.month === month && t.metric_type === metricType);
+      target += effectiveTarget(month, metricType);
+      if (row) achieved += computeRowAchieved(row);
+    }
+    return { target, achieved };
   });
 
-  const currentMonthTarget = monthlyTargets.find((t) => t.month === targetMonth);
+  function toggleTargetMonth(month: number) {
+    setTargetMonths((prev) => prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month]);
+  }
 
-  async function loadTargetIntoForm(month: number) {
-    setTargetMonth(month);
-    const mt = monthlyTargets.find((t) => t.month === month);
-    if (mt) {
-      setTargetMilestoneId(mt.milestone_id);
-      setTargetMetricType(mt.metric_type);
-      setTargetValueDraft(String(mt.target_value));
-      setTargetProjectIds(mt.project_ids);
-    } else {
-      setTargetMilestoneId(MILESTONES[0].id);
-      setTargetMetricType("count");
-      setTargetValueDraft("0");
-      setTargetProjectIds([]);
-    }
+  function toggleTargetMetric(metric: "aboq_amount" | "rfs_amount" | "pac_amount" | "fac_amount") {
+    setTargetMetricTypes((prev) => prev.includes(metric) ? prev.filter((m) => m !== metric) : [...prev, metric]);
   }
 
   function toggleTargetProject(projectId: string) {
@@ -196,31 +217,42 @@ export function DashboardScreen() {
   }
 
   async function saveMonthlyTarget() {
-    if (!ownerIdForTargets) return;
+    if (!ownerIdForTargets || targetMonths.length === 0 || targetMetricTypes.length === 0) return;
     setSavingTarget(true);
     const currentYear = new Date().getFullYear();
-    const { data, error } = await supabase
-      .from("monthly_targets")
-      .upsert({
-        owner_id: ownerIdForTargets,
-        year: currentYear,
-        month: targetMonth,
-        milestone_id: targetMilestoneId,
-        metric_type: targetMetricType,
-        target_value: Number(targetValueDraft) || 0,
-        project_ids: targetProjectIds,
-      }, { onConflict: "owner_id,year,month" })
-      .select()
-      .single();
+
+    const combos = targetMonths.flatMap((month) => targetMetricTypes.map((metricType) => ({ month, metricType })));
+
+    const results = await Promise.all(
+      combos.map(({ month, metricType }) => {
+        const cfg = METRIC_CONFIG[metricType];
+        const selected = projects.filter((p) => targetProjectIds.includes(p.id));
+        const autoTarget = selected.reduce((sum, p) => sum + cfg.getAmount(p), 0);
+        return supabase
+          .from("monthly_targets")
+          .upsert({
+            owner_id: ownerIdForTargets,
+            year: currentYear,
+            month,
+            metric_type: metricType,
+            target_value: autoTarget,
+            project_ids: targetProjectIds,
+          }, { onConflict: "owner_id,year,month,metric_type" })
+          .select()
+          .single();
+      })
+    );
+
     setSavingTarget(false);
-    if (!error && data) {
+    const newRows = results.map((r) => r.data).filter(Boolean) as MonthlyTarget[];
+    if (newRows.length > 0) {
       setMonthlyTargets((prev) => {
-        const filtered = prev.filter((t) => t.month !== targetMonth);
-        return [...filtered, data as MonthlyTarget];
+        const keep = prev.filter((t) => !newRows.some((n) => n.month === t.month && n.metric_type === t.metric_type));
+        return [...keep, ...newRows];
       });
     }
   }
-
+  
   // ── Team Evaluate ──
 //
 // Evaluate each team member using ONLY the main milestones assigned through
