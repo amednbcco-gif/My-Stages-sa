@@ -456,7 +456,7 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
               : "Managers can add and edit projects and assign specific work stages and tasks to their engineers based on their responsibilities, while engineers manage their own & assigned projects and track their task progress."}
           </p>
         </div>
-               <div className="flex gap-2">
+       <div className="flex gap-2">
           {!isGuest && (
             <>
               <Button variant="secondary" onClick={exportCSV}>
@@ -605,6 +605,64 @@ placeholder="Search by name, PO No., Plan No., Site ID, Project Manager, Contrac
               })}
             </tbody>
           </table>
+        </div>
+      )}
+
+   {showBulkFill && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-ink-700 bg-ink-800 p-5">
+            <h3 className="mb-1 text-lg font-bold text-white">Bulk Fill Approved Dates</h3>
+            <p className="mb-4 text-xs text-gray-500">
+              Pick one field, one date, and the projects it applies to. This backfills historical approval dates so Monthly Target achieved-tracking can find them.
+            </p>
+
+            <div className="mb-3">
+              <label className="mb-1.5 block text-xs text-gray-400">Field</label>
+              <select
+                value={bulkFillField}
+                onChange={(e) => setBulkFillField(e.target.value as any)}
+                className="w-full rounded-lg border border-ink-600 bg-ink-900/60 px-3 py-2 text-sm text-white outline-none cursor-pointer"
+              >
+                {Object.entries(BULK_FILL_FIELDS).map(([key, cfg]) => (
+                  <option key={key} value={key} className="bg-ink-800">{cfg.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-3">
+              <label className="mb-1.5 block text-xs text-gray-400">Date</label>
+              <input
+                type="date"
+                value={bulkFillDate}
+                onChange={(e) => setBulkFillDate(e.target.value)}
+                className="w-full rounded-lg border border-ink-600 bg-ink-900/60 px-3 py-2 text-sm text-white outline-none [color-scheme:dark]"
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="mb-1.5 block text-xs text-gray-400">Projects ({bulkFillProjectIds.length} selected)</label>
+              <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-ink-700 bg-ink-900/30 p-2">
+                {projects.map((p) => (
+                  <label key={p.id} className="flex items-center gap-2 rounded px-1.5 py-1 text-xs text-gray-300 hover:bg-ink-700/30 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={bulkFillProjectIds.includes(p.id)}
+                      onChange={() => toggleBulkFillProject(p.id)}
+                      className="accent-gold h-3.5 w-3.5"
+                    />
+                    <span className="truncate">{p.project_name || p.sn}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <Button variant="ghost" onClick={() => setShowBulkFill(false)}>Cancel</Button>
+              <Button variant="primary" onClick={applyBulkFill} disabled={bulkFillSaving || !bulkFillDate || bulkFillProjectIds.length === 0}>
+                {bulkFillSaving ? "Applying…" : "Apply"}
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 
