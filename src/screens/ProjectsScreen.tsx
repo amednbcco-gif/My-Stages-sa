@@ -456,11 +456,14 @@ function withSequentialSn<T extends { created_at: string }>(list: T[]): (T & { d
               : "Managers can add and edit projects and assign specific work stages and tasks to their engineers based on their responsibilities, while engineers manage their own & assigned projects and track their task progress."}
           </p>
         </div>
-        <div className="flex gap-2">
+               <div className="flex gap-2">
           {!isGuest && (
             <>
               <Button variant="secondary" onClick={exportCSV}>
                 <FileSpreadsheet size={16} className="mr-1.5" /> Export CSV
+              </Button>
+              <Button variant="secondary" onClick={() => setShowBulkFill(true)}>
+                <CalendarClock size={16} className="mr-1.5" /> Bulk Fill Dates
               </Button>
               <Button variant="primary" onClick={() => setShowAdd(true)}>
                 <Plus size={16} className="mr-1.5" /> Add Project
