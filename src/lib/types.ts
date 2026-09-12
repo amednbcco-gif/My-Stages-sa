@@ -91,6 +91,7 @@ export interface Stage5 {
   pacDate: string;
   pacSubmitFilesDate: string;
   pacAmount: number;
+  pacApprovedDate: string;
   pacCrqStatus: StatusValue;
   pacErqNo: string;
   pacCrqNo: string;
