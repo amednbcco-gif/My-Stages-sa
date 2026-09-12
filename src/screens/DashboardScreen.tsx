@@ -136,6 +136,82 @@ export function DashboardScreen() {
     };
   });
 
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  function computeAchieved(mt: MonthlyTarget): number {
+    const ms = MILESTONES.find((m) => m.id === mt.milestone_id);
+    if (!ms) return 0;
+    const selectedProjects = projects.filter((p) => mt.project_ids.includes(p.id));
+    let achieved = 0;
+    for (const p of selectedProjects) {
+      const stageData = (p as unknown as Record<string, Record<string, unknown>>)[ms.stage] ?? {};
+      const status = String(stageData[ms.statusField.key] ?? "").trim().toLowerCase();
+      const isDone = completedValues.includes(status);
+      if (!isDone) continue;
+      if (mt.metric_type === "count") achieved += 1;
+      else if (mt.metric_type === "rfs_amount") achieved += Number(p.stage5?.rfsAmount) || 0;
+      else if (mt.metric_type === "aboq_amount") achieved += Number(p.stage2?.aboqAmount) || 0;
+    }
+    return achieved;
+  }
+
+  const monthlyChartData = monthNames.map((_, idx) => {
+    const month = idx + 1;
+    const mt = monthlyTargets.find((t) => t.month === month);
+    return {
+      target: mt?.target_value ?? 0,
+      achieved: mt ? computeAchieved(mt) : 0,
+    };
+  });
+
+  const currentMonthTarget = monthlyTargets.find((t) => t.month === targetMonth);
+
+  async function loadTargetIntoForm(month: number) {
+    setTargetMonth(month);
+    const mt = monthlyTargets.find((t) => t.month === month);
+    if (mt) {
+      setTargetMilestoneId(mt.milestone_id);
+      setTargetMetricType(mt.metric_type);
+      setTargetValueDraft(String(mt.target_value));
+      setTargetProjectIds(mt.project_ids);
+    } else {
+      setTargetMilestoneId(MILESTONES[0].id);
+      setTargetMetricType("count");
+      setTargetValueDraft("0");
+      setTargetProjectIds([]);
+    }
+  }
+
+  function toggleTargetProject(projectId: string) {
+    setTargetProjectIds((prev) => prev.includes(projectId) ? prev.filter((id) => id !== projectId) : [...prev, projectId]);
+  }
+
+  async function saveMonthlyTarget() {
+    if (!ownerIdForTargets) return;
+    setSavingTarget(true);
+    const currentYear = new Date().getFullYear();
+    const { data, error } = await supabase
+      .from("monthly_targets")
+      .upsert({
+        owner_id: ownerIdForTargets,
+        year: currentYear,
+        month: targetMonth,
+        milestone_id: targetMilestoneId,
+        metric_type: targetMetricType,
+        target_value: Number(targetValueDraft) || 0,
+        project_ids: targetProjectIds,
+      }, { onConflict: "owner_id,year,month" })
+      .select()
+      .single();
+    setSavingTarget(false);
+    if (!error && data) {
+      setMonthlyTargets((prev) => {
+        const filtered = prev.filter((t) => t.month !== targetMonth);
+        return [...filtered, data as MonthlyTarget];
+      });
+    }
+  }
+
   // ── Team Evaluate ──
 //
 // Evaluate each team member using ONLY the main milestones assigned through
