@@ -375,7 +375,8 @@ export const MILESTONES: Milestone[] = [
       { key: "pacApprovedDate", label: "PAC Approved Date", type: "date" },
     ],
   },
-  {
+  
+   {
     id: "fac",
     title: "FAC",
     stage: "stage6",
@@ -385,9 +386,10 @@ export const MILESTONES: Milestone[] = [
       { key: "facDate", label: "FAC Due Date", type: "date" },
       { key: "facSubmitFilesDate", label: "FAC Submit Files Date", type: "date" },
       { key: "facAmount", label: "FAC Amount", type: "number" },
-      { key: "facCrqErqNo", label: "FAC CRQ No.", type: "text" },
+      { key: "facCrqErqNo", label: "FAC CRQ/REQ No.", type: "text" },
       { key: "facReqNo", label: "FAC REQ No.", type: "text" },
       { key: "finalClearanceStatus", label: "Final Clearance Status", type: "clearance" },
+      { key: "facApprovedDate", label: "FAC Approved Date", type: "date" },
     ],
   },
 ];
