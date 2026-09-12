@@ -92,6 +92,7 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "pacAmount", label: "PAC Amount", type: "number" },
     { key: "pacErqNo", label: "PAC REQ No.", type: "text" },
     { key: "pacCrqNo", label: "PAC CRQ No.", type: "text" },
+    { key: "pacApprovedDate", label: "PAC Approved Date", type: "date" },
   ],
   stage6: [
     { key: "facStatus", label: "FAC Status", type: "patsub" },
