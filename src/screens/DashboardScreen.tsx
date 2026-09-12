@@ -775,10 +775,10 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                   <span className="w-10 text-right text-xs font-bold text-gray-200">{te.pct}%</span>
                 </div>
               </div>
-            ))
+              ))}
+            </div>
           )}
-         </div>
-        )}
+        </div>
       </div>
     </div>
   );
