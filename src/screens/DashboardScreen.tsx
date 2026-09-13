@@ -222,7 +222,7 @@ export function DashboardScreen() {
     setTargetProjectIds((prev) => prev.includes(projectId) ? prev.filter((id) => id !== projectId) : [...prev, projectId]);
   }
 
-  async function saveMonthlyTarget() {
+    async function saveMonthlyTarget() {
     if (!ownerIdForTargets || targetMetricTypes.length === 0 || targetProjectIds.length === 0) return;
     setSavingTarget(true);
     const { data, error } = await supabase
@@ -242,6 +242,7 @@ export function DashboardScreen() {
         const filtered = prev.filter((t) => t.month !== targetMonth);
         return [...filtered, data as MonthlyTarget];
       });
+      setTargetFormMode("view");
     }
   }
   
