@@ -671,7 +671,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
             </table>
           </div>
 
-                   {!isGuest && profile?.role === "manager" && (
+                           {!isGuest && profile?.role === "manager" && (
             <div className="mt-5 space-y-3 border-t border-ink-700/50 pt-4">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-gray-400">Set target for a month</p>
@@ -746,12 +746,11 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 return (
                   <p className="text-[11px] text-gray-500">
                     Current: Target {computeMonthTarget(mt).toLocaleString()} · Achieved {computeMonthAchieved(mt).toLocaleString()}
-                 </p>
+                  </p>
                 );
               })()}
             </div>
           )}
-  
 
       {/* Team Evaluate */}
       <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
