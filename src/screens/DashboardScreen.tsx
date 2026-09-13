@@ -671,16 +671,27 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
             </table>
           </div>
 
-          {!isGuest && profile?.role === "manager" && (
+                   {!isGuest && profile?.role === "manager" && (
             <div className="mt-5 space-y-3 border-t border-ink-700/50 pt-4">
-              <p className="text-xs font-semibold text-gray-400">Set target for a month</p>
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-gray-400">Set target for a month</p>
+                {targetFormMode === "view" && (
+                  <button
+                    onClick={() => setTargetFormMode("edit")}
+                    className="flex items-center gap-1 text-[11px] font-semibold text-gold hover:opacity-80 transition-opacity"
+                  >
+                    <Pencil size={11} /> Edit
+                  </button>
+                )}
+              </div>
 
               <div>
                 <p className="mb-1.5 text-[11px] text-gray-500">Month:</p>
                 <select
                   value={targetMonth}
                   onChange={(e) => loadTargetIntoForm(Number(e.target.value))}
-                  className="w-full rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none cursor-pointer"
+                  disabled={targetFormMode === "view"}
+                  className="w-full rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1.5 text-xs text-white outline-none cursor-pointer disabled:cursor-default disabled:opacity-70"
                 >
                   {monthNames.map((m, i) => (
                     <option key={m} value={i + 1} className="bg-ink-800">{m}</option>
@@ -695,8 +706,9 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                     <button
                       key={key}
                       type="button"
-                      onClick={() => toggleTargetMetric(key as any)}
-                      className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors ${targetMetricTypes.includes(key as any) ? "border-gold/60 bg-gold/15 text-gold" : "border-ink-700 text-gray-400 hover:border-gold/30"}`}
+                      onClick={() => targetFormMode === "edit" && toggleTargetMetric(key as any)}
+                      disabled={targetFormMode === "view"}
+                      className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold transition-colors disabled:cursor-default ${targetMetricTypes.includes(key as any) ? "border-gold/60 bg-gold/15 text-gold" : "border-ink-700 text-gray-400 hover:border-gold/30"}`}
                     >
                       {METRIC_CONFIG[key].label}
                     </button>
@@ -708,11 +720,12 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 <p className="mb-1.5 text-[11px] text-gray-500">Projects to deliver this month for {monthNames[targetMonth - 1]}:</p>
                 <div className="max-h-40 space-y-1 overflow-y-auto rounded-lg border border-ink-700 bg-ink-900/30 p-2">
                   {projects.map((p) => (
-                    <label key={p.id} className="flex items-center gap-2 rounded px-1.5 py-1 text-xs text-gray-300 hover:bg-ink-700/30 cursor-pointer">
+                    <label key={p.id} className={`flex items-center gap-2 rounded px-1.5 py-1 text-xs text-gray-300 hover:bg-ink-700/30 ${targetFormMode === "edit" ? "cursor-pointer" : "cursor-default"}`}>
                       <input
                         type="checkbox"
                         checked={targetProjectIds.includes(p.id)}
-                        onChange={() => toggleTargetProject(p.id)}
+                        onChange={() => targetFormMode === "edit" && toggleTargetProject(p.id)}
+                        disabled={targetFormMode === "view"}
                         className="accent-gold h-3.5 w-3.5"
                       />
                       <span className="truncate">{p.project_name || p.sn}</span>
@@ -721,9 +734,11 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 </div>
               </div>
 
-              <Button variant="primary" onClick={saveMonthlyTarget} disabled={savingTarget || targetMetricTypes.length === 0 || targetProjectIds.length === 0}>
-                {savingTarget ? "Saving…" : `Save ${monthNames[targetMonth - 1]} Target`}
-              </Button>
+              {targetFormMode === "edit" && (
+                <Button variant="primary" onClick={saveMonthlyTarget} disabled={savingTarget || targetMetricTypes.length === 0 || targetProjectIds.length === 0}>
+                  {savingTarget ? "Saving…" : `Save ${monthNames[targetMonth - 1]} Target`}
+                </Button>
+              )}
 
               {(() => {
                 const mt = monthlyTargets.find((t) => t.month === targetMonth && t.year === currentYear);
@@ -731,12 +746,11 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 return (
                   <p className="text-[11px] text-gray-500">
                     Current: Target {computeMonthTarget(mt).toLocaleString()} · Achieved {computeMonthAchieved(mt).toLocaleString()}
-                   </p>
+                  </p>
                 );
               })()}
             </div>
           )}
-        </div>
   
 
       {/* Team Evaluate */}
