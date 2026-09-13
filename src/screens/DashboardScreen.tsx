@@ -853,6 +853,7 @@ const MiniSplitPie = ({
       },
     };
 
+
     chartRef.current = new (window as any).Chart(canvasRef.current, {
       type: "pie",
       plugins: [sliceLabelsPlugin],
