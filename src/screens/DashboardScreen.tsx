@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FolderKanban, CircleCheck as CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users } from "lucide-react";
+import { FolderKanban, CircleCheck as CheckCircle2, Clock, DollarSign, TrendingUp, FileSpreadsheet, Wallet, Receipt, FileCheck2, Landmark, ClipboardCheck, Users, Pencil } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth";
 import { Spinner, Button } from "../components/ui";
@@ -746,7 +746,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 return (
                   <p className="text-[11px] text-gray-500">
                     Current: Target {computeMonthTarget(mt).toLocaleString()} · Achieved {computeMonthAchieved(mt).toLocaleString()}
-                  </p>
+                 </p>
                 );
               })()}
             </div>
