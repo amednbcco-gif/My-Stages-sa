@@ -822,7 +822,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
 }
 
 const MiniSplitPie = ({
-  label, total, approved, totalColor, approvedColor,
+label, total, approved, totalColor, approvedColor,
 }: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
