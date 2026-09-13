@@ -819,7 +819,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   );
 }
 
-// إغلاق أمان إضافي لأي قوس علوي تائه
+// 
 } } } }
 
 const MiniSplitPie = ({
