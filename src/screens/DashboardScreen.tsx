@@ -801,7 +801,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                   </span>
                 </div>
 
-      {/* Percentage bar */}
+     {/* Percentage bar */}
                 <div className="flex items-center gap-2 pl-11 sm:w-40 sm:pl-0">
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink-700 sm:max-w-[120px]">
                     <div
@@ -1056,3 +1056,4 @@ function InvoiceOverviewChart({
     </div>
   );
 }
+
