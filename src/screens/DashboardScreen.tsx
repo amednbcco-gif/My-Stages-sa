@@ -34,8 +34,9 @@ export function DashboardScreen() {
   const [monthlyTargets, setMonthlyTargets] = useState<MonthlyTarget[]>([]);
   const [targetMonth, setTargetMonth] = useState(new Date().getMonth() + 1);
   const [targetMetricTypes, setTargetMetricTypes] = useState<Array<"aboq_amount" | "rfs_amount" | "pac_amount" | "fac_amount">>(["aboq_amount"]);
-  const [targetProjectIds, setTargetProjectIds] = useState<string[]>([]);
+    const [targetProjectIds, setTargetProjectIds] = useState<string[]>([]);
   const [savingTarget, setSavingTarget] = useState(false);
+  const [targetFormMode, setTargetFormMode] = useState<"view" | "edit">("view");
 
     useEffect(() => {
     async function load() {
