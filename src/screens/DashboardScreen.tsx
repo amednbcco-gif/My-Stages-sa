@@ -200,15 +200,17 @@ export function DashboardScreen() {
 
   const monthlyChartData = monthlySummary.map((row) => ({ target: row.target, achieved: row.achieved }));
 
-  function loadTargetIntoForm(month: number) {
+   function loadTargetIntoForm(month: number) {
     setTargetMonth(month);
     const mt = monthlyTargets.find((t) => t.month === month && t.year === currentYear);
     if (mt) {
       setTargetMetricTypes(mt.metric_types as any);
       setTargetProjectIds(mt.project_ids);
+      setTargetFormMode("view");
     } else {
       setTargetMetricTypes(["aboq_amount"]);
       setTargetProjectIds([]);
+      setTargetFormMode("edit");
     }
   }
 
