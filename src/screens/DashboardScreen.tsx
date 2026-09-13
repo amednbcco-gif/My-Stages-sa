@@ -818,6 +818,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     </div>
   );
 }
+        
 const MiniSplitPie = (props) => {
 const { label, total, approved, totalColor, approvedColor } = props;
 const canvasRef = useRef<HTMLCanvasElement>(null);
