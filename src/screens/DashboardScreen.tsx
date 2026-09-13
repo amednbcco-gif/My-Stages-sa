@@ -820,9 +820,17 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   );
 }
 
+interface MiniSplitPieProps {
+  label: string;
+  total: number;
+  approved: number;
+  totalColor: string;
+  approvedColor: string;
+}
+
 const MiniSplitPie = ({
   label, total, approved, totalColor, approvedColor,
-}: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) => {
+}: MiniSplitPieProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
 
