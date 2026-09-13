@@ -819,9 +819,6 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
   );
 }
 
-// 
-} } } }
-
 const MiniSplitPie = ({
   label, total, approved, totalColor, approvedColor,
 }: any) => {
