@@ -740,7 +740,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 </Button>
               )}
 
-              {(() => {
+                            {(() => {
                 const mt = monthlyTargets.find((t) => t.month === targetMonth && t.year === currentYear);
                 if (!mt) return null;
                 return (
@@ -751,6 +751,8 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
               })()}
             </div>
           )}
+        </div>
+      </div>
 
       {/* Team Evaluate */}
       <div className="rounded-xl border border-ink-700 bg-ink-800 p-5">
