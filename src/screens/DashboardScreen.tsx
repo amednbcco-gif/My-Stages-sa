@@ -145,7 +145,7 @@ export function DashboardScreen() {
     };
   });
 
-     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const METRIC_CONFIG: Record<string, { label: string; getAmount: (p: Project) => number; getDate: (p: Project) => string }> = {
     aboq_amount: { label: "ABOQ Amount", getAmount: (p) => Number(p.stage2?.aboqAmount) || 0, getDate: (p) => p.stage2?.aboqApprovedDate || "" },
@@ -153,87 +153,91 @@ export function DashboardScreen() {
     pac_amount: { label: "PAC Amount", getAmount: (p) => Number(p.stage5?.pacAmount) || 0, getDate: (p) => p.stage5?.pacApprovedDate || "" },
     fac_amount: { label: "FAC Amount", getAmount: (p) => Number(p.stage6?.facAmount) || 0, getDate: (p) => p.stage6?.facApprovedDate || "" },
   };
+  const METRIC_LABELS_SHORT: Record<string, string> = { aboq_amount: "ABOQ", rfs_amount: "RFS", pac_amount: "PAC", fac_amount: "FAC" };
 
   const currentYear = new Date().getFullYear();
 
-  function computeAchievedForMonth(month: number, metricType: string): number {
-    const cfg = METRIC_CONFIG[metricType];
-    if (!cfg) return 0;
-    return projects.reduce((sum, p) => {
-      const dateStr = cfg.getDate(p);
-      if (!dateStr) return sum;
-      const d = new Date(dateStr + "T00:00:00");
-      if (isNaN(d.getTime())) return sum;
-      if (d.getFullYear() === currentYear && d.getMonth() + 1 === month) {
-        return sum + cfg.getAmount(p);
-      }
-      return sum;
+  // Target for a month = sum, across its selected metrics, of the full amount of its selected projects.
+  function computeMonthTarget(mt: MonthlyTarget): number {
+    const selected = projects.filter((p) => mt.project_ids.includes(p.id));
+    return mt.metric_types.reduce((sum, metricType) => {
+      const cfg = METRIC_CONFIG[metricType];
+      if (!cfg) return sum;
+      return sum + selected.reduce((s, p) => s + cfg.getAmount(p), 0);
     }, 0);
   }
 
-  // Effective target = this month's manually-set target + unmet remainder rolled over from the previous month.
-  function effectiveTarget(month: number, metricType: string): number {
-    const row = monthlyTargets.find((t) => t.month === month && t.metric_type === metricType);
-    const ownTarget = row ? row.target_value : 0;
-    if (month <= 1) return ownTarget;
-    const prevRow = monthlyTargets.find((t) => t.month === month - 1 && t.metric_type === metricType);
-    if (!prevRow) return ownTarget;
-    const prevEffective = effectiveTarget(month - 1, metricType);
-    const prevAchieved = computeAchievedForMonth(month - 1, metricType);
-    const remainder = Math.max(prevEffective - prevAchieved, 0);
-    return ownTarget + remainder;
+  // Achieved for a month = across its selected metrics, the amount of selected projects whose approval date
+  // for that metric actually falls within this exact month/year.
+  function computeMonthAchieved(mt: MonthlyTarget): number {
+    const selected = projects.filter((p) => mt.project_ids.includes(p.id));
+    return mt.metric_types.reduce((sum, metricType) => {
+      const cfg = METRIC_CONFIG[metricType];
+      if (!cfg) return sum;
+      return sum + selected.reduce((s, p) => {
+        const dateStr = cfg.getDate(p);
+        if (!dateStr) return s;
+        const d = new Date(dateStr + "T00:00:00");
+        if (isNaN(d.getTime())) return s;
+        if (d.getFullYear() === mt.year && d.getMonth() + 1 === mt.month) return s + cfg.getAmount(p);
+        return s;
+      }, 0);
+    }, 0);
   }
 
-  const activeMetricTypes = Array.from(new Set(monthlyTargets.map((t) => t.metric_type)));
-
-  const monthlyChartData = monthNames.map((_, idx) => {
+  const monthlySummary = monthNames.map((_, idx) => {
     const month = idx + 1;
-    let target = 0;
-    let achieved = 0;
-    for (const metricType of activeMetricTypes) {
-      target += effectiveTarget(month, metricType);
-      achieved += computeAchievedForMonth(month, metricType);
-    }
-    return { target, achieved };
+    const mt = monthlyTargets.find((t) => t.month === month && t.year === currentYear);
+    return {
+      month,
+      projectCount: mt ? mt.project_ids.length : 0,
+      metricTypes: mt ? mt.metric_types : [],
+      target: mt ? computeMonthTarget(mt) : 0,
+      achieved: mt ? computeMonthAchieved(mt) : 0,
+    };
   });
 
-  function toggleTargetMonth(month: number) {
-    setTargetMonths((prev) => prev.includes(month) ? prev.filter((m) => m !== month) : [...prev, month]);
+  const monthlyChartData = monthlySummary.map((row) => ({ target: row.target, achieved: row.achieved }));
+
+  function loadTargetIntoForm(month: number) {
+    setTargetMonth(month);
+    const mt = monthlyTargets.find((t) => t.month === month && t.year === currentYear);
+    if (mt) {
+      setTargetMetricTypes(mt.metric_types as any);
+      setTargetProjectIds(mt.project_ids);
+    } else {
+      setTargetMetricTypes(["aboq_amount"]);
+      setTargetProjectIds([]);
+    }
   }
 
   function toggleTargetMetric(metric: "aboq_amount" | "rfs_amount" | "pac_amount" | "fac_amount") {
     setTargetMetricTypes((prev) => prev.includes(metric) ? prev.filter((m) => m !== metric) : [...prev, metric]);
   }
 
+  function toggleTargetProject(projectId: string) {
+    setTargetProjectIds((prev) => prev.includes(projectId) ? prev.filter((id) => id !== projectId) : [...prev, projectId]);
+  }
+
   async function saveMonthlyTarget() {
-    if (!ownerIdForTargets || targetMonths.length === 0 || targetMetricTypes.length === 0) return;
+    if (!ownerIdForTargets || targetMetricTypes.length === 0 || targetProjectIds.length === 0) return;
     setSavingTarget(true);
-
-    const combos = targetMonths.flatMap((month) => targetMetricTypes.map((metricType) => ({ month, metricType })));
-    const value = Number(targetValueDraft) || 0;
-
-    const results = await Promise.all(
-      combos.map(({ month, metricType }) =>
-        supabase
-          .from("monthly_targets")
-          .upsert({
-            owner_id: ownerIdForTargets,
-            year: currentYear,
-            month,
-            metric_type: metricType,
-            target_value: value,
-          }, { onConflict: "owner_id,year,month,metric_type" })
-          .select()
-          .single()
-      )
-    );
-
+    const { data, error } = await supabase
+      .from("monthly_targets")
+      .upsert({
+        owner_id: ownerIdForTargets,
+        year: currentYear,
+        month: targetMonth,
+        metric_types: targetMetricTypes,
+        project_ids: targetProjectIds,
+      }, { onConflict: "owner_id,year,month" })
+      .select()
+      .single();
     setSavingTarget(false);
-    const newRows = results.map((r) => r.data).filter(Boolean) as MonthlyTarget[];
-    if (newRows.length > 0) {
+    if (!error && data) {
       setMonthlyTargets((prev) => {
-        const keep = prev.filter((t) => !newRows.some((n) => n.month === t.month && n.metric_type === t.metric_type));
-        return [...keep, ...newRows];
+        const filtered = prev.filter((t) => t.month !== targetMonth);
+        return [...filtered, data as MonthlyTarget];
       });
     }
   }
