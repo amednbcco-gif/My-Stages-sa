@@ -801,7 +801,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                   </span>
                 </div>
 
-                {/* Percentage bar */}
+      {/* Percentage bar */}
                 <div className="flex items-center gap-2 pl-11 sm:w-40 sm:pl-0">
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink-700 sm:max-w-[120px]">
                     <div
@@ -983,6 +983,7 @@ function FinancialSplitPie({
     </div>
   );
 }
+
 function InvoiceOverviewChart({
   aboqTotal, aboqApproved,
   rfsTotal, rfsApproved,
@@ -1039,67 +1040,18 @@ function InvoiceOverviewChart({
           legend: { position: "bottom", labels: { color: "#9ca3af", font: { size: 12 } } },
           tooltip: {
             callbacks: {
-              label: (ctx: any) => `${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString()} SAR`,
-            },
-          },
-        },
-        scales: {
-          x: { ticks: { color: "#9ca3af" }, grid: { color: "#1f2937" } },
-          y: { ticks: { color: "#9ca3af" }, grid: { color: "#1f2937" } },
-        },
-      },
+              label: (ctx: any) => `${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString()}`
+            }
+          }
+        }
+      }
     });
 
     return () => chartRef.current?.destroy();
   }, [aboqTotal, aboqApproved, rfsTotal, rfsApproved, pacTotal, pacApproved, facTotal, facApproved]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: 320 }}>
-      <canvas ref={canvasRef} />
-    </div>
-  );
-}
-
-function MonthlyTargetChart({ data, labels }: { data: { target: number; achieved: number }[]; labels: string[] }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<any>(null);
-
-  useEffect(() => {
-    if (!canvasRef.current || !(window as any).Chart) return;
-    if (chartRef.current) chartRef.current.destroy();
-
-    chartRef.current = new (window as any).Chart(canvasRef.current, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          { label: "Target", data: data.map((d) => d.target), backgroundColor: "#5b8fd6" },
-          { label: "Achieved", data: data.map((d) => d.achieved), backgroundColor: "#3fb872" },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: "top", labels: { color: "#9ca3af", font: { size: 11 } } },
-          tooltip: {
-            callbacks: {
-              label: (ctx: any) => `${ctx.dataset.label}: ${Number(ctx.parsed.y).toLocaleString()}`,
-            },
-          },
-        },
-        scales: {
-          x: { ticks: { color: "#9ca3af", font: { size: 10 } }, grid: { display: false } },
-          y: { ticks: { color: "#9ca3af" }, grid: { color: "#1f2937" } },
-        },
-      },
-    });
-
-    return () => chartRef.current?.destroy();
-  }, [data, labels]);
-
-  return (
-    <div style={{ position: "relative", width: "100%", height: 240 }}>
+    <div style={{ position: "relative", width: "100%", height: 260 }}>
       <canvas ref={canvasRef} />
     </div>
   );
