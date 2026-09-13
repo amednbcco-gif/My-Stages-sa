@@ -300,8 +300,8 @@ export interface MonthlyTarget {
   owner_id: string;
   year: number;
   month: number;
-  metric_type: "aboq_amount" | "rfs_amount" | "pac_amount" | "fac_amount";
-  target_value: number;
+  metric_types: string[];
+  project_ids: string[];
   created_at: string;
   updated_at: string;
 }
