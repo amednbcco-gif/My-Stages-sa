@@ -821,7 +821,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
 }
 
 const MiniSplitPie = ({
-label, total, approved, totalColor, approvedColor,
+  label, total, approved, totalColor, approvedColor,
 }: { label: string; total: number; approved: number; totalColor: string; approvedColor: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<any>(null);
@@ -852,7 +852,6 @@ label, total, approved, totalColor, approvedColor,
       },
     };
 
-
     chartRef.current = new (window as any).Chart(canvasRef.current, {
       type: "pie",
       plugins: [sliceLabelsPlugin],
@@ -878,7 +877,6 @@ label, total, approved, totalColor, approvedColor,
   }, [label, total, approved, totalColor, approvedColor]);
 
   return (
-
     <div className="flex flex-col items-center">
       <div style={{ position: "relative", width: "100%", height: 90 }}>
         <canvas ref={canvasRef} />
