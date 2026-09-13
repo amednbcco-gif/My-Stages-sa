@@ -810,7 +810,7 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                  </div>
                   <span className="w-10 text-right text-xs font-bold text-gray-200">{te.pct}%</span>
                 </div>
-              </div>
+                            </div>
             ))}
           </div>
         )}
@@ -818,11 +818,16 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
     </div>
   );
 }
-        
-const MiniSplitPie = (props) => {
-const { label, total, approved, totalColor, approvedColor } = props;
-const canvasRef = useRef<HTMLCanvasElement>(null);
-const chartRef = useRef<any>(null);
+
+// إغلاق أمان إضافي لأي قوس علوي تائه
+} } } }
+
+const MiniSplitPie = ({
+  label, total, approved, totalColor, approvedColor,
+}: any) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartRef = useRef<any>(null);
+
     
   useEffect(() => {
     const notApproved = Math.max(total - approved, 0);
