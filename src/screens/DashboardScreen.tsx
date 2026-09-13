@@ -727,12 +727,10 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
                 return (
                   <p className="text-[11px] text-gray-500">
                     Current: Target {computeMonthTarget(mt).toLocaleString()} · Achieved {computeMonthAchieved(mt).toLocaleString()}
-                  </p>
+                   </p>
                 );
               })()}
             </div>
-          )}
-        </div>
           )}
         </div>
   
