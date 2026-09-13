@@ -820,9 +820,9 @@ const teamEvals: TeamEval[] = visibleMembers.map((m) => {
 }
 
 const MiniSplitPie = (props) => {
-  const { label, total, approved, totalColor, approvedColor } = props;
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<any>(null);
+const { label, total, approved, totalColor, approvedColor } = props;
+const canvasRef = useRef<HTMLCanvasElement>(null);
+const chartRef = useRef<any>(null);
     
   useEffect(() => {
     const notApproved = Math.max(total - approved, 0);
