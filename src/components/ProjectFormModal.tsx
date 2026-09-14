@@ -142,7 +142,6 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
         <Input label="Rock Area (m)" value={rockAreaMeters} onChange={setRockAreaMeters} type="number" placeholder="0" />
                <Input label="Fiber Cable (m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
         <Input label="MH/HH" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
-        <Input label="Rock Area Progress (m)" value={rockAreaProgress} onChange={setRockAreaProgress} type="number" placeholder="0" />
         <Input label="Fiber Cable Total (m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
         <Input label="Fiber Cable Progress (m)" value={cableProgress} onChange={setCableProgress} type="number" placeholder="0" />
         <Input label="MH/HH Total" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
