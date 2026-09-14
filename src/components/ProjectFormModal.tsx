@@ -97,12 +97,8 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       hdd_meters: hddMeters ? Number(hddMeters) : 0,
       rock_area_meters: rockAreaMeters ? Number(rockAreaMeters) : 0,
       cable_meters: cableMeters ? Number(cableMeters) : 0,
-                      hh_pcs: hhPcs ? Number(hhPcs) : 0,
-      cw_meters_progress: cwProgress ? Number(cwProgress) : 0,
-      hdd_meters_progress: hddProgress ? Number(hddProgress) : 0,
-      rock_area_meters_progress: rockAreaProgress ? Number(rockAreaProgress) : 0,
-      cable_meters_progress: cableProgress ? Number(cableProgress) : 0,
-      hh_pcs_progress: hhProgress ? Number(hhProgress) : 0,
+       hh_pcs: hhPcs ? Number(hhPcs) : 0,
+      pip_total_days: pipTotalDays ? Number(pipTotalDays) : 0,
       status,
     });
     setSaving(false);
