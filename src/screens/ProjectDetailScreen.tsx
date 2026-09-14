@@ -1277,12 +1277,12 @@ export function ProjectDetailScreen() {
                             {project.latitude != null && <span>Lat: {project.latitude}</span>}
               {project.longitude != null && <span>Long: {project.longitude}</span>}
             </div>
-                                    <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
-              <span>CW: {fmtNum(project.cw_meters || 0)}/{fmtNum(project.cw_meters_progress || 0)}</span>
-              <span>HDD: {fmtNum(project.hdd_meters || 0)}/{fmtNum(project.hdd_meters_progress || 0)}</span>
-              <span>Rock Area: {fmtNum(project.rock_area_meters || 0)}/{fmtNum(project.rock_area_meters_progress || 0)}</span>
-              <span>Fiber Cable: {fmtNum(project.cable_meters || 0)}/{fmtNum(project.cable_meters_progress || 0)}</span>
-              <span>MH/HH: {fmtNum(project.hh_pcs || 0)}/{fmtNum(project.hh_pcs_progress || 0)}</span>
+   <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+              <span>CW: {fmtNum(project.cw_meters || 0)}</span>
+              <span>HDD: {fmtNum(project.hdd_meters || 0)}</span>
+              <span>Rock Area: {fmtNum(project.rock_area_meters || 0)}</span>
+              <span>Fiber Cable: {fmtNum(project.cable_meters || 0)}</span>
+              <span>MH/HH: {fmtNum(project.hh_pcs || 0)}</span>
             </div>
           </div>
           <div className="shrink-0 text-right">
