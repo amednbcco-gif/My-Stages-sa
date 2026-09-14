@@ -80,8 +80,12 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       setHddMeters("");
       setRockAreaMeters("");
       setCableMeters("");
-            setHhPcs("");
-      setPipTotalDays("");
+       setHhPcs("");
+      setCwProgress("");
+      setHddProgress("");
+      setRockAreaProgress("");
+      setCableProgress("");
+      setHhProgress("");
       setStatus("Pending");
     }
   }, [initial, open]);
