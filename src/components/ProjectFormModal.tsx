@@ -28,6 +28,12 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [rockAreaMeters, setRockAreaMeters] = useState("");
   const [cableMeters, setCableMeters] = useState("");
   const [hhPcs, setHhPcs] = useState("");
+  const [hhPcs, setHhPcs] = useState("");
+  const [cwProgress, setCwProgress] = useState("");
+  const [hddProgress, setHddProgress] = useState("");
+  const [rockAreaProgress, setRockAreaProgress] = useState("");
+  const [cableProgress, setCableProgress] = useState("");
+  const [hhProgress, setHhProgress] = useState("");
   const [status, setStatus] = useState<ProjectStatus>("Pending");
   const [saving, setSaving] = useState(false);
   useEffect(() => {
