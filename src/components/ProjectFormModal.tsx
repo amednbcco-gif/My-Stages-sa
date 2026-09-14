@@ -54,9 +54,13 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
 setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       setRockAreaMeters(initial.rock_area_meters != null ? String(initial.rock_area_meters) : "");
       setCableMeters(initial.cable_meters != null ? String(initial.cable_meters) : "");
-setHhPcs(initial.hh_pcs != null ? String(initial.hh_pcs) : "");
-setPipTotalDays(initial.pip_total_days != null tring(initial.pip_total_days) : "");
-setStatus(initial.status);
+      setHhPcs(initial.hh_pcs != null ? String(initial.hh_pcs) : "");
+      setCwProgress(initial.cw_meters_progress != null ? String(initial.cw_meters_progress) : "");
+      setHddProgress(initial.hdd_meters_progress != null ? String(initial.hdd_meters_progress) : "");
+      setRockAreaProgress(initial.rock_area_meters_progress != null ? String(initial.rock_area_meters_progress) : "");
+      setCableProgress(initial.cable_meters_progress != null ? String(initial.cable_meters_progress) : "");
+      setHhProgress(initial.hh_pcs_progress != null ? String(initial.hh_pcs_progress) : "");
+      setStatus(initial.status);
     } 
     else {
       setProjectName("");
