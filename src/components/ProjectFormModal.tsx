@@ -62,7 +62,8 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       setCableProgress(initial.cable_meters_progress != null ? String(initial.cable_meters_progress) : "");
       setHhProgress(initial.hh_pcs_progress != null ? String(initial.hh_pcs_progress) : "");
       setStatus(initial.status);
-    } else {
+    } 
+    else {
       setProjectName("");
       setPoNumber("");
       setPlanNo("");
