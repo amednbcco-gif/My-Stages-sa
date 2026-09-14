@@ -40,21 +40,31 @@ export interface Stage2 {
 export interface Stage3 {
   permitsStatus: StatusValue;
   civilActualMeters: number;
+  civilActualMetersProgress: number;
   hddActualMeters: number;
+  hddActualMetersProgress: number;
   mhHh: number;
-  closures: number;
-  closuresProgress: number;
+  mhHhProgress: number;
   odbOdf: number;
   odbOdfProgress: number;
+  closures: number;
+  closuresProgress: number;
   fiberCableMeters: number;
-  cablePullingStatus: StatusValue;
+  fiberCableMetersProgress: number;
   fiberSplicingStatus: StatusValue;
   patchingStatus: StatusValue;
   patchingDoneStatus: StatusValue;
   civilStatus: StatusValue;
   actualStartDate: string;
   actualEndDate: string;
-  }
+  closePermit: StatusValue;
+  clearancePermit: StatusValue;
+  permitSubmittedDate: string;
+  permitIssuedDate: string;
+  permitClosedDate: string;
+  permitClearancedDate: string;
+  finalClearanceStatus: StatusValue;
+}
 
 export interface Stage4 {
   patStatus: StatusValue;
