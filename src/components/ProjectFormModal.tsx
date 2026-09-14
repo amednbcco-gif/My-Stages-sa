@@ -72,7 +72,6 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       setRockAreaMeters("");
       setCableMeters("");
       setHhPcs("");
-      setPipTotalDays("");
       setStatus("Pending");
     }
   }, [initial, open]);
