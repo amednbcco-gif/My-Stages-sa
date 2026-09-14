@@ -78,6 +78,14 @@ function statusColor(val: string) {
 }
 
 const chevronBg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`;
+const SPLIT_FIELDS: Record<string, string> = {
+  civilActualMeters: "civilActualMetersProgress",
+  hddActualMeters: "hddActualMetersProgress",
+  fiberCableMeters: "fiberCableMetersProgress",
+  mhHh: "mhHhProgress",
+  closures: "closuresProgress",
+  odbOdf: "odbOdfProgress",
+};
 
 function optionsFor(type: string) {
   if (type === "patsub") return PATSUB_OPTIONS;
