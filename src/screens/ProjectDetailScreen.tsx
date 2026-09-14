@@ -270,7 +270,7 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
         </div>
       </div>
 
-                     <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
+  <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
         {fields.map((field) => {
           let value = stageData[field.key] ?? "";
           const progressKey = SPLIT_FIELDS[field.key];
@@ -601,15 +601,47 @@ function MilestoneCard({
                       {milestone.id === "permit" ? (
         <PermitTable permits={permits} onPermitAdd={onPermitAdd} onPermitUpdate={onPermitUpdate} onPermitDelete={onPermitDelete} canEdit={fieldsEditable} />
           ) : (
-        <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
+                <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
           {milestone.fields.map((field) => {
             let value = stageData[field.key] ?? "";
+            const progressKey = SPLIT_FIELDS[field.key];
+            let progressValue = progressKey ? (stageData[progressKey] ?? "") : "";
             if (milestone.id === "civil" && !value) {
-              if (field.key === "civilActualMeters" && project.cw_meters) value = project.cw_meters;
-              else if (field.key === "hddActualMeters" && project.hdd_meters) value = project.hdd_meters;
-              else if (field.key === "fiberCableMeters" && project.cable_meters) value = project.cable_meters;
-              else if (field.key === "mhHh" && project.hh_pcs) value = project.hh_pcs;
+              if (field.key === "civilActualMeters" && project.cw_meters) { value = project.cw_meters; if (!progressValue && project.cw_meters_progress) progressValue = project.cw_meters_progress; }
+              else if (field.key === "hddActualMeters" && project.hdd_meters) { value = project.hdd_meters; if (!progressValue && project.hdd_meters_progress) progressValue = project.hdd_meters_progress; }
+              else if (field.key === "fiberCableMeters" && project.cable_meters) { value = project.cable_meters; if (!progressValue && project.cable_meters_progress) progressValue = project.cable_meters_progress; }
+              else if (field.key === "mhHh" && project.hh_pcs) { value = project.hh_pcs; if (!progressValue && project.hh_pcs_progress) progressValue = project.hh_pcs_progress; }
             }
+
+            if (progressKey) {
+              return (
+                <div key={field.key} className="flex items-center gap-3">
+                  <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                  {fieldsEditable ? (
+                    <div className="flex flex-1 items-center gap-1.5">
+                      <input
+                        type="number"
+                        value={String(value ?? 0)}
+                        onChange={(e) => onFieldChange(milestone.stage, field.key, Number(e.target.value) || 0)}
+                        placeholder="Total"
+                        className="w-full min-w-0 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-right text-xs text-white outline-none focus:border-gold/50"
+                      />
+                      <span className="shrink-0 text-xs text-gray-500">/</span>
+                      <input
+                        type="number"
+                        value={String(progressValue ?? 0)}
+                        onChange={(e) => onFieldChange(milestone.stage, progressKey, Number(e.target.value) || 0)}
+                        placeholder="Progress"
+                        className="w-full min-w-0 rounded-lg border border-ink-600 bg-ink-900/60 px-2 py-1 text-right text-xs text-white outline-none focus:border-gold/50"
+                      />
+                    </div>
+                  ) : (
+                    <span className="flex-1 text-xs text-gray-300">{fmtNum(Number(value) || 0)}/{fmtNum(Number(progressValue) || 0)}</span>
+                  )}
+                </div>
+              );
+            }
+
             const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             const showConnectScanLink = field.key === "connectScanStatus";
             const showTrace360Link = field.key === "trace360Status";
