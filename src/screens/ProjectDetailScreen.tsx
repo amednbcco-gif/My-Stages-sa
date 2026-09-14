@@ -270,14 +270,24 @@ function StageCard({ stage, project, attachments, uploading, onFieldChange, onUp
         </div>
       </div>
 
-           <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
+                     <div className="px-5 pb-3 space-y-0 divide-y divide-ink-700/40">
         {fields.map((field) => {
           let value = stageData[field.key] ?? "";
+          const progressKey = SPLIT_FIELDS[field.key];
+          let progressValue = progressKey ? (stageData[progressKey] ?? "") : "";
           if (stage === "stage3" && !value) {
-            if (field.key === "civilActualMeters" && project.cw_meters) value = project.cw_meters;
-            else if (field.key === "hddActualMeters" && project.hdd_meters) value = project.hdd_meters;
-            else if (field.key === "fiberCableMeters" && project.cable_meters) value = project.cable_meters;
-            else if (field.key === "mhHh" && project.hh_pcs) value = project.hh_pcs;
+            if (field.key === "civilActualMeters" && project.cw_meters) { value = project.cw_meters; if (!progressValue && project.cw_meters_progress) progressValue = project.cw_meters_progress; }
+            else if (field.key === "hddActualMeters" && project.hdd_meters) { value = project.hdd_meters; if (!progressValue && project.hdd_meters_progress) progressValue = project.hdd_meters_progress; }
+            else if (field.key === "fiberCableMeters" && project.cable_meters) { value = project.cable_meters; if (!progressValue && project.cable_meters_progress) progressValue = project.cable_meters_progress; }
+            else if (field.key === "mhHh" && project.hh_pcs) { value = project.hh_pcs; if (!progressValue && project.hh_pcs_progress) progressValue = project.hh_pcs_progress; }
+          }
+          if (progressKey) {
+            return (
+              <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
+                <span className="shrink-0 text-sm font-semibold text-white">{field.label}</span>
+                <span className="text-xs text-gray-300">{fmtNum(Number(value) || 0)}/{fmtNum(Number(progressValue) || 0)}</span>
+              </div>
+            );
           }
           return (
             <div key={field.key} className="flex items-center justify-between gap-4 py-2.5 min-h-[42px]">
