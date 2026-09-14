@@ -1031,7 +1031,17 @@ export function ProjectDetailScreen() {
       const stage1Data = (project as unknown as Record<string, Record<string, unknown>>)["stage1"] ?? {};
       updateObj.stage1 = { ...stage1Data, dboqAmount: Number(value) || 0 };
     }
-
+    // Two-way sync: when the Total value in List Form/Card Layout Stage 3 changes,
+    // push it back to the project-level field shown in the header/form.
+    if (stage === "stage3" && key === "civilActualMeters") {
+      updateObj.cw_meters = Number(value) || 0;
+    } else if (stage === "stage3" && key === "hddActualMeters") {
+      updateObj.hdd_meters = Number(value) || 0;
+    } else if (stage === "stage3" && key === "fiberCableMeters") {
+      updateObj.cable_meters = Number(value) || 0;
+    } else if (stage === "stage3" && key === "mhHh") {
+      updateObj.hh_pcs = Number(value) || 0;
+    }
     // Optimistic local update so controlled inputs reflect changes immediately
     setProject((prev) => prev ? { ...prev, ...updateObj } as Project : prev);
 
