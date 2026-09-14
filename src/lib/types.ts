@@ -132,6 +132,11 @@ export interface Project {
   rock_area_meters: number;
   cable_meters: number;
   hh_pcs: number;
+  cw_meters_progress: number;
+  hdd_meters_progress: number;
+  rock_area_meters_progress: number;
+  cable_meters_progress: number;
+  hh_pcs_progress: number;
   pip_total_days: number;
   sn: string;
   status: ProjectStatus;
