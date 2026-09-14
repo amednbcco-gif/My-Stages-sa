@@ -42,8 +42,10 @@ export interface Stage3 {
   civilActualMeters: number;
   hddActualMeters: number;
   mhHh: number;
-  odbOdf: number;
   closures: number;
+  closuresProgress: number;
+  odbOdf: number;
+  odbOdfProgress: number;
   fiberCableMeters: number;
   cablePullingStatus: StatusValue;
   fiberSplicingStatus: StatusValue;
