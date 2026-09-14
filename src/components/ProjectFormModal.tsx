@@ -28,8 +28,7 @@ export function ProjectFormModal({ open, onClose, onSave, initial }: ProjectForm
   const [rockAreaMeters, setRockAreaMeters] = useState("");
   const [cableMeters, setCableMeters] = useState("");
    const [hhPcs, setHhPcs] = useState("");
-  const [pipTotalDays, setPipTotalDays] = useState("");
-  const [status, setStatus] = useState<ProjectStatus>("Pending");
+    const [status, setStatus] = useState<ProjectStatus>("Pending");
   const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (initial) {
