@@ -160,11 +160,16 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
             <span className="ml-2 text-[10px] text-gray-600">(auto-calculated from PIP page)</span>
           </div>
         </div>
-        <Input label="CW (m)" value={cwMeters} onChange={setCwMeters} type="number" placeholder="0" />
-        <Input label="HDD (m)" value={hddMeters} onChange={setHddMeters} type="number" placeholder="0" />
-        <Input label="Rock Area (m)" value={rockAreaMeters} onChange={setRockAreaMeters} type="number" placeholder="0" />
-               <Input label="Fiber Cable (m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
-        <Input label="MH/HH" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
+            <Input label="CW Total (m)" value={cwMeters} onChange={setCwMeters} type="number" placeholder="0" />
+        <Input label="CW Progress (m)" value={cwProgress} onChange={setCwProgress} type="number" placeholder="0" />
+        <Input label="HDD Total (m)" value={hddMeters} onChange={setHddMeters} type="number" placeholder="0" />
+        <Input label="HDD Progress (m)" value={hddProgress} onChange={setHddProgress} type="number" placeholder="0" />
+        <Input label="Rock Area Total (m)" value={rockAreaMeters} onChange={setRockAreaMeters} type="number" placeholder="0" />
+        <Input label="Rock Area Progress (m)" value={rockAreaProgress} onChange={setRockAreaProgress} type="number" placeholder="0" />
+        <Input label="Fiber Cable Total (m)" value={cableMeters} onChange={setCableMeters} type="number" placeholder="0" />
+        <Input label="Fiber Cable Progress (m)" value={cableProgress} onChange={setCableProgress} type="number" placeholder="0" />
+        <Input label="MH/HH Total" value={hhPcs} onChange={setHhPcs} type="number" placeholder="0" />
+        <Input label="MH/HH Progress" value={hhProgress} onChange={setHhProgress} type="number" placeholder="0" />
         <Select
           label="Status"
           value={status}
