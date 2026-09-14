@@ -51,8 +51,7 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       setRockAreaMeters(initial.rock_area_meters != null ? String(initial.rock_area_meters) : "");
       setCableMeters(initial.cable_meters != null ? String(initial.cable_meters) : "");
  setHhPcs(initial.hh_pcs != null ? String(initial.hh_pcs) : "");
-      setPipTotalDays(initial.pip_total_days != null ? String(initial.pip_total_days) : "");
-      setStatus(initial.status);
+   setStatus(initial.status);
     } 
     else {
       setProjectName("");
