@@ -282,26 +282,23 @@ export function PipScreen() {
     if (totalRow && daysCol) {
       payload.push({ row_id: totalRow.id, column_id: daysCol.id, value: String(totalDays) });
     }
-    if (payload.length > 0) {
+       if (payload.length > 0) {
       const { error } = await supabase.from("project_pip_cells").upsert(payload, { onConflict: "row_id,column_id" });
       if (error) console.error("saveAll upsert error:", error);
     }
-   
-        if (project && user) {
+
+    await supabase.from("projects").update({ pip_total_days: totalDays }).eq("id", id);
+    setProject((prev) => prev ? { ...prev, pip_total_days: totalDays } : prev);
+
+    if (project && user) {
       const actorName = profile?.full_name?.trim() || user.email || "Someone";
       await supabase.from("notifications").insert({
-        owner_id: project.owner_id,
-        project_id: project.id,
-        project_name: project.project_name,
-        actor_id: user.id,
-        actor_name: actorName,
-        message: "updated PIP (Project Implementation Plan)",
+        ...
       });
     }
 
     setMode("view");
   }
-
   function exportCSV() {
     const headers = columns.map((c) => c.label);
     const dataRows = rows.filter((r) => !r.is_total).map((row) =>
