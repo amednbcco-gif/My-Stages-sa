@@ -76,12 +76,17 @@ setHddMeters(initial.hdd_meters != null ? String(initial.hdd_meters) : "");
       setLatitude("");
       setLongitude("");
       setProjectManager("");
-            setContractorName("");
+      setContractorName("");
       setCwMeters("");
       setHddMeters("");
       setRockAreaMeters("");
       setCableMeters("");
       setHhPcs("");
+      setCwProgress("");
+      setHddProgress("");
+      setRockAreaProgress("");
+      setCableProgress("");
+      setHhProgress("");
       setStatus("Pending");
     }
   }, [initial, open]);
