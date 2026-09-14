@@ -286,8 +286,7 @@ export function PipScreen() {
       const { error } = await supabase.from("project_pip_cells").upsert(payload, { onConflict: "row_id,column_id" });
       if (error) console.error("saveAll upsert error:", error);
     }
-    await supabase.from("projects").update({ pip_total_days: totalDays }).eq("id", id);
-    setProject((prev) => prev ? { ...prev, pip_total_days: totalDays } : prev);
+   
         if (project && user) {
       const actorName = profile?.full_name?.trim() || user.email || "Someone";
       await supabase.from("notifications").insert({
