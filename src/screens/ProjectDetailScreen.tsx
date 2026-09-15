@@ -794,7 +794,7 @@ if (showTeleowsLink || showConnectScanLink) {
             </label>
             )}
           </div>
-          {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
+                    {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
           {msAtts.length === 0 && !isUploading ? (
             <p className="text-xs text-gray-600">No files attached.</p>
           ) : (
