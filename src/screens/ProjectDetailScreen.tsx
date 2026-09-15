@@ -731,7 +731,6 @@ if (showTeleowsLink || showConnectScanLink) {
   );
 }
 
-
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
         <div className="flex items-center gap-2 flex-1 min-w-0">
