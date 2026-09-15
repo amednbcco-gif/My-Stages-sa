@@ -869,7 +869,8 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
       </div>
     </div>
   );
-}
+}}
+
 /* ─── Main Screen ────────────────────────────────────────── */
 export function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
