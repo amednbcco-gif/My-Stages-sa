@@ -869,12 +869,13 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
       </div>
     </div>
   );
-}
+} } } } }
 
 /* ─── Main Screen ───── */
 export function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const { user, profile, isGuest } = useAuth();
   const [project, setProject] = useState<Project | null>(null);
   const [notes, setNotes] = useState<ProjectNote[]>([]);
