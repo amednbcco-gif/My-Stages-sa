@@ -643,8 +643,7 @@ function MilestoneCard({
                 </div>
               );
             }
-
-                        const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
+ const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             const showConnectScanLink = field.key === "connectScanStatus";
             const showTrace360Link = field.key === "trace360Status";
             const showSharePointLinks = field.key === "sharePointStatus";
@@ -688,48 +687,52 @@ function MilestoneCard({
               );
             }
 
-           return (
-  <div key={field.key} className="flex items-center gap-3">
-    <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-    <div className="flex flex-1 min-w-0 items-center gap-3">
-      <div className="min-w-0 flex-1">
-        <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
-      </div>
-    </div>
-  </div>
-);
-if (showTeleowsLink || showConnectScanLink) {
-  return (
-    <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
-      <div className="flex items-center gap-3">
-        <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-        <div className="w-28 shrink-0">
-          <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
+            if (showTeleowsLink || showConnectScanLink) {
+              return (
+                <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                    <div className="w-28 shrink-0">
+                      <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {showTeleowsLink && (
+                      <a
+                        href="https://teleows.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
+                        <ExternalLink size={12} /> Open TeleOWS
+                      </a>
+                    )}
+                    {showConnectScanLink && (
+                      <a
+                        href="https://10.64.239"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
+                        <ExternalLink size={12} /> Open ConnectScan
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <div key={field.key} className="flex items-center gap-3">
+                <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                <div className="flex flex-1 min-w-0 items-center gap-3">
+                  <div className="min-w-0 flex-1">
+                    <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        {showTeleowsLink && (
-          <a
-            href="https://teleows.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
-            <ExternalLink size={12} /> Open TeleOWS
-          </a>
-        )}
-        {showConnectScanLink && (
-          <a
-            href="https://10.64.239"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
-            <ExternalLink size={12} /> Open ConnectScan
-          </a>
-        )}
-      </div>
-    </div>
-  );
-}
+      )}
 
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
@@ -813,7 +816,9 @@ if (showTeleowsLink || showConnectScanLink) {
               ))}
             </div>
           )}
-      </div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -1539,3 +1544,5 @@ function ProjectDetailScreen() {
     </div>
   );
 }
+
+export default ProjectDetailScreen;
