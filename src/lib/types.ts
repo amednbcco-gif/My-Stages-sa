@@ -75,7 +75,9 @@ export interface Stage4 {
   connectScanStatus: string;
   gisStatus: StatusValue;
   gisDocsSentDate: string;
-  gisReceivedDate: string;
+ gisReceivedDate: string;
+  sourceFiles: string;
+  sharePointStatus: string;
   crqHoStatus: StatusValue;
   crqHoNo: string;
   crqHoErqNo: string;
