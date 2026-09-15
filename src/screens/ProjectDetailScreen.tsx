@@ -876,7 +876,6 @@ export function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, profile, isGuest } = useAuth();
-
   const [project, setProject] = useState<Project | null>(null);
   const [notes, setNotes] = useState<ProjectNote[]>([]);
   const [attachments, setAttachments] = useState<StageAttachment[]>([]);
