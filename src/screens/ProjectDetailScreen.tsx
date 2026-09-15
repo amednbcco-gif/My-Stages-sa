@@ -644,7 +644,7 @@ function MilestoneCard({
               );
             }
 
-                        const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
+ const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             const showConnectScanLink = field.key === "connectScanStatus";
             const showTrace360Link = field.key === "trace360Status";
             const showSharePointLinks = field.key === "sharePointStatus";
@@ -659,7 +659,8 @@ function MilestoneCard({
               ? "Open ConnectScan login"
               : "Open Trace360 (Power Apps)";
 
-  if (showSharePointLinks) {
+  
+            if (showSharePointLinks) {
               return (
                 <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
                   <div className="flex items-center gap-3">
@@ -669,19 +670,50 @@ function MilestoneCard({
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    <a
+                    
                       href="https://intranet/tech/txm/GIS"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
                       <ExternalLink size={12} /> Open Share-Point
                     </a>
-                    <a
+                    
                       href="https://mobily.lan"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
                       <ExternalLink size={12} /> Open GIS-WEB
+                    </a>
+                  </div>
+                </div>
+              );
+            }
+
+            if (showTeleowsLink || showConnectScanLink) {
+              return (
+                <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                    <div className="w-28 shrink-0">
+                      <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    
+                      href="https://100s-sg.teleows.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Open TeleOWS to get the OSSPA number"
+                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
+                      <ExternalLink size={12} /> Open TeleOWS
+                    </a>
+                    
+                      href="https://10.64.239.95/ConnectScan/login"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Open ConnectScan login"
+                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
+                      <ExternalLink size={12} /> Open ConnectScan
                     </a>
                   </div>
                 </div>
@@ -695,15 +727,13 @@ function MilestoneCard({
                   <div className="min-w-0 flex-1">
                     <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
                   </div>
-  {(showTeleowsLink || showConnectScanLink || showTrace360Link) && (<a href={externalLinkUrl} target="_blank" rel="noopener noreferrer" title={externalLinkTitle} className="ml-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"><ExternalLink size={13} /></a>
-                  )}
                 </div>
               </div>
             );
           })}
         </div>
       )}
-
+      
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
         <div className="flex items-center gap-2 flex-1 min-w-0">
