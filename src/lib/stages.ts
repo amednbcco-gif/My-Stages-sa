@@ -3,7 +3,7 @@ import type { StatusValue } from "./types";
 export interface StageField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status" | "done" | "execution" | "connect-scan" | "trace360";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "pat-status" | "crq-ho" | "repat-status" | "done" | "execution" | "connect-scan" | "trace360" | "sharepoint";
 }
 
 export const STAGE_LABELS: Record<string, string> = {
