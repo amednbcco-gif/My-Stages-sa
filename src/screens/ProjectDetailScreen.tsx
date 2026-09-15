@@ -1530,7 +1530,7 @@ function ProjectDetailScreen() {
         initial={project}
       />
 
-  {toast && (
+   {toast && (
         <div className="fixed bottom-6 right-6 z-[60] rounded-xl border border-emerald-500/30 bg-emerald-500/15 px-4 py-3 text-sm font-medium text-emerald-300 animate-slide-in">
           {toast}
         </div>
@@ -1538,8 +1538,5 @@ function ProjectDetailScreen() {
     </div>
   );
 }
-}
-}
-});
 
 export { ProjectDetailScreen };
