@@ -813,7 +813,7 @@ if (showTeleowsLink || showConnectScanLink) {
               ))}
             </div>
           )}
-          </div>
+      </div>
   );
 }
 
