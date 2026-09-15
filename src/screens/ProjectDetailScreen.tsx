@@ -1538,4 +1538,3 @@ function ProjectDetailScreen() {
     </div>
   );
 }
-
