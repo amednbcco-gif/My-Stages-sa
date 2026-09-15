@@ -669,7 +669,6 @@ function MilestoneCard({
                     </div>
                   </div>
                   <div className="ml-[8.5rem] flex flex-wrap gap-2">
-                     </a>
    href="https://intranet/tech/txm/GIS"
                       target="_blank"
                       rel="noopener noreferrer"
