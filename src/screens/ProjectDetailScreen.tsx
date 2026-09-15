@@ -1536,6 +1536,8 @@ function ProjectDetailScreen() {
         </div>
       )}
     </div>
-  );
-}
-                  export { ProjectDetailScreen };
+      );
+  }
+} } } } }
+
+export { ProjectDetailScreen };
