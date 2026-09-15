@@ -813,11 +813,10 @@ if (showTeleowsLink || showConnectScanLink) {
               ))}
             </div>
           )}
-        </div>
-      )}
-    </div>
+          </div>
   );
 }
+
 function MilestoneList(props: MilestoneListProps) {
   const { canEditMilestone, ...rest } = props;
   return (
