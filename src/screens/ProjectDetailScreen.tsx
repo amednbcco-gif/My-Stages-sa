@@ -1539,4 +1539,3 @@ function ProjectDetailScreen() {
   );
 }
 
-export { ProjectDetailScreen };
