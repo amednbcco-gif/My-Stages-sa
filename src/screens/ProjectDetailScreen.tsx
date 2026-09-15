@@ -100,6 +100,7 @@ function optionsFor(type: string) {
   if (type === "repat-status") return REPAT_OPTIONS;
   if (type === "connect-scan") return CONNECT_SCAN_OPTIONS;
   if (type === "trace360") return TRACE360_OPTIONS;
+  if (type === "sharepoint") return SHAREPOINT_OPTIONS;
   return STATUS_OPTIONS;
 }
 
