@@ -659,16 +659,16 @@ function MilestoneCard({
               ? "Open ConnectScan login"
               : "Open Trace360 (Power Apps)";
 
-   if (showSharePointLinks) {
+  if (showSharePointLinks) {
               return (
-                <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col gap-2">
+                <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
                   <div className="flex items-center gap-3">
                     <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-                    <div className="min-w-0 max-w-xs flex-1">
+                    <div className="w-28 shrink-0">
                       <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
                     </div>
                   </div>
-                  <div className="ml-[8.5rem] flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2">
                     <a
                       href="https://intranet/tech/txm/GIS"
                       target="_blank"
@@ -677,7 +677,7 @@ function MilestoneCard({
                       <ExternalLink size={12} /> Open Share-Point
                     </a>
                     <a
-                      href="https://mobgis.prod.mobily.lan/"
+                      href="https://mobily.lan"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
