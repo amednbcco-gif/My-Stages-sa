@@ -707,7 +707,7 @@ if (showTeleowsLink || showConnectScanLink) {
       <div className="flex flex-wrap gap-2">
         {showTeleowsLink && (
           <a
-            href="https://internal.lan"
+            href="https://teleows.com"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
@@ -716,19 +716,18 @@ if (showTeleowsLink || showConnectScanLink) {
         )}
         {showConnectScanLink && (
           <a
-            href="https://internal.lan"
+            href="https://10.64.239"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
             <ExternalLink size={12} /> Open ConnectScan
           </a>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+        )}
+      </div>
+    </div>
+  );
+}
+
 
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
