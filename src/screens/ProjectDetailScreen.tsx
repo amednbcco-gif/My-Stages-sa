@@ -669,12 +669,10 @@ function MilestoneCard({
                     </div>
                   </div>
                   <div className="ml-[8.5rem] flex flex-wrap gap-2">
-                    
-                      href="https://intranet/tech/txm/GIS"
+   href="https://intranet/tech/txm/GIS"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
-                    >
+                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
                       <ExternalLink size={12} /> Open Share-Point
                     </a>
                     
