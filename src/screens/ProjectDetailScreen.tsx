@@ -677,7 +677,7 @@ function MilestoneCard({
                       <ExternalLink size={12} /> Open Share-Point
                     </a>
                     <a
-                      href="https://mobily.lan"
+                      href="https://mobgis.prod.mobily.lan/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
