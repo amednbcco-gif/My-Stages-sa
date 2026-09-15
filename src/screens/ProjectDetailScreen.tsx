@@ -659,19 +659,31 @@ function MilestoneCard({
               ? "Open ConnectScan login"
               : "Open Trace360 (Power Apps)";
 
-            if (showSharePointLinks) {
+                      if (showSharePointLinks) {
               return (
-                <div key={field.key} className="flex items-center gap-3">
-                  <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
-                  <div className="flex flex-1 min-w-0 items-center gap-1.5">
-                    <div className="min-w-0 flex-1">
+                <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col gap-2">
+                  <div className="flex items-center gap-3">
+                    <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                    <div className="min-w-0 max-w-xs flex-1">
                       <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
                     </div>
-                    <a href="https://intranet/tech/txm/GIS" target="_blank" rel="noopener noreferrer" title="Open Share-Point" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
-                      <ExternalLink size={13} />
+                  </div>
+                  <div className="ml-[8.5rem] flex flex-wrap gap-2">
+                    
+                      href="https://intranet/tech/txm/GIS"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
+                    >
+                      <ExternalLink size={12} /> Open Share-Point
                     </a>
-                    <a href="https://mobgis.prod.mobily.lan/" target="_blank" rel="noopener noreferrer" title="Open GIS-WEB" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-ink-600 text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
-                      <ExternalLink size={13} />
+                    
+                      href="https://mobgis.prod.mobily.lan/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors"
+                    >
+                      <ExternalLink size={12} /> Open GIS-WEB
                     </a>
                   </div>
                 </div>
