@@ -155,6 +155,11 @@ export const TRACE360_OPTIONS: { value: string; label: string }[] = [
   { value: "submitted", label: "Submitted" },
   { value: "approved", label: "Approved" },
 ];
+export const SHAREPOINT_OPTIONS: { value: string; label: string }[] = [
+  { value: "inprogress", label: "In-Progress" },
+  { value: "submitted", label: "Submitted" },
+  { value: "approved", label: "Approved" },
+];
 export const PAT_STATUS_OPTIONS: { value: StatusValue; label: string }[] = [
   { value: "pending", label: "Pending" },
   { value: "inprogress", label: "In Progress" },
