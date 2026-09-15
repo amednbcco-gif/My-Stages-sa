@@ -316,7 +316,6 @@ export const MILESTONES: Milestone[] = [
     ],
   },
   {
-     {
     id: "gis",
     title: "GIS",
     stage: "stage4",
