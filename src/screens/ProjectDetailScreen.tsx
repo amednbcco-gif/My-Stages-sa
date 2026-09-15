@@ -1538,3 +1538,4 @@ export function ProjectDetailScreen() {
     </div>
   );
 }
+                  export { ProjectDetailScreen };
