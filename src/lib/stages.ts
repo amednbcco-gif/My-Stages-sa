@@ -65,6 +65,8 @@ export const STAGE_FIELDS: Record<string, StageField[]> = {
     { key: "gisStatus", label: "GIS", type: "status" },
     { key: "gisDocsSentDate", label: "GIS Docs Sent", type: "date" },
     { key: "gisReceivedDate", label: "GIS Received", type: "date" },
+    { key: "sourceFiles", label: "Source Files", type: "text" },
+    { key: "sharePointStatus", label: "Share-Point Status", type: "sharepoint" },
     { key: "crqHoStatus", label: "CRQ HO Status", type: "crq-ho" },
     { key: "crqHoNo", label: "CRQ HO No.", type: "text" },
     { key: "crqHoReqNo", label: "HO REQ No.", type: "text" },
