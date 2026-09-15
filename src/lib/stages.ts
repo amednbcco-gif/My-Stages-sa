@@ -209,7 +209,7 @@ export const EXECUTION_OPTIONS: { value: string; label: string }[] = [
 export interface MilestoneField {
   key: string;
   label: string;
-  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution" | "connect-scan" | "trace360";
+  type: "status" | "date" | "number" | "text" | "patsub" | "team" | "close-permit" | "permit" | "clearance" | "done" | "pat-status" | "crq-ho" | "repat-status" | "execution" | "connect-scan" | "trace360" | "sharepoint";
 }
 
 export interface Milestone {
