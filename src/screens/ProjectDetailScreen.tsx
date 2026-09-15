@@ -864,12 +864,12 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           <div className="text-center">
             <p className="text-base font-bold text-white mb-1">List Form (Data Entry)</p>
             <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields, also it's filled with more information, To act as the primary interface, Filled the field here is automatically reflected in Card Layout, Attachments sync with Card Layout automatically</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+                     </div>
+          )}
+        </div>
+    );
+  }
+
 
 /* ─── Main Screen ────────────────────────────────────────── */
 export function ProjectDetailScreen() {
