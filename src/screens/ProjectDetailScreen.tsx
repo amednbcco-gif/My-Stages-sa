@@ -888,7 +888,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
 } 
                   
 /* ─── Main Screen ───── */
-function ProjectDetailScreen() {
+export function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, profile, isGuest } = useAuth();
