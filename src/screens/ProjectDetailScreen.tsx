@@ -26,6 +26,7 @@ import {
   REPAT_OPTIONS,
   CONNECT_SCAN_OPTIONS,
   TRACE360_OPTIONS,
+  SHAREPOINT_OPTIONS,
   MILESTONES,
   computeProgress,
   addDays,
