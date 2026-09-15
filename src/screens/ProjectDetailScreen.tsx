@@ -643,23 +643,11 @@ function MilestoneCard({
                 </div>
               );
             }
-
- const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
+            const showTeleowsLink = field.key === "patReqNo" || field.key === "repatReqNo";
             const showConnectScanLink = field.key === "connectScanStatus";
             const showTrace360Link = field.key === "trace360Status";
             const showSharePointLinks = field.key === "sharePointStatus";
-            const externalLinkUrl = showTeleowsLink
-              ? "https://100s-sg.teleows.com"
-              : showConnectScanLink
-              ? "https://10.64.239.95/ConnectScan/login"
-              : "https://apps.powerapps.com";
-            const externalLinkTitle = showTeleowsLink
-              ? "Open TeleOWS to get the OSSPA number"
-              : showConnectScanLink
-              ? "Open ConnectScan login"
-              : "Open Trace360 (Power Apps)";
 
-  
             if (showSharePointLinks) {
               return (
                 <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
@@ -670,15 +658,15 @@ function MilestoneCard({
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    
+                    <a
                       href="https://intranet/tech/txm/GIS"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
                       <ExternalLink size={12} /> Open Share-Point
                     </a>
-                    
-                      href="https://mobily.lan"
+                    <a
+                      href="https://mobgis.prod.mobily.lan/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
@@ -699,7 +687,7 @@ function MilestoneCard({
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    
+                    <a
                       href="https://100s-sg.teleows.com"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -707,13 +695,36 @@ function MilestoneCard({
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
                       <ExternalLink size={12} /> Open TeleOWS
                     </a>
-                    
+                    <a
                       href="https://10.64.239.95/ConnectScan/login"
                       target="_blank"
                       rel="noopener noreferrer"
                       title="Open ConnectScan login"
                       className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
                       <ExternalLink size={12} /> Open ConnectScan
+                    </a>
+                  </div>
+                </div>
+              );
+            }
+
+            if (showTrace360Link) {
+              return (
+                <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-3">
+                    <label className="w-32 shrink-0 text-[11px] font-semibold text-white">{field.label}</label>
+                    <div className="w-28 shrink-0">
+                      <FieldInput field={field} value={value} stage={milestone.stage} onFieldChange={onFieldChange} disabled={!fieldsEditable} />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <a
+                      href="https://apps.powerapps.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Open Trace360 (Power Apps)"
+                      className="flex items-center gap-1.5 rounded-md border border-ink-600 px-2.5 py-1 text-[11px] font-semibold text-gray-400 hover:border-gold/50 hover:text-gold transition-colors">
+                      <ExternalLink size={12} /> Open Trace360
                     </a>
                   </div>
                 </div>
@@ -733,7 +744,7 @@ function MilestoneCard({
           })}
         </div>
       )}
-      
+
       {/* Footer: progress + actions */}
       <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-ink-700/40 bg-ink-900/30">
         <div className="flex items-center gap-2 flex-1 min-w-0">
@@ -797,7 +808,7 @@ function MilestoneCard({
             </label>
             )}
           </div>
-          {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
+                    {isUploading && <p className="text-xs text-amber-300">Uploading…</p>}
           {msAtts.length === 0 && !isUploading ? (
             <p className="text-xs text-gray-600">No files attached.</p>
           ) : (
@@ -821,6 +832,7 @@ function MilestoneCard({
     </div>
   );
 }
+
 function MilestoneList(props: MilestoneListProps) {
   const { canEditMilestone, ...rest } = props;
   return (
@@ -857,7 +869,7 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
           </div>
         </button>
 
-        {/* List Form */}
+               {/* List Form */}
         <button
           onClick={() => onChoose("list")}
           className="group flex flex-col items-center gap-4 rounded-2xl border border-ink-700 bg-ink-800 px-6 py-8 hover:border-sky-500/50 hover:bg-ink-700/60 transition-all"
@@ -869,19 +881,18 @@ function ViewChooser({ projectName, onChoose }: ViewChooserProps) {
             <p className="text-base font-bold text-white mb-1">List Form (Data Entry)</p>
             <p className="text-xs text-gray-500 leading-relaxed">All stages listed vertically — click any row to expand its fields, also it's filled with more information, To act as the primary interface, Filled the field here is automatically reflected in Card Layout, Attachments sync with Card Layout automatically</p>
           </div>
-        </button>
+          </button>
       </div>
     </div>
   );
-}
-
-/* ─── Main Screen ────────────────────────────────────────── */
-export function ProjectDetailScreen() {
+} 
+                  
+/* ─── Main Screen ───── */
+function ProjectDetailScreen() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, profile, isGuest } = useAuth();
-
-  const [project, setProject] = useState<Project | null>(null);
+    const [project, setProject] = useState<Project | null>(null);
   const [notes, setNotes] = useState<ProjectNote[]>([]);
   const [attachments, setAttachments] = useState<StageAttachment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -1536,7 +1547,7 @@ export function ProjectDetailScreen() {
         initial={project}
       />
 
-      {toast && (
+   {toast && (
         <div className="fixed bottom-6 right-6 z-[60] rounded-xl border border-emerald-500/30 bg-emerald-500/15 px-4 py-3 text-sm font-medium text-emerald-300 animate-slide-in">
           {toast}
         </div>
@@ -1544,3 +1555,5 @@ export function ProjectDetailScreen() {
     </div>
   );
 }
+
+export default ProjectDetailScreen;
