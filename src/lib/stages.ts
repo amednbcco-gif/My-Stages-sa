@@ -316,6 +316,7 @@ export const MILESTONES: Milestone[] = [
     ],
   },
   {
+     {
     id: "gis",
     title: "GIS",
     stage: "stage4",
@@ -324,6 +325,8 @@ export const MILESTONES: Milestone[] = [
     fields: [
       { key: "gisDocsSentDate", label: "GIS Docs Sent", type: "date" },
       { key: "gisReceivedDate", label: "GIS Received Date", type: "date" },
+      { key: "sourceFiles", label: "Source Files", type: "text" },
+      { key: "sharePointStatus", label: "Share-Point Status", type: "sharepoint" },
     ],
   },
   {
