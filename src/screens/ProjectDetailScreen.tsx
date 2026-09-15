@@ -659,7 +659,7 @@ function MilestoneCard({
               ? "Open ConnectScan login"
               : "Open Trace360 (Power Apps)";
 
-                      if (showSharePointLinks) {
+   if (showSharePointLinks) {
               return (
                 <div key={field.key} className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col gap-2">
                   <div className="flex items-center gap-3">
